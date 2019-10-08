@@ -53,15 +53,15 @@ class ContractRoute internal constructor(val method: Method,
      * but this function exists to enable the testing of the ContractRoute logic outside of a wider contract context.
      * This means that certain behaviour is defaulted - chiefly the generation of NOT_FOUND and BAD_REQUEST responses.
      */
-    override fun invoke(p1: Request): Response {
-        val handler = toRouter(Root).match(p1)
+    override suspend fun invoke(request: Request): Response {
+        val handler = toRouter(Root).match(request)
             ?.let {
                 (meta.security?.filter ?: Filter.NoOp)
                     .then(ServerFilters.CatchLensFailure { Response(BAD_REQUEST) })
                     .then(PreFlightExtractionFilter(meta, Companion.All))
                     .then(it)
             }
-        return handler?.invoke(p1) ?: Response(NOT_FOUND)
+        return handler?.invoke(request) ?: Response(NOT_FOUND)
     }
 
     override fun toString() = "${method.name}: ${spec.describe(Root)}"
