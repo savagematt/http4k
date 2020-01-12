@@ -37,4 +37,5 @@ include 'http4k-testing-chaos'
 include 'http4k-testing-hamkrest'
 include 'http4k-testing-webdriver'
 
-enableFeaturePreview('STABLE_PUBLISHING')
+include ":common-json"
+project(":common-json").projectDir = new File(settingsDir, "common/json")
