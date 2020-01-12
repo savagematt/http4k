@@ -37,5 +37,5 @@ include 'http4k-testing-chaos'
 include 'http4k-testing-hamkrest'
 include 'http4k-testing-webdriver'
 
-include ":common-json"
-project(":common-json").projectDir = new File(settingsDir, "common/json")
+include ":common-format"
+project(":common-format").projectDir = new File(settingsDir, "common/format")

@@ -5,7 +5,7 @@ dependencies {
     provided Libs.kotlin_stdlib_jdk8
     provided project(":http4k-core")
 
-    compile project(":common-json")
+    compile project(":common-format")
     compile Libs.moshi
     compile Libs.moshi_kotlin
 

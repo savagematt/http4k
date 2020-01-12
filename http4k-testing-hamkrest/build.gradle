@@ -5,6 +5,7 @@ dependencies {
     provided project(":http4k-core")
 
     compile Libs.hamkrest
+    compile project(":common-format")
 
     testCompile project(":http4k-format-jackson")
     testCompile Config.TestDependencies
