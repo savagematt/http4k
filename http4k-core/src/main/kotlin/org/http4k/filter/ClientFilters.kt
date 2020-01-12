@@ -30,7 +30,7 @@ object ClientFilters {
             startReportFn: (Request, ZipkinTraces) -> Unit = { _, _ -> },
             endReportFn: (Request, Response, ZipkinTraces) -> Unit = { _, _, _ -> }): Filter = Filter { next ->
             {
-                THREAD_LOCAL.get().run {
+                ZipkinTraces.forCurrentThread().run {
                     val updated = parentSpanId?.let {
                         copy(parentSpanId = spanId, spanId = TraceId.new())
                     } ?: this

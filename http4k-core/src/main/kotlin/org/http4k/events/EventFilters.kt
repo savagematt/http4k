@@ -21,7 +21,7 @@ object EventFilters {
      */
     fun AddZipkinTraces() = EventFilter { next ->
         {
-            next(it + ("traces" to ZipkinTraces.THREAD_LOCAL.get()))
+            next(it + ("traces" to ZipkinTraces.forCurrentThread()))
         }
     }
 }
