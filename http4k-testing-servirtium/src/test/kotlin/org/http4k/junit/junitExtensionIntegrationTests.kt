@@ -5,8 +5,8 @@ import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.has
 import com.natpryce.hamkrest.throws
+import kotlinx.coroutines.runBlocking
 import org.http4k.core.HttpHandler
-import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -26,7 +26,7 @@ interface TestContract {
 
     @Test
     @JvmDefault
-    fun scenario(handler: HttpHandler, control: InteractionControl) {
+    fun scenario(handler: HttpHandler, control: InteractionControl) = runBlocking {
         control.addNote("this is a note")
 
         assertThat(handler(Request(POST, "/foobar").body("welcome")).bodyString(), equalTo("hello"))
@@ -48,7 +48,7 @@ class ServirtiumRecordingIntegrationTest : TestContract {
     @RegisterExtension
     val record = ServirtiumRecording(
         "contractName",
-        { Response(OK).body("hello") },
+        HttpHandler { Response(OK).body("hello") },
         storage,
         object : InteractionOptions {
             override fun modify(request: Request) = request.body(request.bodyString() + request.bodyString())
@@ -89,19 +89,19 @@ class ServirtiumReplayIntegrationTest : TestContract {
         })
 
     @Test
-    fun `unexpected content`(handler: HttpHandler) {
+    fun `unexpected content`(handler: HttpHandler) = runBlocking {
         assertThat({
-            handler(Request(GET, "/foobar").body("welcome"))
+            runBlocking { handler(Request(POST, "/foobar").body("welcome")) }
         }, throws(
             has(AssertionFailedError::getLocalizedMessage, containsSubstring("Unexpected request received for Interaction 0"))))
     }
 
     @Test
-    fun `too many requests`(handler: HttpHandler) {
+    fun `too many requests`(handler: HttpHandler) = runBlocking {
         handler(Request(POST, "/foobar").body("welcome"))
         handler(Request(POST, "/foobar").body("welcome"))
         assertThat({
-            handler(Request(POST, "/foobar").body("welcome"))
+            runBlocking { handler(Request(POST, "/foobar").body("welcome")) }
         }, throws(
             has(AssertionFailedError::getLocalizedMessage, containsSubstring("Unexpected request received for Interaction 2"))))
     }

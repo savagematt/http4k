@@ -2,8 +2,9 @@ package org.http4k.format
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonElement
-import org.http4k.core.Method
+import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -57,7 +58,7 @@ class KotlinxSerializationGenerateDataClassesTest : GenerateDataClassesContract<
      * which is currently not customisable.
      */
     @Test
-    override fun `generates data classes correctly`() {
+    override fun `generates data classes correctly`() = runBlocking {
         val input = j {
             obj(
                 "string" to string("value"),
@@ -92,7 +93,7 @@ class KotlinxSerializationGenerateDataClassesTest : GenerateDataClassesContract<
 
         val handler = GenerateDataClasses(j, PrintStream(os)) { 1 }.then { Response(Status.OK).with(j.body().toLens() of input) }
 
-        handler(Request(Method.GET, "/bob"))
+        handler(Request(GET, "/bob"))
         val actual = String(os.toByteArray())
         assertThat(actual, equalTo("""// result generated from /bob
 
