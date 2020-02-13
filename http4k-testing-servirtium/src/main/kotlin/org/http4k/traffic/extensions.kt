@@ -17,23 +17,21 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 import java.util.function.Supplier
 
-fun Replay.replayingMatchingContent(manipulations: (Request) -> Request = { it }): HttpHandler {
+fun Replay.replayingMatchingContent(manipulations: (Request) -> Request = { it }) = HttpHandler {
     val interactions = requests().zip(responses()).iterator()
     val count = AtomicInteger()
 
-    return { received: Request ->
-        val index = count.getAndIncrement()
+    val index = count.getAndIncrement()
 
-        when {
-            interactions.hasNext() -> {
-                val (expectedReq, response) = interactions.next()
+    when {
+        interactions.hasNext() -> {
+            val (expectedReq, response) = interactions.next()
 
-                val actual = manipulations(received).toString()
-                if (expectedReq.toString() == actual) response
-                else renderMismatch(index, expectedReq.toString(), actual)
-            }
-            else -> renderMismatch(index, "", received.toString())
+            val actual = manipulations(it).toString()
+            if (expectedReq.toString() == actual) response
+            else renderMismatch(index, expectedReq.toString(), actual)
         }
+        else -> renderMismatch(index, "", it.toString())
     }
 }
 
