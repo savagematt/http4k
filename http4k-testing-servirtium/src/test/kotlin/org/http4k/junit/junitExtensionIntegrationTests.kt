@@ -4,7 +4,6 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.has
-import com.natpryce.hamkrest.throws
 import kotlinx.coroutines.runBlocking
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.POST
@@ -89,20 +88,28 @@ class ServirtiumReplayIntegrationTest : TestContract {
         })
 
     @Test
-    fun `unexpected content`(handler: HttpHandler) = runBlocking {
-        assertThat({
-            runBlocking { handler(Request(POST, "/foobar").body("welcome")) }
-        }, throws(
-            has(AssertionFailedError::getLocalizedMessage, containsSubstring("Unexpected request received for Interaction 0"))))
+    fun `unexpected content`(handler: HttpHandler) {
+        runBlocking {
+            try {
+                handler(Request(POST, "/foobar").body("welcome"))
+                throw IllegalArgumentException()
+            } catch (e: AssertionFailedError) {
+                assertThat(e, has(AssertionFailedError::getLocalizedMessage, containsSubstring("Unexpected request received for Interaction 0")))
+            }
+        }
     }
 
     @Test
-    fun `too many requests`(handler: HttpHandler) = runBlocking {
-        handler(Request(POST, "/foobar").body("welcome"))
-        handler(Request(POST, "/foobar").body("welcome"))
-        assertThat({
-            runBlocking { handler(Request(POST, "/foobar").body("welcome")) }
-        }, throws(
-            has(AssertionFailedError::getLocalizedMessage, containsSubstring("Unexpected request received for Interaction 2"))))
+    fun `too many requests`(handler: HttpHandler) {
+        runBlocking {
+            handler(Request(POST, "/foobar").body("welcome"))
+            handler(Request(POST, "/foobar").body("welcome"))
+            try {
+                handler(Request(POST, "/foobar").body("welcome"))
+                throw IllegalArgumentException()
+            } catch (e: AssertionFailedError) {
+                assertThat(e, has(AssertionFailedError::getLocalizedMessage, containsSubstring("Unexpected request received for Interaction 2")))
+            }
+        }
     }
 }
