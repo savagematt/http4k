@@ -26,7 +26,7 @@ class WithServirtiumReplayServer(private val storage: StorageProvider,
 
     override fun beforeEach(ec: ExtensionContext) {
         control = ServirtiumServer.Replay(
-            baseName?.let { "$it." } + ec.testMethod.get().name,
+            (baseName?.let { "$it." } ?: "") + ec.testMethod.get().name,
             storage,
             interactionOptions,
             port,
