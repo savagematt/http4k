@@ -12,26 +12,27 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
 
-class WithServirtiumRecordingServer(private val targetUri: Uri,
-                                    private val storage: StorageProvider,
-                                    private val baseName: String? = null,
-                                    private val interactionOptions: InteractionOptions = Defaults) :
+class WithServirtiumRecordingServer(
+    private val baseName: String,
+    private val targetUri: Uri,
+    private val storage: StorageProvider,
+    private val interactionOptions: InteractionOptions = Defaults) :
     TracksTestState by TracksTestState(),
     HasServirtiumServer,
     ParameterResolver {
 
     constructor(
+        baseName: String,
         storage: StorageProvider,
-        baseName: String? = null,
         interactionOptions: InteractionOptions = Defaults,
         port: Int = 0
-    ) : this(Uri.of("http://localhost:$port"), storage, baseName, interactionOptions)
+    ) : this(baseName, Uri.of("http://localhost:$port"), storage, interactionOptions)
 
     override lateinit var control: ServirtiumServer
 
     override fun beforeEach(ec: ExtensionContext) {
         control = ServirtiumServer.Recording(
-            (baseName?.let { "$it." } ?: "") + ec.testMethod.get().name,
+            baseName + "." + ec.testMethod.get().name,
             targetUri,
             storage,
             interactionOptions

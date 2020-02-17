@@ -10,6 +10,6 @@ import java.io.File
 class WithServirtiumRecordingServerTest : TestContract {
     @RegisterExtension
     @JvmField
-    val control = WithServirtiumRecordingServer(Disk(File(".")))
+    val control = WithServirtiumRecordingServer("contractName", Disk(File(".")))
 }
 

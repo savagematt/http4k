@@ -15,18 +15,19 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
 
-class WithServirtiumReplayServer(private val storage: StorageProvider,
-                                 private val baseName: String? = null,
-                                 private val interactionOptions: InteractionOptions = Defaults,
-                                 private val port: Int = 0,
-                                 private val serverFn: (Int) -> ServerConfig = ::SunHttp) :
+class WithServirtiumReplayServer(
+    private val baseName: String,
+    private val storage: StorageProvider,
+    private val interactionOptions: InteractionOptions = Defaults,
+    private val port: Int = 0,
+    private val serverFn: (Int) -> ServerConfig = ::SunHttp) :
     ParameterResolver, HasServirtiumServer {
 
     override lateinit var control: ServirtiumServer
 
     override fun beforeEach(ec: ExtensionContext) {
         control = ServirtiumServer.Replay(
-            (baseName?.let { "$it." } ?: "") + ec.testMethod.get().name,
+            baseName + "." + ec.testMethod.get().name,
             storage,
             interactionOptions,
             port,
