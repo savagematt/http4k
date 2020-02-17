@@ -6,6 +6,7 @@ import org.http4k.core.then
 import org.http4k.filter.ClientFilters
 import org.http4k.server.ServerConfig
 import org.http4k.server.SunHttp
+import org.http4k.servirtium.InteractionControl.Companion.NoOp
 import org.http4k.servirtium.InteractionOptions
 import org.http4k.servirtium.InteractionOptions.Companion.Defaults
 import org.http4k.servirtium.ServirtiumServer
@@ -35,9 +36,12 @@ class WithServirtiumReplayServer(private val storage: StorageProvider,
     }
 
     override fun supportsParameter(pc: ParameterContext, ec: ExtensionContext) =
-        pc.isHttpHandler()
+        pc.isHttpHandler() || pc.isInteractionControl()
 
-    override fun resolveParameter(pc: ParameterContext, ec: ExtensionContext) =
-        ClientFilters.SetBaseUriFrom(Uri.of("http://localhost:${control.port()}"))
-            .then(OkHttp())
+    override fun resolveParameter(pc: ParameterContext, ec: ExtensionContext): Any =
+        when {
+            pc.isHttpHandler() -> ClientFilters.SetBaseUriFrom(Uri.of("http://localhost:${control.port()}"))
+                .then(OkHttp())
+            else -> NoOp
+        }
 }

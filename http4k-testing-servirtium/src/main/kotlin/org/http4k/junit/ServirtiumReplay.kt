@@ -1,7 +1,7 @@
 package org.http4k.junit
 
 import org.http4k.core.then
-import org.http4k.servirtium.InteractionControl
+import org.http4k.servirtium.InteractionControl.Companion.NoOp
 import org.http4k.servirtium.InteractionOptions
 import org.http4k.servirtium.StorageProvider
 import org.http4k.traffic.Replay
@@ -25,6 +25,6 @@ class ServirtiumReplay(private val baseName: String,
                 .then(Replay.Servirtium(storageProvider("$baseName.${ec.requiredTestMethod.name}"), options)
                     .replayingMatchingContent(options::modify)
                 )
-            else -> InteractionControl.Companion.NoOp
+            else -> NoOp
         }
 }
