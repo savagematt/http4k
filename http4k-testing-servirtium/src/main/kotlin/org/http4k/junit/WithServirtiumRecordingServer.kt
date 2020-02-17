@@ -31,7 +31,7 @@ class WithServirtiumRecordingServer(private val targetUri: Uri,
 
     override fun beforeEach(ec: ExtensionContext) {
         control = ServirtiumServer.Recording(
-            baseName?.let { "$it." } + ec.testMethod.get().name,
+            (baseName?.let { "$it." } ?: "") + ec.testMethod.get().name,
             targetUri,
             storage,
             interactionOptions
