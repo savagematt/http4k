@@ -18,6 +18,8 @@ import org.http4k.traffic.replayingMatchingContent
 
 interface ServirtiumServer : Http4kServer, InteractionControl {
 
+    fun uri() = Uri.of("http://localhost:${port()}")
+
     companion object {
         /**
          * Replay server which will match and replay recorded traffic read from the named Servirtium Markdown file.
