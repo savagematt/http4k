@@ -233,7 +233,8 @@ dependencies {
     provided project(":http4k-testing-hamkrest")
     provided project(":http4k-testing-servirtium")
     provided project(":http4k-testing-webdriver")
-
+    provided project(":http4k-typesafe-routing")
+    
     testCompile Config.TestDependencies
     testCompile project(path: ":http4k-testing-servirtium", configuration: 'testArtifacts')
 }

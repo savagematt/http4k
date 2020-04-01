@@ -14,3 +14,5 @@ maven_publish "http4k-testing-chaos"
 maven_publish "http4k-testing-hamkrest"
 maven_publish "http4k-testing-servirtium"
 maven_publish "http4k-testing-webdriver"
+
+maven_publish "http4k-typesafe-routing"

@@ -65,6 +65,7 @@ echo "Attempting to release $LOCAL_VERSION (old version $BINTRAY_VERSION)"
     :http4k-testing-hamkrest:bintrayUpload \
     :http4k-testing-servirtium:bintrayUpload \
     :http4k-testing-webdriver:bintrayUpload
+    :http4k-typesafe-routing:bintrayUpload
 
 function notify_slack {
     local MESSAGE=$1
