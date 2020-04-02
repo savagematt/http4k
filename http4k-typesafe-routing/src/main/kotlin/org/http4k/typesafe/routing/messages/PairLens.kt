@@ -7,6 +7,9 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.SimpleLens
 
 
+/**
+ * @see [org.http4k.typesafe.routing.Routing.and]
+ */
 class PairLens<M : HttpMessage, A, B>(val a: MessageLens<M, A>, val b: MessageLens<M, B>) : SimpleLens<M, Pair<A, B>> {
     override fun get(from: M) =
         a.get(from).flatMap { a ->

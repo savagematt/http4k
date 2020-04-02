@@ -8,6 +8,9 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.SimpleLens
 
+/**
+ * @see [org.http4k.typesafe.routing.Routing.status]
+ */
 class CheckStatusLens<T>(
     val status: Status,
     val rest: MessageLens<Response, T>) : SimpleLens<Response, T> {

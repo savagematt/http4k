@@ -16,7 +16,7 @@ sealed class MessageType<M : HttpMessage>(val clazz: KClass<M>) {
 }
 
 /**
- * For what's going on with these generic parameters, @see [Kind2]
+ * For what's going on with these generic parameters, @see [org.http4k.typesafe.functional.Kind2]
  */
 interface Routing<TServerRoute, TRoute, TLens> {
     /**
@@ -92,15 +92,37 @@ interface Routing<TServerRoute, TRoute, TLens> {
     fun <M : HttpMessage, T, E> result(success: Kind2<TLens, M, T>, failure: Kind2<TLens, M, E>):
         Kind2<TLens, M, Result<T, E>>
 
+    /**
+     * Matches any `Response` with the correct `status`, and returns the result
+     * of `next.get(Response)`
+     *
+     * Injects status into the result of `rest.set(Response, T)`
+     */
     fun <T> status(status: Status, rest: Kind2<TLens, Response, T>):
         Kind2<TLens, Response, T>
 
+    /**
+     * Matches any `Response` and extracts the status.
+     *
+     * Injects a given status in to `Response`.
+     */
     fun status():
         Kind2<TLens, Response, Status>
 
+    /**
+     * Matches any `Request` with the correct `method`, and returns the result
+     * of `next.get(Request)`
+     *
+     * Injects `method` into the result of `rest.set(Request, T)`
+     */
     fun <T> method(method: Method, rest: Kind2<TLens, Request, T>):
         Kind2<TLens, Request, T>
 
+    /**
+     * Matches any `Request` and extracts the `method`.
+     *
+     * Injects a given `method` in to `Request`.
+     */
     fun method():
         Kind2<TLens, Request, Method>
 }

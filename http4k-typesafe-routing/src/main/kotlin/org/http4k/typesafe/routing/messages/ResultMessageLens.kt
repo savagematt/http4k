@@ -6,6 +6,9 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.SimpleLens
 
+/**
+ * @see [org.http4k.typesafe.routing.Routing.result]
+ */
 class ResultMessageLens<M : HttpMessage, T, E>(
     val success: MessageLens<M, T>,
     val failure: MessageLens<M, E>) : SimpleLens<M, Result<T, E>> {

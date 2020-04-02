@@ -7,7 +7,9 @@ import org.http4k.core.Status
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.SimpleLens
 
-
+/**
+ * @see [org.http4k.typesafe.routing.Routing.status]
+ */
 class StatusLens : SimpleLens<Response, Status> {
     override fun get(from: Response): Result<Status, RoutingError> =
         Success(from.status)

@@ -8,6 +8,9 @@ import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.SimpleLens
 
 
+/**
+ * @see [org.http4k.typesafe.routing.Routing.method]
+ */
 class MethodLens : SimpleLens<Request, Method> {
     override fun get(from: Request): Result<Method, RoutingError> =
         Success(from.method)
