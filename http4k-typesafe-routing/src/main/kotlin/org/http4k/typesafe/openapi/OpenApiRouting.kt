@@ -211,7 +211,7 @@ fun <M : HttpMessage> documentTextLens(type: MessageType<M>): (OpenApiRouteInfo)
                     }
                 is MessageType.response ->
                     // TODO: what do we do if there are already responses?
-                    info.responses { responses ->
+                    info.responses {
                         OpenApiResponses(default = OpenApiResponse("text", mediaTypes).real())
                     }
             }
