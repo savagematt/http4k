@@ -9,12 +9,17 @@ import org.http4k.core.Status
 import org.http4k.typesafe.lenses.PLens
 
 
+class RoutingErrorException(error: RoutingError) : Exception(error.message)
+
 sealed class RoutingError {
+    abstract val message: String
+    fun exception() = RoutingErrorException(this)
+
     /**
      * This is the wrong route to handle the request, and the server should
      * look for another one
      */
-    data class WrongRoute(val message: String) : RoutingError()
+    data class WrongRoute(override val message: String) : RoutingError()
 
     /**
      * This was the correct route to handle the request, so the router should
@@ -25,7 +30,7 @@ sealed class RoutingError {
      * the response provided (although it's free to make it's own modifications
      * first)
      */
-    data class RouteFailed(val message: String, val response: Response) : RoutingError()
+    data class RouteFailed(override val message: String, val response: Response) : RoutingError()
 
     companion object {
         fun wrongRoute(message: String) = Failure(WrongRoute(message))
