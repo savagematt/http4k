@@ -10,7 +10,11 @@ import org.http4k.core.Status
  * we can put rendering in a big when block and let the compiler tell us when we've missed something
  */
 sealed class OpenApiConcept {
-    abstract val extensions: List<Renderable>
+    /**
+     * Open api limits what's extensible, but it's easier all round just making
+     * everything extensible.
+     */
+    abstract val extensions: List<Extension>
 }
 
 interface OpenApiRenderer<NODE> : JsonRenderer<OpenApiConcept, NODE>
@@ -18,7 +22,7 @@ interface OpenApiRenderer<NODE> : JsonRenderer<OpenApiConcept, NODE>
 data class Tag(
     val name: String,
     val description: String? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept()
 
 
@@ -28,7 +32,7 @@ sealed class Referenceable<T : OpenApiConcept> : OpenApiConcept() {
 data class Ref<T : OpenApiConcept>(
     val value: String) : Referenceable<T>() {
 
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 
     override fun toString(): String {
         return value
@@ -37,9 +41,9 @@ data class Ref<T : OpenApiConcept>(
 
 data class Real<T : OpenApiConcept>(
     val value: T,
-    override val extensions: List<Renderable> = emptyList()) : Referenceable<T>()
+    override val extensions: List<Extension> = emptyList()) : Referenceable<T>()
 
-fun <T : OpenApiConcept> T.real(extensions: List<Renderable> = emptyList()) =
+fun <T : OpenApiConcept> T.real(extensions: List<Extension> = emptyList()) =
     Real(this, extensions)
 
 
@@ -49,17 +53,17 @@ fun <T : OpenApiConcept> T.real(extensions: List<Renderable> = emptyList()) =
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject
  */
 data class OpenApiSchema(
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
 }
 
 sealed class OpenApiBodyExampleValue : OpenApiConcept() {
     data class Real(
         val value: Any,
-        override val extensions: List<Renderable> = emptyList()) : OpenApiBodyExampleValue()
+        override val extensions: List<Extension> = emptyList()) : OpenApiBodyExampleValue()
 
     data class External(
         val value: String,
-        override val extensions: List<Renderable> = emptyList()) : OpenApiBodyExampleValue()
+        override val extensions: List<Extension> = emptyList()) : OpenApiBodyExampleValue()
 }
 
 /**
@@ -69,7 +73,7 @@ data class OpenApiBodyExample(
     val value: OpenApiBodyExampleValue,
     val summary: String? = null,
     val description: String? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept()
 
 /**
@@ -80,7 +84,7 @@ data class OpenApiBodyExample(
 data class OpenApiMediaType(
     val examples: Map<String, OpenApiBodyExample> = emptyMap(),
     val schema: Referenceable<OpenApiSchema>? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept()
 
 /**
@@ -92,7 +96,7 @@ data class OpenApiRequestBody(
     val description: String,
     val content: Map<ContentType, OpenApiMediaType>? = null,
     val required: Boolean? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept() {
     companion object {
         val empty = OpenApiRequestBody("body")
@@ -115,7 +119,7 @@ interface IOpenApiParameter {
     val deprecated: Boolean?
     val description: String?
     val schema: Referenceable<OpenApiSchema>?
-    val extensions: List<Renderable>
+    val extensions: List<Extension>
 
 }
 
@@ -137,7 +141,7 @@ data class OpenApiHeader(
     override val deprecated: Boolean? = null,
     override val description: String? = null,
     override val schema: Referenceable<OpenApiSchema>? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiParameter() {
     override val in_ = ParameterLocation.header
 }
@@ -151,7 +155,7 @@ data class OpenApiPathParam(
     override val deprecated: Boolean? = null,
     override val description: String? = null,
     override val schema: Referenceable<OpenApiSchema>? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiParameter() {
     override val in_ = ParameterLocation.path
     /**
@@ -167,7 +171,7 @@ data class OpenApiQueryParam(
     override val deprecated: Boolean? = null,
     override val description: String? = null,
     override val schema: Referenceable<OpenApiSchema>? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiParameter() {
     override val in_ = ParameterLocation.query
 }
@@ -179,7 +183,7 @@ data class OpenApiCookieParam(
     override val deprecated: Boolean = false,
     override val description: String?,
     override val schema: Referenceable<OpenApiSchema>?,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiParameter() {
     override val in_ = ParameterLocation.cookie
 }
@@ -191,7 +195,7 @@ data class HeaderName(val value: String) {
 
 class OpenApiHeaders(
     x: Map<HeaderName, OpenApiHeader>,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept(), Map<HeaderName, OpenApiHeader> by x {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept(), Map<HeaderName, OpenApiHeader> by x {
 }
 
 /**
@@ -206,7 +210,7 @@ data class OpenApiResponse(
     val description: String,
     val content: Map<ContentType, OpenApiMediaType>? = null,
     val headers: OpenApiHeaders? = null,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
     companion object {
         val empty = OpenApiResponse("response")
     }
@@ -231,7 +235,7 @@ data class OpenApiResponse(
 data class OpenApiResponses(
     val default: Referenceable<OpenApiResponse>? = null,
     val byStatus: Map<Status, Referenceable<OpenApiResponse>>? = null,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
 }
 
 /**
@@ -249,7 +253,7 @@ data class OpenApiOperation(
     val requestBody: Referenceable<OpenApiRequestBody>? = null,
     val deprecated: Boolean? = null,
     val security: Map<SecurityId, List<String>>? = null,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
     companion object {
         val empty = OpenApiOperation(OpenApiResponses())
     }
@@ -267,7 +271,7 @@ data class SecurityId(val value: String) {
 data class OpenApiSecurity(
     val id: SecurityId,
     val content: SecurityRenderable,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept()
 
 /**
  * Equivalent to an entry in a Paths object, plus one of its Path Items
@@ -283,7 +287,7 @@ data class OpenApiOperationInfo(
     val method: Method,
     val path: String,
     val operation: OpenApiOperation,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
     companion object {
         val empty = OpenApiOperationInfo(GET, "/", OpenApiOperation.empty)
     }
@@ -308,7 +312,7 @@ data class SchemaId(val value: String) {
 data class OpenApiComponents(
     val security: List<OpenApiSecurity>? = null,
     val schemas: Map<SchemaId, OpenApiSchema>? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept() {
     companion object {
         val empty = OpenApiComponents()
@@ -322,7 +326,7 @@ data class OpenApiContact(
     val name: String? = null,
     val url: String? = null,
     val email: String? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept()
 
 /**
@@ -331,7 +335,7 @@ data class OpenApiContact(
 data class OpenApiLicense(
     val name: String,
     val url: String? = null,
-    override val extensions: List<Renderable> = emptyList()
+    override val extensions: List<Extension> = emptyList()
 ) : OpenApiConcept()
 
 /**
@@ -344,7 +348,7 @@ data class OpenApiInfo(
     val termsOfService: String? = null,
     val contact: OpenApiContact? = null,
     val license: OpenApiLicense? = null,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept()
 
 /**
  * This is the root document object of the OpenAPI document.
@@ -355,7 +359,7 @@ data class OpenApiObject(
     val info: OpenApiInfo,
     val paths: List<OpenApiOperationInfo> = emptyList(),
     val components: OpenApiComponents = OpenApiComponents.empty,
-    override val extensions: List<Renderable> = emptyList()) : OpenApiConcept() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
     companion object {
         val empty = OpenApiObject(OpenApiInfo("My api", "0.0"))
     }
@@ -372,6 +376,7 @@ data class OpenApiObject(
 data class OpenApiRouteInfo(
     val api: OpenApiObject,
     val route: OpenApiOperationInfo) {
+
     fun route(f: (OpenApiOperationInfo) -> OpenApiOperationInfo): OpenApiRouteInfo =
         this.copy(route = f(this.route))
 }

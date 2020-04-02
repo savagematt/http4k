@@ -10,6 +10,10 @@ interface Renderable {
     fun <NODE> render(json: Json<NODE>): NODE
 }
 
+interface Extension {
+    fun <NODE> render(base: NODE, json: Json<NODE>): NODE
+}
+
 fun <NODE> Json<NODE>.nullable(value: String?) =
     nullable(value, { this.string(it) })
 
