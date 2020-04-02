@@ -56,8 +56,8 @@ class OpenApiLens<M : HttpMessage, T>(
 }
 
 fun <M : HttpMessage, T> MessageLens<M, T>.asOpenApi(
-    documenter: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) =
-    OpenApiLens(this, documenter)
+    docs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) =
+    OpenApiLens(this, docs)
 
 /*
 Routes
@@ -75,8 +75,16 @@ fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.fix() = this as OpenApiRoute<In, O
 
 data class OpenApiRoute<In, Out>(
     val request: OpenApiLens<Request, In>,
-    val response: OpenApiLens<Response, Out>) : Kind2<ForOpenApiRoute, In, Out>
+    val response: OpenApiLens<Response, Out>,
+    val extraDocs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it })
+    : Documentable<OpenApiRouteInfo>, Kind2<ForOpenApiRoute, In, Out> {
 
+    override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
+        extraDocs(response.document(request.document(doc)))
+}
+
+fun <In, Out> OpenApiRoute<In, Out>.doc(extraDocs: (OpenApiRouteInfo) -> OpenApiRouteInfo) =
+    OpenApiRoute(this.request, this.response, extraDocs)
 
 /*
 Server Route
