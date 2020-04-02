@@ -37,7 +37,7 @@ class RouterTest {
     val getText = ServerRoute(Routes.get, behaviour.get)
     val postText = ServerRoute(Routes.post, behaviour.post)
 
-    val router = Router(listOf(getText, postText))
+    val router = router(listOf(getText, postText))
 
     @Test
     fun `returns result of the matching route`() {

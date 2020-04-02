@@ -35,3 +35,6 @@ class Router(val routes: List<ServerRoute<*, *>>) : HttpHandler {
 
     override operator fun invoke(request: Request): Response = route(request)
 }
+
+fun router(routes: List<ServerRoute<*, *>>) =
+    Router(routes)
