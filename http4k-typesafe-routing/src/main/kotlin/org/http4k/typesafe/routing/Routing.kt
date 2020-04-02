@@ -1,8 +1,19 @@
 package org.http4k.typesafe.routing
 
 import com.natpryce.Result
-import org.http4k.core.*
+import org.http4k.core.HttpHandler
+import org.http4k.core.HttpMessage
+import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Response
+import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
+import kotlin.reflect.KClass
+
+sealed class MessageType<M : HttpMessage>(val clazz: KClass<M>) {
+    object request : MessageType<Request>(Request::class)
+    object response : MessageType<Response>(Response::class)
+}
 
 /**
  * For what's going on with these generic parameters, @see [Kind2]
@@ -39,7 +50,7 @@ interface Routing<TServerRoute, TRoute, TLens> {
      * we want to be liberal in what we accept from others
      * https://en.wikipedia.org/wiki/Robustness_principle
      */
-    fun <M : HttpMessage> text():
+    fun <M : HttpMessage> text(type: MessageType<M>):
         Kind2<TLens, M, String>
 
     /**
@@ -47,7 +58,7 @@ interface Routing<TServerRoute, TRoute, TLens> {
      *
      * Returns Unit, and does not modify the message when setting
      */
-    fun <M : HttpMessage> any():
+    fun <M : HttpMessage> any(type: MessageType<M>):
         Kind2<TLens, M, Unit>
 
 
@@ -81,14 +92,14 @@ interface Routing<TServerRoute, TRoute, TLens> {
     fun <M : HttpMessage, T, E> result(success: Kind2<TLens, M, T>, failure: Kind2<TLens, M, E>):
         Kind2<TLens, M, Result<T, E>>
 
-    fun status(status: Status):
-        Kind2<TLens, Response, Unit>
+    fun <T> status(status: Status, rest: Kind2<TLens, Response, T>):
+        Kind2<TLens, Response, T>
 
     fun status():
         Kind2<TLens, Response, Status>
 
-    fun method(method: Method):
-        Kind2<TLens, Request, Unit>
+    fun <T> method(method: Method, rest: Kind2<TLens, Request, T>):
+        Kind2<TLens, Request, T>
 
     fun method():
         Kind2<TLens, Request, Method>

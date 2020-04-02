@@ -5,7 +5,7 @@ import com.natpryce.Success
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.Simple.but
+import org.http4k.typesafe.routing.MessageType.response
 import org.http4k.typesafe.routing.Simple.result
 import org.http4k.typesafe.routing.Simple.status
 import org.http4k.typesafe.routing.Simple.text
@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test
 internal class ResultTest {
 
     val lens = result(
-        status(OK) but text(),
-        status(BAD_REQUEST) but text()).fix()
+        status(OK, text(response)),
+        status(BAD_REQUEST, text(response)).fix())
 
     @Test
     fun `works for failure`() {

@@ -3,10 +3,11 @@ package org.http4k.typesafe.routing.messages
 import com.natpryce.flatMap
 import com.natpryce.map
 import org.http4k.core.HttpMessage
+import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.SimpleLens
 
 
-class PairLens<M : HttpMessage, A, B>(val a: SimpleLens<M, A>, val b: SimpleLens<M, B>) : SimpleLens<M, Pair<A, B>> {
+class PairLens<M : HttpMessage, A, B>(val a: MessageLens<M, A>, val b: MessageLens<M, B>) : SimpleLens<M, Pair<A, B>> {
     override fun get(from: M) =
         a.get(from).flatMap { a ->
             b.get(from).map { b ->

@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test
 @Suppress("MemberVisibilityCanBePrivate")
 class ClientTest {
     val get = route(
-        method(GET) but text(),
-        status(OK) but text())
+        method(GET, text(MessageType.request)),
+        status(OK, text(MessageType.response)))
 
     val server = { request: Request ->
         when (request.bodyString()) {

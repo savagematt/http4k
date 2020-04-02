@@ -12,7 +12,7 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RequestLens
 import org.http4k.typesafe.routing.ResponseLens
 
-fun <M : HttpMessage, T> lensContract(
+private fun <M : HttpMessage, T> lensContract(
     lens: MessageLens<M, T>,
     injectIntoMessage: M,
     expectedValue: T,
@@ -42,15 +42,4 @@ fun <T> responseContract(lens: ResponseLens<T>,
                          expectedResponse: Response,
                          injectIntoMessage: Response = Response(OK)) {
     lensContract(lens, injectIntoMessage, expectedValue, expectedResponse)
-}
-
-fun <T> lensContract(lens: MessageLens<HttpMessage, T>,
-                     expectedValue: T,
-                     expectedRequest: Request,
-                     expectedResponse: Response,
-                     injectIntoRequest: Request = Request(GET, "/"),
-                     injectIntoResponse: Response = Response(OK)) {
-
-    lensContract(lens, injectIntoRequest, expectedValue, expectedRequest)
-    lensContract(lens, injectIntoResponse, expectedValue, expectedResponse)
 }

@@ -4,7 +4,12 @@ import com.natpryce.Result
 import com.natpryce.flatMap
 import com.natpryce.map
 import com.natpryce.recover
-import org.http4k.core.*
+import org.http4k.core.HttpHandler
+import org.http4k.core.HttpMessage
+import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Response
+import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ButLens
@@ -105,10 +110,12 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
         }
     }
 
-    override fun <M : HttpMessage> any(): Kind2<ForSimpleLens, M, Unit> =
+    override fun <M : HttpMessage> any(type: MessageType<M>):
+        Kind2<ForSimpleLens, M, Unit> =
         AnyLens()
 
-    override fun <M : HttpMessage> text(): Kind2<ForSimpleLens, M, String> =
+    override fun <M : HttpMessage> text(type: MessageType<M>):
+        Kind2<ForSimpleLens, M, String> =
         TextLens()
 
     override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.and(
@@ -124,14 +131,14 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
         failure: Kind2<ForSimpleLens, M, E>) =
         ResultMessageLens(success.fix(), failure.fix())
 
-    override fun status(status: Status) =
-        CheckStatusLens(status)
+    override fun <T> status(status: Status, rest: Kind2<ForSimpleLens, Response, T>) =
+        CheckStatusLens(status, rest.fix())
 
     override fun status() =
         StatusLens()
 
-    override fun method(method: Method) =
-        CheckMethodLens(method)
+    override fun <T> method(method: Method, rest: Kind2<ForSimpleLens, Request, T>) =
+        CheckMethodLens(method, rest.fix())
 
     override fun method() =
         MethodLens()
