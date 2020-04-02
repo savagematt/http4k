@@ -2,25 +2,21 @@ package org.http4k.typesafe.routing
 
 import com.natpryce.Result
 import com.natpryce.Success
-import com.natpryce.flatMap
-import com.natpryce.map
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
-import org.http4k.core.Status.Companion.OK
 
-data class ServerRoute<In, Out>(val route: Route<In, Out>, val handler: (In) -> Out) {
-    fun handle(request: Request): Result<Response, RoutingError> =
-        // try to extract handler parameter from request
-        route.request.get(request)
-            // pass the parameter to the handler function
-            .map(handler)
-            // inject the handler result into an empty Response
-            .flatMap { route.response.set(Response(OK), it) }
+interface RouteHandler<Route> {
+    fun handle(route: Route, request: Request): Result<Response, RoutingError>
 }
 
-class Router(val routes: List<ServerRoute<*, *>>) : HttpHandler {
+interface ServerRoute {
+    fun handle(request: Request): Result<Response, RoutingError>
+}
+
+class Router<Route : ServerRoute>(
+    val routes: List<Route>) : HttpHandler {
     fun route(request: Request): Response =
         routes
             // do this lazily so we only call routes until we reach a match
@@ -35,6 +31,3 @@ class Router(val routes: List<ServerRoute<*, *>>) : HttpHandler {
 
     override operator fun invoke(request: Request): Response = route(request)
 }
-
-fun router(routes: List<ServerRoute<*, *>>) =
-    Router(routes)

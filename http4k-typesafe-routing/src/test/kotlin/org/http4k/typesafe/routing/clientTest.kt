@@ -8,15 +8,17 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.messages.body.text
-import org.http4k.typesafe.routing.messages.but
-import org.http4k.typesafe.routing.requests.method
-import org.http4k.typesafe.routing.responses.status
+import org.http4k.typesafe.routing.Simple.but
+import org.http4k.typesafe.routing.Simple.consume
+import org.http4k.typesafe.routing.Simple.method
+import org.http4k.typesafe.routing.Simple.route
+import org.http4k.typesafe.routing.Simple.status
+import org.http4k.typesafe.routing.Simple.text
 import org.junit.jupiter.api.Test
 
 @Suppress("MemberVisibilityCanBePrivate")
 class ClientTest {
-    val get = Route(
+    val get = route(
         method(GET) but text(),
         status(OK) but text())
 
@@ -27,7 +29,7 @@ class ClientTest {
         }
     }
 
-    val client = get client server
+    val client = get consume server
 
     @Test
     fun `round trip works`() {

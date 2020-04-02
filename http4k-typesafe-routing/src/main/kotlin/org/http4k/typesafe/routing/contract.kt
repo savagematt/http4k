@@ -6,7 +6,8 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.lenses.PLens
+import org.http4k.typesafe.functional.Kind2
+import org.http4k.typesafe.functional.PolymorphicLens
 
 
 class RoutingErrorException(error: RoutingError) : Exception(error.message)
@@ -39,7 +40,12 @@ sealed class RoutingError {
     }
 }
 
-interface ResultLens<Source, Value, E> : PLens<Source, Result<Source, E>, Value, Result<Value, E>>
+/**
+ *
+ */
+interface ResultLens<Source, Value, E> : PolymorphicLens<
+    Source, Result<Source, E>,
+    Value, Result<Value, E>>
 
 interface MessageLens<M : HttpMessage, T> : ResultLens<M, T, RoutingError>
 
@@ -47,12 +53,7 @@ typealias RequestLens<T> = MessageLens<Request, T>
 
 typealias ResponseLens<T> = MessageLens<Response, T>
 
-data class Route<In, Out>(
-    val request: RequestLens<In>,
-    val response: ResponseLens<Out>
-)
-
-fun <In, Out> route(
-    request: RequestLens<In>,
-    response: ResponseLens<Out>) =
-    Route(request, response)
+interface Route<Lens, In, Out>  {
+    val request: Kind2<Lens, Request, In>
+    val response: Kind2<Lens, Response, Out>
+}

@@ -5,17 +5,20 @@ import com.natpryce.Success
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.messages.body.text
+import org.http4k.typesafe.routing.Simple.but
+import org.http4k.typesafe.routing.Simple.result
+import org.http4k.typesafe.routing.Simple.status
+import org.http4k.typesafe.routing.Simple.text
+import org.http4k.typesafe.routing.fix
 import org.http4k.typesafe.routing.messages.body.textPlain
-import org.http4k.typesafe.routing.responses.status
 import org.junit.jupiter.api.Test
 
 @Suppress("MemberVisibilityCanBePrivate")
 internal class ResultTest {
 
-    val lens: ResultMessageLens<Response, String, String> = result(
+    val lens = result(
         status(OK) but text(),
-        status(BAD_REQUEST) but text())
+        status(BAD_REQUEST) but text()).fix()
 
     @Test
     fun `works for failure`() {
