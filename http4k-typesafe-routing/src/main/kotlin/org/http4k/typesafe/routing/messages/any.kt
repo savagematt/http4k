@@ -8,8 +8,12 @@ class AnyLens<M : HttpMessage> : MessageLens<M, Unit> {
     override fun get(from: M) = Success(Unit)
 
     override fun set(into: M, value: Unit) = Success(into)
-
 }
 
+/**
+ * Always successfully gets or sets.
+ *
+ * Returns Unit, and does not modify the message when setting
+ */
 fun <M : HttpMessage> any() = AnyLens<M>()
 

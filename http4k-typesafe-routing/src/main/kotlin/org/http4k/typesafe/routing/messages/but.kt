@@ -18,5 +18,26 @@ class ButLens<M : HttpMessage, B>(
         unit.set(into, Unit).flatMap { lens.set(it, value) }
 }
 
+/**
+ * If I have:
+ *
+ * ```
+ * val method: RequestLens<Unit> = method(GET)
+ * val body: RequestLens<String> = text()
+ * ```
+ *
+ * When I combine them using `and`, I get:
+ *
+ * ```
+ * val requestLens: RequestLens<Pair<Unit,String>> = method and body
+ * ```
+ *
+ * But that is a bit clunky, because I don't care about the unit, just
+ * the string. So instead I can:
+ *
+ * ```
+ * val requestLens: RequestLens<String> = method but body
+ * ```
+ */
 infix fun <M : HttpMessage, B> MessageLens<M, Unit>.but(lens: MessageLens<M, B>) =
     ButLens(this, lens)
