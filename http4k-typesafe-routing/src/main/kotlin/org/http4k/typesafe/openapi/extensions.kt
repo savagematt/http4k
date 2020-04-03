@@ -73,3 +73,11 @@ fun OpenApiOperationInfo.method(f: (Method) -> Method) =
 
 fun OpenApiRouteInfo.method(f: (Method) -> Method) =
     this.copy(route = this.route.method(f))
+
+// path
+
+fun OpenApiOperationInfo.path(f: (String) -> String) =
+    this.copy(path = f(this.path))
+
+fun OpenApiRouteInfo.path(f: (String) -> String) =
+    this.copy(route = this.route.path(f))

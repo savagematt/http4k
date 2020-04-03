@@ -1,13 +1,12 @@
 package org.http4k.typesafe.routing
 
 import com.natpryce.Failure
-import com.natpryce.Result
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.functional.PolymorphicLens
+import org.http4k.typesafe.functional.ResultLens
 
 
 class RoutingErrorException(error: RoutingError) : Exception(error.message)
@@ -39,13 +38,6 @@ sealed class RoutingError {
         fun routeFailed(message: String, response: Response) = Failure(RouteFailed(message, response))
     }
 }
-
-/**
- *
- */
-interface ResultLens<Source, Value, E> : PolymorphicLens<
-    Source, Result<Source, E>,
-    Value, Result<Value, E>>
 
 interface MessageLens<M : HttpMessage, T> : ResultLens<M, T, RoutingError>
 
