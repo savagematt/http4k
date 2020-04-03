@@ -7,12 +7,79 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.typesafe.data.Tuple2
 import org.http4k.typesafe.functional.Kind2
-import kotlin.reflect.KClass
 
-sealed class MessageType<M : HttpMessage>(val clazz: KClass<M>) {
-    object request : MessageType<Request>(Request::class)
-    object response : MessageType<Response>(Response::class)
+interface MessageRouting<M : HttpMessage, TServerRoute, TRoute, TLens> {
+    /**
+     * Injects some text as the message body, and sets Content-Type to text/plain
+     *
+     * Extracts message body as a string, without checking Content-Type, because
+     * we want to be liberal in what we accept from others
+     * https://en.wikipedia.org/wiki/Robustness_principle
+     */
+    fun text():
+        Kind2<TLens, M, String>
+
+    /**
+     * Always successfully gets or sets.
+     *
+     * Returns Unit, and does not modify the message when setting
+     */
+    fun any():
+        Kind2<TLens, M, Unit>
+
+    /**
+     * Throws exceptions if it is ever used to get or set.
+     *
+     * It should logically exist, but it's not yet clear what it
+     * can be used for
+     */
+    fun nothing():
+        Kind2<TLens, M, Nothing>
+
+
+    fun replaceHeader(name: String):
+        Kind2<TLens, M, String?>
+}
+
+interface RequestRouting<TServerRoute, TRoute, TLens> : MessageRouting<Request, TServerRoute, TRoute, TLens> {
+
+    /**
+     * Matches any `Request` with the correct `method`, and returns the result
+     * of `next.get(Request)`
+     *
+     * Injects `method` into the result of `rest.set(Request, T)`
+     */
+    fun <T> method(method: Method, rest: Kind2<TLens, Request, T>):
+        Kind2<TLens, Request, T>
+
+    /**
+     * Matches any `Request` and extracts the `method`.
+     *
+     * Injects a given `method` in to `Request`.
+     */
+    fun method():
+        Kind2<TLens, Request, Method>
+}
+
+interface ResponseRouting<TServerRoute, TRoute, TLens> : MessageRouting<Response, TServerRoute, TRoute, TLens> {
+    /**
+     * Matches any `Response` with the correct `status`, and returns the result
+     * of `next.get(Response)`
+     *
+     * Injects status into the result of `rest.set(Response, T)`
+     */
+    fun <T> status(status: Status, rest: Kind2<TLens, Response, T>):
+        Kind2<TLens, Response, T>
+
+    /**
+     * Matches any `Response` and extracts the status.
+     *
+     * Injects a given status in to `Response`.
+     */
+    fun status():
+        Kind2<TLens, Response, Status>
 }
 
 /**
@@ -43,36 +110,9 @@ interface Routing<TServerRoute, TRoute, TLens> {
                         response: Kind2<TLens, Response, Out>):
         Kind2<TRoute, In, Out>
 
-    /**
-     * Injects some text as the message body, and sets Content-Type to text/plain
-     *
-     * Extracts message body as a string, without checking Content-Type, because
-     * we want to be liberal in what we accept from others
-     * https://en.wikipedia.org/wiki/Robustness_principle
-     */
-    fun <M : HttpMessage> text(type: MessageType<M>):
-        Kind2<TLens, M, String>
-
-    /**
-     * Always successfully gets or sets.
-     *
-     * Returns Unit, and does not modify the message when setting
-     */
-    fun <M : HttpMessage> any(type: MessageType<M>):
-        Kind2<TLens, M, Unit>
-
-    /**
-     * Throws exceptions if it is ever used to get or set.
-     *
-     * It should logically exist, but it's not yet clear what it
-     * can be used for
-     */
-    fun <M : HttpMessage> nothing(type: MessageType<M>):
-        Kind2<TLens, M, Nothing>
-
 
     infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.and(other: Kind2<TLens, M, B>):
-        Kind2<TLens, M, Pair<A, B>>
+        Kind2<TLens, M, Tuple2<A, B>>
 
     /**
      * If I have:
@@ -101,37 +141,6 @@ interface Routing<TServerRoute, TRoute, TLens> {
     fun <M : HttpMessage, T, E> result(success: Kind2<TLens, M, T>, failure: Kind2<TLens, M, E>):
         Kind2<TLens, M, Result<T, E>>
 
-    /**
-     * Matches any `Response` with the correct `status`, and returns the result
-     * of `next.get(Response)`
-     *
-     * Injects status into the result of `rest.set(Response, T)`
-     */
-    fun <T> status(status: Status, rest: Kind2<TLens, Response, T>):
-        Kind2<TLens, Response, T>
-
-    /**
-     * Matches any `Response` and extracts the status.
-     *
-     * Injects a given status in to `Response`.
-     */
-    fun status():
-        Kind2<TLens, Response, Status>
-
-    /**
-     * Matches any `Request` with the correct `method`, and returns the result
-     * of `next.get(Request)`
-     *
-     * Injects `method` into the result of `rest.set(Request, T)`
-     */
-    fun <T> method(method: Method, rest: Kind2<TLens, Request, T>):
-        Kind2<TLens, Request, T>
-
-    /**
-     * Matches any `Request` and extracts the `method`.
-     *
-     * Injects a given `method` in to `Request`.
-     */
-    fun method():
-        Kind2<TLens, Request, Method>
+    val response: ResponseRouting<TServerRoute, TRoute, TLens>
+    val request: RequestRouting<TServerRoute, TRoute, TLens>
 }

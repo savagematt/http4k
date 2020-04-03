@@ -8,19 +8,19 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.Simple.but
 import org.http4k.typesafe.routing.Simple.consume
-import org.http4k.typesafe.routing.Simple.method
+import org.http4k.typesafe.routing.Simple.request
+import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.route
-import org.http4k.typesafe.routing.Simple.status
-import org.http4k.typesafe.routing.Simple.text
+import org.http4k.typesafe.routing.SimpleRequestRouting.method
+import org.http4k.typesafe.routing.SimpleResponseRouting.status
 import org.junit.jupiter.api.Test
 
 @Suppress("MemberVisibilityCanBePrivate")
 class ClientTest {
     val get = route(
-        method(GET, text(MessageType.request)),
-        status(OK, text(MessageType.response)))
+        method(GET, request.text()),
+        status(OK, response.text()))
 
     val server = { request: Request ->
         when (request.bodyString()) {

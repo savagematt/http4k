@@ -9,13 +9,11 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.routing.MessageType.request
-import org.http4k.typesafe.routing.MessageType.response
-import org.http4k.typesafe.routing.Simple.any
-import org.http4k.typesafe.routing.Simple.method
+import org.http4k.typesafe.routing.Simple.request
+import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.route
 import org.http4k.typesafe.routing.Simple.serve
-import org.http4k.typesafe.routing.Simple.text
+import org.http4k.typesafe.routing.SimpleRequestRouting.method
 import org.junit.jupiter.api.Test
 
 class ServerBehaviour() {
@@ -28,12 +26,12 @@ class ServerBehaviour() {
 
 object Routes {
     val get: SimpleRoute<Unit, String> = route(
-        method(GET, any(request)),
-        text(response))
+        method(GET, request.any()),
+        response.text())
 
     val post: SimpleRoute<String, String> = route(
-        method(POST, text(request)),
-        text(response))
+        method(POST, request.text()),
+        response.text())
 }
 
 @Suppress("MemberVisibilityCanBePrivate")

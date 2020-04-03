@@ -11,16 +11,9 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ButLens
-import org.http4k.typesafe.routing.messages.NothingLens
-import org.http4k.typesafe.routing.messages.PairLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
-import org.http4k.typesafe.routing.messages.body.TextLens
-import org.http4k.typesafe.routing.requests.CheckMethodLens
-import org.http4k.typesafe.routing.requests.MethodLens
-import org.http4k.typesafe.routing.responses.CheckStatusLens
-import org.http4k.typesafe.routing.responses.StatusLens
+import org.http4k.typesafe.routing.messages.Tuple2Lens
 
 /*
 Lenses
@@ -87,11 +80,6 @@ data class SimpleServerRoute<In, Out>(
             .flatMap { route.response.set(Response(Status.OK), it) }
 }
 
-/*
-Grammar
-------------------------------------------------------------------
- */
-
 object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
     override fun <In, Out> route(request: Kind2<ForSimpleLens, Request, In>,
                                  response: Kind2<ForSimpleLens, Response, Out>) =
@@ -111,20 +99,9 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
         }
     }
 
-    override fun <M : HttpMessage> any(type: MessageType<M>):
-        Kind2<ForSimpleLens, M, Unit> =
-        AnyLens()
-
-    override fun <M : HttpMessage> nothing(type: MessageType<M>) =
-        NothingLens<M>()
-
-    override fun <M : HttpMessage> text(type: MessageType<M>):
-        Kind2<ForSimpleLens, M, String> =
-        TextLens()
-
     override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.and(
         other: Kind2<ForSimpleLens, M, B>) =
-        PairLens(this.fix(), other.fix())
+        Tuple2Lens(this.fix(), other.fix())
 
     override fun <M : HttpMessage, T> Kind2<ForSimpleLens, M, Unit>.but(
         other: Kind2<ForSimpleLens, M, T>) =
@@ -135,16 +112,6 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
         failure: Kind2<ForSimpleLens, M, E>) =
         ResultMessageLens(success.fix(), failure.fix())
 
-    override fun <T> status(status: Status, rest: Kind2<ForSimpleLens, Response, T>) =
-        CheckStatusLens(status, rest.fix())
-
-    override fun status() =
-        StatusLens()
-
-    override fun <T> method(method: Method, rest: Kind2<ForSimpleLens, Request, T>) =
-        CheckMethodLens(method, rest.fix())
-
-    override fun method() =
-        MethodLens()
-
+    override val request = SimpleRequestRouting
+    override val response = SimpleResponseRouting
 }

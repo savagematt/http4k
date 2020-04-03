@@ -8,10 +8,10 @@ import org.http4k.typesafe.routing.requests.paths.matchSuccess
  * Catches IllegalArgumentException from the mapping function and returns
  * failureMessage as a `Failure(NoMatch(reason))`
  */
-fun <A,B> mapper(f:(A)->B, failureMessage:String) = { match: Match<A> ->
+fun <A, B> mapper(f: (A) -> B, failureMessage: String) = { match: Match<A> ->
     try {
         matchSuccess(f(match.value), match.remaining)
-    } catch (e: IllegalArgumentException) {
+    } catch (e: Exception) {
         matchFailure(failureMessage)
     }
 }
