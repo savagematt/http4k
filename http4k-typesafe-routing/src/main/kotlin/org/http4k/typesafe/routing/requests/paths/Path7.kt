@@ -2,9 +2,7 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.flatMap
 import org.http4k.typesafe.data.Tuple7
-import org.http4k.typesafe.data.Tuple8
 import org.http4k.typesafe.data.tuple
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
 
 data class Path7<A, B, C, D, E, F, G>(
     val a: Path<A>,

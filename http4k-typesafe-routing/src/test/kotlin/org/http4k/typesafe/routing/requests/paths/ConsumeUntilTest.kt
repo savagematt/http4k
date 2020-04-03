@@ -2,8 +2,7 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchFailure
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
+
 import org.junit.jupiter.api.Test
 
 class ConsumeUntilTest {
@@ -24,7 +23,7 @@ class ConsumeUntilTest {
         assertThat(
             untilIndex(4).get("abc"),
             equalTo<PathResult<String>>(matchFailure(
-                "Cannot consume 4 characters from 3-character path", "abc"))
+                "Cannot consume 4 characters from 3-character path"))
         )
     }
 
@@ -33,7 +32,7 @@ class ConsumeUntilTest {
         assertThat(
             untilIndex(-1).get("abc"),
             equalTo<PathResult<String>>(matchFailure(
-                "Remaining path did not match", "abc"))
+                "Remaining path did not match"))
         )
     }
 

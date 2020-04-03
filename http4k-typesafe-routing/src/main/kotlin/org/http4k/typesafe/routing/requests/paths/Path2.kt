@@ -13,7 +13,7 @@ data class Path2<A, B>(
     override fun get(from: String): PathResult<Tuple2<A, B>> =
         a.get(from).flatMap { a ->
             b.get(a.remaining).flatMap { b ->
-                MatchResult.matchSuccess(tuple(a.value, b.value), b.remaining)
+                matchSuccess(tuple(a.value, b.value), b.remaining)
             }
         }
 

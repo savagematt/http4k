@@ -2,8 +2,8 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchFailure
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
+
+
 import org.junit.jupiter.api.Test
 
 class LiteralTest {
@@ -43,7 +43,7 @@ class LiteralTest {
             Literal("widgets").get("widgets-etc"),
             equalTo<PathResult<Unit>>(
                 matchFailure(
-                    "Path did not match whole contents up to /", "widgets-etc"))
+                    "Path did not match whole contents up to /"))
         )
     }
 

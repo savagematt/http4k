@@ -9,7 +9,7 @@ data class IgnoreSecond<T>(
     override fun get(from: String): PathResult<T> =
         first.get(from).flatMap { first ->
             second.get(first.remaining).map { second ->
-                MatchResult.Match(first.value, second.remaining)
+                Match(first.value, second.remaining)
             }
         }
 

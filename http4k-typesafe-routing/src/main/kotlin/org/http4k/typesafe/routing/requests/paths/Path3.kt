@@ -2,9 +2,7 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.flatMap
 import org.http4k.typesafe.data.Tuple3
-import org.http4k.typesafe.data.Tuple8
 import org.http4k.typesafe.data.tuple
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
 
 data class Path3<A, B, C>(
     val a: Path<A>,
@@ -17,7 +15,8 @@ data class Path3<A, B, C>(
         a.get(from).flatMap { a ->
             b.get(a.remaining).flatMap { b ->
                 c.get(b.remaining).flatMap { c ->
-                    matchSuccess(tuple(a.value, b.value, c.value), c.remaining)                }
+                    matchSuccess(tuple(a.value, b.value, c.value), c.remaining)
+                }
             }
         }
 

@@ -3,7 +3,6 @@ package org.http4k.typesafe.routing.requests.paths
 import com.natpryce.flatMap
 import org.http4k.typesafe.data.Tuple9
 import org.http4k.typesafe.data.tuple
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
 
 data class Path9<A, B, C, D, E, F, G, H, I>(
     val a: Path<A>,
@@ -16,7 +15,7 @@ data class Path9<A, B, C, D, E, F, G, H, I>(
     val h: Path<H>,
     val i: Path<I>
 ) : Path<Tuple9<A, B, C, D, E, F, G, H, I>> {
-    operator fun <T> div(next: Path<T>) = Path10(a,b,c,d,e,f,g,h,i, next)
+    operator fun <T> div(next: Path<T>) = Path10(a, b, c, d, e, f, g, h, i, next)
 
     override fun get(from: String): PathResult<Tuple9<A, B, C, D, E, F, G, H, I>> =
         a.get(from).flatMap { a ->
@@ -28,7 +27,8 @@ data class Path9<A, B, C, D, E, F, G, H, I>(
                                 g.get(f.remaining).flatMap { g ->
                                     h.get(g.remaining).flatMap { h ->
                                         i.get(h.remaining).flatMap { i ->
-                                            matchSuccess(tuple(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value), i.remaining)                                        }
+                                            matchSuccess(tuple(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value), i.remaining)
+                                        }
                                     }
                                 }
                             }

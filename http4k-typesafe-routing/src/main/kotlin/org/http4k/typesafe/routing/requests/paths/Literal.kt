@@ -1,8 +1,5 @@
 package org.http4k.typesafe.routing.requests.paths
 
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchFailure
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
-
 class Literal(expected: String) : Path<Unit> {
     private val expected = expected.replace(leading, "").replace(trailing, "")
 
@@ -11,12 +8,12 @@ class Literal(expected: String) : Path<Unit> {
         val noLeadingSlashes = from.substring(leadingSlashes.length)
 
         if (!noLeadingSlashes.startsWith(expected))
-            return matchFailure("Path did not start with '$expected'", noLeadingSlashes)
+            return matchFailure("Path did not start with '$expected'")
 
         val remaining = noLeadingSlashes.substring(expected.length)
 
         return if (remaining.isNotBlank() && !remaining.startsWith('/'))
-            matchFailure("Path did not match whole contents up to /", noLeadingSlashes)
+            matchFailure("Path did not match whole contents up to /")
         else
             matchSuccess(Unit, remaining)
 

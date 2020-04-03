@@ -18,7 +18,7 @@ class PathTest {
         assertThat(
             path.get("widgets/a-value"),
             equalTo<PathResult<String>>(
-                MatchResult.matchSuccess(
+                matchSuccess(
                     "a-value", ""))
         )
     }
@@ -32,7 +32,7 @@ class PathTest {
         assertThat(
             path.get("/a-value/widgets"),
             equalTo<PathResult<String>>(
-                MatchResult.matchSuccess(
+                matchSuccess(
                     "a-value", ""))
         )
     }
@@ -47,7 +47,7 @@ class PathTest {
         assertThat(
             path.get("/a-value/b-value"),
             equalTo<PathResult<Tuple2<String, String>>>(
-                MatchResult.matchSuccess(
+                matchSuccess(
                     tuple("a-value", "b-value"), ""))
         )
     }
@@ -63,7 +63,7 @@ class PathTest {
         assertThat(
             path.get("widgets/a-value/components/b-value/c-value"),
             equalTo<PathResult<Tuple3<String, String, String>>>(
-                MatchResult.matchSuccess(
+                matchSuccess(
                     tuple("a-value", "b-value", "c-value"), ""))
         )
     }
@@ -87,7 +87,7 @@ class PathTest {
         assertThat(
             path.get("a/b/c/d/e/f/g/h/i/j/remaining"),
             equalTo<PathResult<Tuple10<String, String, String, String, String, String, String, String, String, String>>>(
-                MatchResult.matchSuccess(
+                matchSuccess(
                     tuple("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"), "/remaining"))
         )
     }

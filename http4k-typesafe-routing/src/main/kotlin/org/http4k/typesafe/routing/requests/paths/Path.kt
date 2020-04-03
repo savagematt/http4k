@@ -5,15 +5,13 @@ import com.natpryce.Result
 import com.natpryce.Success
 import org.http4k.typesafe.functional.PolymorphicLens
 
-sealed class MatchResult<T> {
-    data class Match<T>(val value: T, val remaining: String) : MatchResult<T>()
-    data class NoMatch(val reason: String) : MatchResult<Nothing>()
-    companion object {
-        fun matchFailure(reason: String, remaining: String) = Failure(NoMatch(reason))
-        fun <T> matchSuccess(value: T, remaining: String) = Success(Match(value, remaining))
-    }
-}
-typealias PathResult<T> = Result<MatchResult.Match<T>, MatchResult.NoMatch>
+data class Match<T>(val value: T, val remaining: String)
+data class NoMatch(val reason: String)
+
+fun matchFailure(reason: String) = Failure(NoMatch(reason))
+fun <T> matchSuccess(value: T, remaining: String) = Success(Match(value, remaining))
+
+typealias PathResult<T> = Result<Match<T>, NoMatch>
 
 interface Path<T> : PolymorphicLens<String, String, T, PathResult<T>> {
     operator fun div(next: String) = this / Literal(next)
@@ -33,3 +31,17 @@ operator fun <A, B> Path<A>.div(next: Path<B>) = Path2(this, next)
 
 fun joinPaths(a: String, b: String) =
     a.replace(trailing, "") + "/" + b.replace(leading, "")
+
+fun <A, B> Path<A>.map(getter: (Match<A>) -> PathResult<B>,
+                       setter: (B) -> A) =
+    MappedPath(this, getter, setter)
+
+fun <A, B> Path<A>.map(getterSetter: Pair<(A) -> B, (B) -> A>) =
+    this.map(
+        { match ->
+            matchSuccess(
+                getterSetter.first(match.value),
+                match.remaining)
+        },
+        getterSetter.second)
+

@@ -1,7 +1,5 @@
 package org.http4k.typesafe.routing.requests.paths
 
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchFailure
-import org.http4k.typesafe.routing.requests.paths.MatchResult.Companion.matchSuccess
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -22,11 +20,11 @@ class ConsumeUntil(val name: String, val index: (String) -> Int) : Path<String> 
 
         return when {
             i < 0 ->
-                matchFailure("Remaining path did not match", noLeadingSlashes)
+                matchFailure("Remaining path did not match")
 
             // TODO: can we improve on this message?
             i > noLeadingSlashes.length ->
-                matchFailure("Cannot consume $i characters from ${noLeadingSlashes.length}-character path", noLeadingSlashes)
+                matchFailure("Cannot consume $i characters from ${noLeadingSlashes.length}-character path")
 
             else -> matchSuccess(
                 URLDecoder.decode(noLeadingSlashes.substring(0, i), "utf8"),
