@@ -1,0 +1,12 @@
+description = 'Fully typesafe bi-directional http routing (can be used client- and server- side)'
+
+dependencies {
+    provided Libs.kotlin_stdlib_jdk8
+
+    provided Libs.result4k
+
+    provided project(":http4k-core")
+    compile project(":http4k-typesafe")
+
+    testCompile Config.TestDependencies
+}
