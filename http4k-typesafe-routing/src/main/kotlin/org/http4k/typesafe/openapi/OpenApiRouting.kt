@@ -134,8 +134,11 @@ object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenA
         }
     }
 
-    override fun <M : HttpMessage> any(type: MessageType<M>): Kind2<ForOpenApiLens, M, Unit> =
+    override fun <M : HttpMessage> any(type: MessageType<M>) =
         Simple.any(type).fix().asOpenApi()
+
+    override fun <M : HttpMessage> nothing(type: MessageType<M>) =
+        Simple.nothing(type).fix().asOpenApi()
 
     override fun <M : HttpMessage> text(type: MessageType<M>):
         Kind2<ForOpenApiLens, M, String> =

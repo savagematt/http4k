@@ -55,5 +55,15 @@ package org.http4k.typesafe.functional
  * a routing layer over http4k using the full power of arrow, but this
  * won't be it.
  */
+interface Kind<F, A>
+
 interface Kind2<F, A, B>
+interface Kind3<F, A, B, C>
+interface Kind4<F_, A, B, C, D>
+interface Kind5<F_, A, B, C, D, E>
+interface Kind6<F_, A, B, C, D, E, F>
+interface Kind7<F_, A, B, C, D, E, F, G>
+interface Kind8<F_, A, B, C, D, E, F, G, H>
+interface Kind9<F_, A, B, C, D, E, F, G, H, I>
+interface Kind10<F_, A, B, C, D, E, F, G, H, I, J>
 

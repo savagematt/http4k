@@ -61,6 +61,15 @@ interface Routing<TServerRoute, TRoute, TLens> {
     fun <M : HttpMessage> any(type: MessageType<M>):
         Kind2<TLens, M, Unit>
 
+    /**
+     * Throws exceptions if it is ever used to get or set.
+     *
+     * It should logically exist, but it's not yet clear what it
+     * can be used for
+     */
+    fun <M : HttpMessage> nothing(type: MessageType<M>):
+        Kind2<TLens, M, Nothing>
+
 
     infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.and(other: Kind2<TLens, M, B>):
         Kind2<TLens, M, Pair<A, B>>

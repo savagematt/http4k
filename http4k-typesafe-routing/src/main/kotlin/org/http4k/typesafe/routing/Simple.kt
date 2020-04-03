@@ -13,6 +13,7 @@ import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ButLens
+import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.PairLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
 import org.http4k.typesafe.routing.messages.body.TextLens
@@ -113,6 +114,9 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
     override fun <M : HttpMessage> any(type: MessageType<M>):
         Kind2<ForSimpleLens, M, Unit> =
         AnyLens()
+
+    override fun <M : HttpMessage> nothing(type: MessageType<M>) =
+        NothingLens<M>()
 
     override fun <M : HttpMessage> text(type: MessageType<M>):
         Kind2<ForSimpleLens, M, String> =
