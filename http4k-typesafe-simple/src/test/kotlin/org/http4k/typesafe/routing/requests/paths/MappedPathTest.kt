@@ -2,18 +2,18 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.routing.requests.paths.parsing.bigInteger
-import org.http4k.typesafe.routing.requests.paths.parsing.double
-import org.http4k.typesafe.routing.requests.paths.parsing.uuid
+import org.http4k.typesafe.routing.SimplePaths.bigInteger
+import org.http4k.typesafe.routing.SimplePaths.consume
+import org.http4k.typesafe.routing.SimplePaths.double
+import org.http4k.typesafe.routing.SimplePaths.uuid
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
 import java.util.*
 
 class MappedPathTest {
-
     @Test
     fun `can set path`() {
-        val widgetId = ConsumeUntil.nextSlash("id")
+        val widgetId = consume("id")
             .uuid()
 
         val path = "widgets" / widgetId
@@ -26,7 +26,7 @@ class MappedPathTest {
 
     @Test
     fun `can get path`() {
-        val widgetId = ConsumeUntil.nextSlash("id")
+        val widgetId = consume("id")
             .bigInteger()
 
         val path = "widgets" / widgetId
@@ -41,7 +41,7 @@ class MappedPathTest {
 
     @Test
     fun `reports failure instead of throwing exception`() {
-        val widgetId = ConsumeUntil.nextSlash("id")
+        val widgetId = consume("id")
             .double()
 
         val path = "widgets" / widgetId

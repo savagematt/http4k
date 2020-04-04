@@ -7,9 +7,9 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.routing.Simple.request
 import org.http4k.typesafe.routing.Simple.response
+import org.http4k.typesafe.routing.messages.fix
 import org.http4k.typesafe.routing.messages.requestContract
 import org.http4k.typesafe.routing.messages.responseContract
-import org.http4k.typesafe.routing.simple.fix
 import org.junit.jupiter.api.Test
 
 

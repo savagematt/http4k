@@ -3,16 +3,14 @@ package org.http4k.typesafe.routing.requests.paths
 import java.net.URLDecoder
 import java.net.URLEncoder
 
-class ConsumeUntil(val name: String, val index: (String) -> Int) : Path<String> {
-    companion object {
-        fun nextSlash(name: String) = ConsumeUntil(name)
-        {
-            it.indexOf('/').let { i ->
-                if (i < 0) it.length else i
-            }
-        }
+typealias IndexInString = (String) -> Int
+
+fun nextSlash(path: String) =
+    path.indexOf('/').let { i ->
+        if (i < 0) path.length else i
     }
 
+class ConsumeUntil(val name: String, val index: IndexInString) : SimplePath<String> {
     override fun get(from: String): PathResult<String> {
         val leadingSlashes = leading.find(from)?.value ?: ""
         val noLeadingSlashes = from.substring(leadingSlashes.length)

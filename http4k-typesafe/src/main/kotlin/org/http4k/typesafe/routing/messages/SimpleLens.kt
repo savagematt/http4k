@@ -1,4 +1,4 @@
-package org.http4k.typesafe.routing.simple
+package org.http4k.typesafe.routing.messages
 
 import org.http4k.core.HttpMessage
 import org.http4k.typesafe.functional.Kind2

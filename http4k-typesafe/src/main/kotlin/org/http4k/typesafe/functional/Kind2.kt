@@ -2,17 +2,22 @@ package org.http4k.typesafe.functional
 
 
 /**
- * See: https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds
+ * If you have an instance of Kind and you need it to be something else,
+ * you probably want to call the fix() extension method.
  *
  * The easiest way to think about higher-kinded types is that:
  *
- * `Kind2<F, A, B>` is to `SimpleLens<A, B>`
+ * `Kind2<F, A, B>` is to
  *
- * as
+ * - `SimpleLens<A, B>`
+ * - or `Pair<A,B>` or `Map<A, B>`
  *
- * `(a: String, b: Int) -> String` is to `{ a: String, b: Int -> "$a$b" }`
+ * as `(a: String, b: Int) -> String` is to
  *
- * `SimpleLens<A, B>` is an example of `Kind2<F, A, B>`, as is `Map<A, B>`.
+ * - `{ a: String, b: Int -> "$a : $b" }`
+ * - or `{ a: String, b: Int -> a.repeat(b) }`
+ *
+ * See: https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds
  *
  * We use higher-kinded types to allow us to add arbitrary functionality
  * to `MessageLens`. The immediate example is that we want openapi support
@@ -38,8 +43,8 @@ package org.http4k.typesafe.functional
  * make typesafe routing as approachable as possible. We want to introduce
  * the bare minimum of concepts required to make it work. But a type class
  * is obviously the correct way to support a standard set of operations
- * over a bunch of different implementations of lenses.
- *
+ * over a bunch of different implementations of lenses. As long as it isn't
+ * _too_ confusing.
  *
  * We're reimplementing functional concepts rather than depending on arrow.
  *
@@ -56,4 +61,7 @@ package org.http4k.typesafe.functional
  * won't be it.
  */
 @Suppress("KDocUnresolvedReference")
+interface Kind<F, A>
+
+/** @see [org.http4k.typesafe.functional.Kind] */
 interface Kind2<F, A, B>

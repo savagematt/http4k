@@ -5,7 +5,6 @@ import com.natpryce.flatMap
 import org.http4k.core.HttpMessage
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
-import org.http4k.typesafe.routing.simple.SimpleLens
 
 /**
  * @see [org.http4k.typesafe.routing.Routing.but]

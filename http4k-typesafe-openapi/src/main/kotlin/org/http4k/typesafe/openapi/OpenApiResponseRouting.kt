@@ -7,7 +7,7 @@ import org.http4k.typesafe.routing.ResponseRouting
 import org.http4k.typesafe.routing.responses.CheckStatusLens
 import org.http4k.typesafe.routing.responses.StatusLens
 
-object OpenApiResponseRouting : OpenApiMessageRouting<Response>(Response::class), ResponseRouting<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenApiLens> {
+object OpenApiResponseRouting : OpenApiMessageRouting<Response>(Response::class), ResponseRouting<ForOpenApiLens> {
     override fun <T> status(status: Status, rest: Kind2<ForOpenApiLens, Response, T>): OpenApiLens<Response, T> {
         val restLens = rest.fix()
         return CheckStatusLens(status, restLens).asOpenApi {

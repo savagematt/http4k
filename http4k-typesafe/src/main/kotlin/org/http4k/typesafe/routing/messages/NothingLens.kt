@@ -1,7 +1,6 @@
 package org.http4k.typesafe.routing.messages
 
 import org.http4k.core.HttpMessage
-import org.http4k.typesafe.routing.simple.SimpleLens
 
 /**
  * @see [org.http4k.typesafe.routing.MessageRouting.nothing]

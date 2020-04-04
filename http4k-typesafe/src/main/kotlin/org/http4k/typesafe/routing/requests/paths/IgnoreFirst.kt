@@ -4,7 +4,7 @@ import com.natpryce.flatMap
 
 data class IgnoreFirst<T>(
     val first: Path<Unit>,
-    val second: Path<T>) : Path<T> {
+    val second: Path<T>) : SimplePath<T> {
     override fun get(from: String): PathResult<T> =
         first.get(from).flatMap {
             second.get(it.remaining)

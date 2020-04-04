@@ -11,7 +11,7 @@ data class Path6<A, B, C, D, E, F>(
     val d: Path<D>,
     val e: Path<E>,
     val f: Path<F>
-) : Path<Tuple6<A, B, C, D, E, F>> {
+) : SimplePath<Tuple6<A, B, C, D, E, F>> {
     operator fun <T> div(next: Path<T>) = Path7(a, b, c, d, e, f, next)
 
     override fun get(from: String): PathResult<Tuple6<A, B, C, D, E, F>> =

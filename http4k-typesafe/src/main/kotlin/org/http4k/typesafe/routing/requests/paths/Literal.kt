@@ -1,6 +1,6 @@
 package org.http4k.typesafe.routing.requests.paths
 
-class Literal(expected: String) : Path<Unit> {
+class Literal(expected: String) : SimplePath<Unit> {
     private val expected = expected.replace(leading, "").replace(trailing, "")
 
     override fun get(from: String): PathResult<Unit> {

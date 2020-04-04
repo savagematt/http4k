@@ -6,7 +6,6 @@ import org.http4k.core.HttpMessage
 import org.http4k.typesafe.data.Tuple4
 import org.http4k.typesafe.data.tuple
 import org.http4k.typesafe.routing.MessageLens
-import org.http4k.typesafe.routing.simple.SimpleLens
 
 class Tuple4Lens<M : HttpMessage, A, B, C, D>(
     val a: MessageLens<M, A>,

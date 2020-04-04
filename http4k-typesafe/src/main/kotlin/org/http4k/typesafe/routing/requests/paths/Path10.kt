@@ -15,7 +15,7 @@ data class Path10<A, B, C, D, E, F, G, H, I, J>(
     val h: Path<H>,
     val i: Path<I>,
     val j: Path<J>
-) : Path<Tuple10<A, B, C, D, E, F, G, H, I, J>> {
+) : SimplePath<Tuple10<A, B, C, D, E, F, G, H, I, J>> {
     override fun get(from: String): PathResult<Tuple10<A, B, C, D, E, F, G, H, I, J>> =
         a.get(from).flatMap { a ->
             b.get(a.remaining).flatMap { b ->

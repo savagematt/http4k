@@ -5,7 +5,7 @@ import org.http4k.core.ContentType.Companion.TEXT_PLAIN
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.typesafe.routing.simple.SimpleLens
+import org.http4k.typesafe.routing.messages.SimpleLens
 
 /**
  * @see [org.http4k.typesafe.routing.MessageRouting.text]

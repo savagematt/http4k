@@ -6,7 +6,7 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
-import org.http4k.typesafe.routing.simple.SimpleLens
+import org.http4k.typesafe.routing.messages.SimpleLens
 
 /**
  * @see [org.http4k.typesafe.routing.RequestRouting.method]

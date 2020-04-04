@@ -2,6 +2,7 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import org.http4k.typesafe.routing.SimplePaths.consume
 
 import org.junit.jupiter.api.Test
 
@@ -39,7 +40,7 @@ class ConsumeUntilTest {
     @Test
     fun `strips leading slashes`() {
         assertThat(
-            ConsumeUntil.nextSlash("name").get("////abc/def"),
+            consume("name").get("////abc/def"),
             equalTo<PathResult<String>>(matchSuccess(
                 "abc", "/def"))
         )
@@ -61,5 +62,4 @@ class ConsumeUntilTest {
             equalTo("existing/path/a+b")
         )
     }
-
 }

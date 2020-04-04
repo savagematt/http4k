@@ -11,6 +11,7 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
+import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.Routing
@@ -19,7 +20,37 @@ import org.http4k.typesafe.routing.ServerRoute
 import org.http4k.typesafe.routing.messages.ButLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
 import org.http4k.typesafe.routing.messages.Tuple2Lens
+import org.http4k.typesafe.routing.requests.paths.Path
 import kotlin.reflect.KClass
+
+/*
+Path
+------------------------------------------------------------------
+ */
+
+/** @see [org.http4k.typesafe.functional.Kind2]
+ *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
+class ForOpenApiPath private constructor() {
+    companion object
+}
+
+/** @see [org.http4k.typesafe.functional.Kind2]
+ *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
+fun <T> Kind<ForOpenApiPath, T>.fix() = this as OpenApiPath<T>
+
+interface IOpenApiPath<T> : Path<T>, Kind<ForOpenApiPath, T>
+
+open class OpenApiPath<T>(
+    private val delegate: Path<T>,
+    private val documenter: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) :
+    Path<T> by delegate,
+    Documentable<OpenApiRouteInfo>,
+    Kind<ForOpenApiPath, T> {
+
+    override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
+        documenter(doc)
+
+}
 
 /*
 Lenses
@@ -111,7 +142,7 @@ data class OpenApiServerRoute<In, Out>(
             .flatMap { route.response.set(Response(OK), it) }
 }
 
-object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenApiLens> {
+object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenApiLens, ForOpenApiPath> {
     override fun <In, Out> route(
         request: Kind2<ForOpenApiLens, Request, In>,
         response: Kind2<ForOpenApiLens, Response, Out>) =
@@ -149,6 +180,7 @@ object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenA
         ResultMessageLens(success.fix(), failure.fix())
             .asOpenApi(fold(success.fix(), failure.fix()))
 
+    override val path = OpenApiPaths
     override val request = OpenApiRequestRouting
     override val response = OpenApiResponseRouting
 }

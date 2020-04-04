@@ -9,7 +9,7 @@ import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.body.TextLens
 import kotlin.reflect.KClass
 
-open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) : MessageRouting<M, ForOpenApiServerRoute, ForOpenApiRoute, ForOpenApiLens> {
+open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) : MessageRouting<M, ForOpenApiLens> {
     override fun any() =
         AnyLens<M>().asOpenApi()
 

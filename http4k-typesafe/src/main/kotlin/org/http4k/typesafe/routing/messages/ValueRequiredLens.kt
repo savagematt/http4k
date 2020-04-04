@@ -6,7 +6,6 @@ import com.natpryce.flatMap
 import org.http4k.core.HttpMessage
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
-import org.http4k.typesafe.routing.simple.SimpleLens
 
 class RequiredLens<M : HttpMessage, T>(
     val opt: MessageLens<M, T?>,

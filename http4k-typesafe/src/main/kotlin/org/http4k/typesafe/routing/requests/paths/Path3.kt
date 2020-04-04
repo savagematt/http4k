@@ -8,7 +8,7 @@ data class Path3<A, B, C>(
     val a: Path<A>,
     val b: Path<B>,
     val c: Path<C>
-) : Path<Tuple3<A, B, C>> {
+) : SimplePath<Tuple3<A, B, C>> {
     operator fun <T> div(next: Path<T>) = Path4(a, b, c, next)
 
     override fun get(from: String): PathResult<Tuple3<A, B, C>> =

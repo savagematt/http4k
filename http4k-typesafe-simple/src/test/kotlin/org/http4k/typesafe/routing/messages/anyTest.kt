@@ -6,7 +6,6 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.routing.Simple.request
 import org.http4k.typesafe.routing.Simple.response
-import org.http4k.typesafe.routing.simple.fix
 import org.junit.jupiter.api.Test
 
 internal class AnyTest {

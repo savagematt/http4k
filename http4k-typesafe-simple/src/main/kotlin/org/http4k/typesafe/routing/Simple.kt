@@ -12,11 +12,12 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.messages.ButLens
+import org.http4k.typesafe.routing.messages.ForSimpleLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
+import org.http4k.typesafe.routing.messages.SimpleLens
 import org.http4k.typesafe.routing.messages.Tuple2Lens
-import org.http4k.typesafe.routing.simple.ForSimpleLens
-import org.http4k.typesafe.routing.simple.SimpleLens
-import org.http4k.typesafe.routing.simple.fix
+import org.http4k.typesafe.routing.messages.fix
+import org.http4k.typesafe.routing.requests.paths.ForSimplePath
 
 /*
 Routes
@@ -66,7 +67,7 @@ data class SimpleServerRoute<In, Out>(
             .flatMap { route.response.set(Response(Status.OK), it) }
 }
 
-object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
+object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens, ForSimplePath> {
     override fun <In, Out> route(request: Kind2<ForSimpleLens, Request, In>,
                                  response: Kind2<ForSimpleLens, Response, Out>) =
         SimpleRoute(request.fix(), response.fix())
@@ -98,6 +99,7 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens> {
         failure: Kind2<ForSimpleLens, M, E>) =
         ResultMessageLens(success.fix(), failure.fix())
 
+    override val path = SimplePaths
     override val request = SimpleRequestRouting
     override val response = SimpleResponseRouting
 }
