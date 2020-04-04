@@ -1,7 +1,6 @@
 package org.http4k.typesafe.openapi
 
 import org.http4k.typesafe.functional.Kind
-import org.http4k.typesafe.openapi.paths.OpenApiPath2
 import org.http4k.typesafe.routing.Paths
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
 import org.http4k.typesafe.routing.requests.paths.IgnoreSecond

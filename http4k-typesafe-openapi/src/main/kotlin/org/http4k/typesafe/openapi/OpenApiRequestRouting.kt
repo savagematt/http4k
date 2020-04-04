@@ -15,24 +15,28 @@ object OpenApiRequestRouting :
     RequestRouting<ForOpenApiLens, ForOpenApiPath> {
 
     override fun <T> path(path: Kind<ForOpenApiPath, T>) =
-        PathLens(path.fix()).asOpenApi()
+        PathLens(path.fix())
+            .asOpenApi()
 
     override fun <T> Method.bind(
         path: Kind<ForOpenApiPath, T>) =
         method(
             this,
-            PathLens(path.fix()).asOpenApi())
+            PathLens(path.fix())
+                .asOpenApi())
 
     override fun Method.bind(
         path: String) =
-        this.bind(Literal(path).asOpenApi())
+        this.bind(Literal(path)
+            .asOpenApi())
 
     override fun <T> method(method: Method, rest: Kind2<ForOpenApiLens, Request, T>) =
-        CheckMethodLens(method, rest.fix()).asOpenApi {
-            rest.fix().document(it).let { info ->
-                info.method { method }
+        CheckMethodLens(method, rest.fix())
+            .asOpenApi {
+                rest.fix().document(it).let { info ->
+                    info.method { method }
+                }
             }
-        }
 
     override fun method() =
         MethodLens().asOpenApi()

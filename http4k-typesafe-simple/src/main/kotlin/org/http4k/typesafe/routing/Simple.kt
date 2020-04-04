@@ -34,9 +34,11 @@ class ForSimpleRoute private constructor() {
 fun <In, Out> Kind2<ForSimpleRoute, In, Out>.fix() = this as SimpleRoute<In, Out>
 
 data class SimpleRoute<In, Out>(
-    val request: SimpleLens<Request, In>,
-    val response: SimpleLens<Response, Out>) : Kind2<ForSimpleRoute, In, Out>
-
+    override val request: SimpleLens<Request, In>,
+    override val response: SimpleLens<Response, Out>) :
+    Kind2<ForSimpleRoute, In, Out>,
+    Route<In, Out, SimpleLens<Request, In>, SimpleLens<Response, Out>> {
+}
 
 /*
 Server Route

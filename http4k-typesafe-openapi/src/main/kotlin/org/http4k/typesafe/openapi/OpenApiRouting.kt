@@ -14,6 +14,7 @@ import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.MessageLens
+import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.Routing
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
@@ -97,10 +98,12 @@ class ForOpenApiRoute private constructor() {
 fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.fix() = this as OpenApiRoute<In, Out>
 
 data class OpenApiRoute<In, Out>(
-    val request: OpenApiLens<Request, In>,
-    val response: OpenApiLens<Response, Out>,
+    override val request: OpenApiLens<Request, In>,
+    override val response: OpenApiLens<Response, Out>,
     val extraDocs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it })
-    : Documentable<OpenApiRouteInfo>, Kind2<ForOpenApiRoute, In, Out> {
+    : Kind2<ForOpenApiRoute, In, Out>,
+    Route<In, Out, OpenApiLens<Request, In>, OpenApiLens<Response, Out>>,
+    Documentable<OpenApiRouteInfo> {
 
     override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
         extraDocs(response.document(request.document(doc)))

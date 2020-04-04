@@ -5,7 +5,6 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.functional.ResultLens
 
 
@@ -45,7 +44,7 @@ typealias RequestLens<T> = MessageLens<Request, T>
 
 typealias ResponseLens<T> = MessageLens<Response, T>
 
-interface Route<Lens, In, Out>  {
-    val request: Kind2<Lens, Request, In>
-    val response: Kind2<Lens, Response, Out>
+interface Route<In, Out, TReqLens : RequestLens<In>, TResLens : ResponseLens<Out>>  {
+    val request: TReqLens
+    val response: TResLens
 }
