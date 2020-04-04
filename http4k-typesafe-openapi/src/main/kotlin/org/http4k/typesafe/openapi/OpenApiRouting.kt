@@ -39,8 +39,6 @@ class ForOpenApiPath private constructor() {
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 fun <T> Kind<ForOpenApiPath, T>.fix() = this as OpenApiPath<T>
 
-interface IOpenApiPath<T> : Path<T>, Kind<ForOpenApiPath, T>
-
 open class OpenApiPath<T>(
     private val delegate: Path<T>,
     private val documenter: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) :

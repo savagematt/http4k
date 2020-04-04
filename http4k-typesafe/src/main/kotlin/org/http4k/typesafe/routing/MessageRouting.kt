@@ -33,4 +33,13 @@ interface MessageRouting<M : HttpMessage, TLens> {
 
     fun replaceHeader(name: String):
         Kind2<TLens, M, String?>
+
+    fun appendHeader(name: String):
+        Kind2<TLens, M, String?>
+
+    fun replaceHeaders(name: String):
+        Kind2<TLens, M, List<String?>>
+
+    fun appendHeaders(name: String):
+        Kind2<TLens, M, List<String?>>
 }
