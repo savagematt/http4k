@@ -1,6 +1,5 @@
 package org.http4k.typesafe.data
 
-
 sealed class OneOf
 
 interface IOneOf<T> {
@@ -12,7 +11,6 @@ object OneOf0 : OneOf()
 sealed class OneOf1<A> : OneOf() {
     data class A<A>(override val value: A) : OneOf1<A>(), IOneOf<A>
 }
-
 
 sealed class OneOf2<A, B> : OneOf() {
     data class A<A, B>(override val value: A) : OneOf2<A, B>(), IOneOf<A>
@@ -35,7 +33,6 @@ sealed class OneOf4<A, B, C, D> : OneOf() {
     data class C<A, B, C, D>(override val value: C) : OneOf4<A, B, C, D>(), IOneOf<C>
 
     data class D<A, B, C, D>(override val value: D) : OneOf4<A, B, C, D>(), IOneOf<D>
-
 }
 
 sealed class OneOf5<A, B, C, D, E> : OneOf() {
@@ -62,7 +59,6 @@ sealed class OneOf6<A, B, C, D, E, F> : OneOf() {
     data class E<A, B, C, D, E, F>(override val value: E) : OneOf6<A, B, C, D, E, F>(), IOneOf<E>
 
     data class F<A, B, C, D, E, F>(override val value: F) : OneOf6<A, B, C, D, E, F>(), IOneOf<F>
-
 }
 
 sealed class OneOf7<A, B, C, D, E, F, G> : OneOf() {

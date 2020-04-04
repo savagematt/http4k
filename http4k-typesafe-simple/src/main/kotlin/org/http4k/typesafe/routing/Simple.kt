@@ -15,8 +15,8 @@ import org.http4k.typesafe.routing.messages.ButLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
 import org.http4k.typesafe.routing.messages.SimpleLens
-import org.http4k.typesafe.routing.messages.Tuple2Lens
 import org.http4k.typesafe.routing.messages.fix
+import org.http4k.typesafe.routing.messages.tuples.Tuple2Lens
 import org.http4k.typesafe.routing.requests.paths.ForSimplePath
 
 /*

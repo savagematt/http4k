@@ -1,4 +1,4 @@
-package org.http4k.typesafe.routing.messages
+package org.http4k.typesafe.routing.messages.tuples
 
 import com.natpryce.flatMap
 import com.natpryce.map
@@ -6,6 +6,7 @@ import org.http4k.core.HttpMessage
 import org.http4k.typesafe.data.Tuple10
 import org.http4k.typesafe.data.tuple
 import org.http4k.typesafe.routing.MessageLens
+import org.http4k.typesafe.routing.messages.SimpleLens
 
 class Tuple10Lens<M : HttpMessage, A, B, C,D,E,F,G,H,I,J>(
     val a: MessageLens<M, A>,
