@@ -3,12 +3,14 @@ package org.http4k.typesafe.openapi
 import org.http4k.core.HttpMessage
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.MessageRouting
+import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.HeaderAppendLens
 import org.http4k.typesafe.routing.messages.HeaderReplaceLens
 import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
 import org.http4k.typesafe.routing.messages.NothingLens
+import org.http4k.typesafe.routing.messages.RequiredLens
 import org.http4k.typesafe.routing.messages.body.TextLens
 import kotlin.reflect.KClass
 
@@ -35,4 +37,8 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
 
     override fun replaceHeaders(name: String) =
         HeadersReplaceLens<M>(name).asOpenApi()
+
+    override fun <T> Kind2<ForOpenApiLens, M, T?>.required(onFailure: () -> RoutingError) =
+        RequiredLens(this.fix(), onFailure)
+            .asOpenApi()
 }

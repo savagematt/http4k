@@ -20,7 +20,7 @@ import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
 import org.http4k.typesafe.routing.messages.ButLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
-import org.http4k.typesafe.routing.messages.Tuple2Lens
+import org.http4k.typesafe.routing.messages.tuples.Tuple2Lens
 import org.http4k.typesafe.routing.requests.paths.Path
 import kotlin.reflect.KClass
 

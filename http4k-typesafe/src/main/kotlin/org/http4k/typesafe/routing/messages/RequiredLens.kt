@@ -24,6 +24,3 @@ class RequiredLens<M : HttpMessage, T>(
     override fun set(into: M, value: T) =
         opt.set(into, value)
 }
-
-fun <M : HttpMessage, T> MessageLens<M, T?>.required(onFailure: () -> RoutingError) =
-    RequiredLens(this, onFailure)

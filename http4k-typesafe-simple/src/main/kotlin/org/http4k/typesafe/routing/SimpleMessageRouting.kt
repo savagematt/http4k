@@ -9,7 +9,9 @@ import org.http4k.typesafe.routing.messages.HeaderReplaceLens
 import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
 import org.http4k.typesafe.routing.messages.NothingLens
+import org.http4k.typesafe.routing.messages.RequiredLens
 import org.http4k.typesafe.routing.messages.body.TextLens
+import org.http4k.typesafe.routing.messages.fix
 
 /*
 Grammar
@@ -38,4 +40,7 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
 
     override fun replaceHeaders(name: String) =
         HeadersReplaceLens<M>(name)
+
+    override fun <T> Kind2<ForSimpleLens, M, T?>.required(onFailure: () -> RoutingError) =
+        RequiredLens(this.fix(), onFailure)
 }

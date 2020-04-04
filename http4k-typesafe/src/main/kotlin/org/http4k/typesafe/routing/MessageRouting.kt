@@ -42,4 +42,7 @@ interface MessageRouting<M : HttpMessage, TLens> {
 
     fun appendHeaders(name: String):
         Kind2<TLens, M, List<String?>>
+
+    fun <T> Kind2<TLens, M, T?>.required(onFailure: () -> RoutingError):
+        Kind2<TLens, M, T>
 }
