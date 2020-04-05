@@ -30,8 +30,11 @@ import org.http4k.util.json.JsonToJsonSchema
 
 inline fun <reified M : HttpMessage, NODE : Any> induceSchema(
     json: JsonLibAutoMarshallingJson<NODE>,
-    crossinline example: Json<NODE>.() -> NODE): Kind2<ForOpenApiLens, M, NODE> =
-    openApiJson(M::class, json).induceSchema(json, example)
+    schemaId: SchemaId? = null,
+    crossinline example: Json<NODE>.() -> NODE
+): Kind2<ForOpenApiLens, M, NODE> =
+    openApiJson(M::class, json).induceSchema(json, schemaId, example)
+
 
 /**
  * TODO: something has clearly gone wrong here
@@ -44,7 +47,7 @@ class Hack(val node: Any) : Renderable {
         } catch (e: ClassCastException) {
             throw ClassCastException(
                 "Sadly this ${node::class} cannot be rendered with ${json::class}. " +
-                "You need to use the same Json when defining your routes and rendering to openapi.")
+                    "You need to use the same Json when defining your routes and rendering to openapi.")
         }
     }
 
@@ -55,10 +58,11 @@ class Hack(val node: Any) : Renderable {
  */
 inline fun <reified M : HttpMessage, NODE : Any> Kind2<ForOpenApiLens, M, NODE>.induceSchema(
     json: JsonLibAutoMarshallingJson<NODE>,
+    schemaId: SchemaId? = null,
     crossinline example: Json<NODE>.() -> NODE): Kind2<ForOpenApiLens, M, NODE> {
 
     val node = json.example()
-    val schema = JsonToJsonSchema(json).toSchema(node)
+    val schema = JsonToJsonSchema(json).toSchema(node, schemaId?.value)
 
     val mediaType = APPLICATION_JSON to OpenApiMediaType(
         mapOf("example" to OpenApiBodyExample(

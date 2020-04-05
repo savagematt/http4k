@@ -118,6 +118,32 @@
           }
         }
       }
+    },
+    "/body_json_schema": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/someDefinitionId"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "anAnotherObject": {
+                        "aNullField": null,
+                        "aNumberField": 123
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -129,6 +155,15 @@
           "aNumberField": {
             "type": "integer",
             "example": 123
+          }
+        }
+      },
+      "someDefinitionId": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "anAnotherObject": {
+            "$ref": "#/components/schemas/object1089648089"
           }
         }
       }

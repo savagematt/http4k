@@ -75,13 +75,16 @@ class V3RendererTest {
                     obj("aNullField" to nullNode(),
                         "aNumberField" to number(123))
                 }
+            ),
+            route(
+                POST bind "/body_json_schema",
+                OK with induceSchema(json, SchemaId("someDefinitionId")) {
+                    obj("anAnotherObject" to obj(
+                        "aNullField" to nullNode(),
+                        "aNumberField" to number(123)))
+                }
             )
         )
-//            routes += "/body_json_schema" meta {
-//                receiving(json.body("json").toLens() to json {
-//                    obj("anAnotherObject" to obj("aNullField" to nullNode(), "aNumberField" to number(123)))
-//                }, "someDefinitionId")
-//            } bindContract POST to { Response(OK) }
 //            routes += "/body_json_list_schema" meta {
 //                receiving(json.body("json").toLens() to json {
 //                    array(obj("aNumberField" to number(123)))
