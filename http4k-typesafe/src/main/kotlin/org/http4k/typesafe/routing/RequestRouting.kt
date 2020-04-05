@@ -5,9 +5,11 @@ import com.natpryce.Success
 import org.http4k.core.Credentials
 import org.http4k.core.Method
 import org.http4k.core.Request
+import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
+import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 
 interface RequestRouting<TLens, TPath> : MessageRouting<Request, TLens> {
     fun <T> path(path: Kind<TPath, T>): Kind2<TLens, Request, T>
@@ -46,9 +48,11 @@ interface RequestRouting<TLens, TPath> : MessageRouting<Request, TLens> {
         Kind2<TLens, Request, String>
 }
 
-fun basicAuthValidator(validator: (Credentials) -> Boolean): (Credentials) -> Result<String, RoutingError> = {
+fun basicAuthValidator(realm:String, validator: (Credentials) -> Boolean): (Credentials) -> Result<String, RoutingError> = {
     if (validator(it))
         Success(it.user)
     else
-        RoutingError.routeFailed(Status.UNAUTHORIZED, "Invalid credentials")
+        routeFailed(
+            "Invalid credentials",
+            Response(Status.UNAUTHORIZED).header("WWW-Authenticate", "Basic Realm=\"$realm\""))
 }

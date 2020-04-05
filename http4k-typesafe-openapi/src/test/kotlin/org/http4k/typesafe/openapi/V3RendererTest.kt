@@ -95,7 +95,7 @@ class V3RendererTest {
             ),
             route(
                 POST bind "/basic_auth"
-                    but basicAuthServer(
+                    but basicAuthServer("realm",
                     basicAuthValidator {
                         it.password == "password"
                     }),
