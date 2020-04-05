@@ -95,8 +95,8 @@ class V3RendererTest {
             ),
             route(
                 POST bind "/basic_auth"
-                    but basicAuthServer("realm",
-                    basicAuthValidator {
+                    but basicAuthServer(
+                    basicAuthValidator("realm") {
                         it.password == "password"
                     }),
                 OK with induce(json) {
