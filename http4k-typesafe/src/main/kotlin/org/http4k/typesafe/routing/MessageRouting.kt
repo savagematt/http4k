@@ -1,6 +1,8 @@
 package org.http4k.typesafe.routing
 
 import org.http4k.core.HttpMessage
+import org.http4k.core.Response
+import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.typesafe.functional.Kind2
 
 interface MessageRouting<M : HttpMessage, TLens> {
@@ -49,6 +51,8 @@ interface MessageRouting<M : HttpMessage, TLens> {
     fun appendHeaders(name: String):
         Kind2<TLens, M, List<String?>>
 
-    fun <T> Kind2<TLens, M, T?>.required(onFailure: () -> RoutingError):
+    fun <T> Kind2<TLens, M, T?>.required(
+        onFailure: () -> RoutingError =
+            { RoutingError.RouteFailed("$this is required", Response(BAD_REQUEST)) }):
         Kind2<TLens, M, T>
 }

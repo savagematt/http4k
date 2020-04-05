@@ -41,9 +41,30 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
     override fun headers(name: String) =
         HeadersReplaceLens<M>(name).asOpenApi(addParameter(name))
 
-    override fun <T> Kind2<ForOpenApiLens, M, T?>.required(onFailure: () -> RoutingError) =
-        RequiredLens(this.fix(), onFailure)
-            .asOpenApi()
+    override fun <T> Kind2<ForOpenApiLens, M, T?>.required(onFailure: () -> RoutingError)
+        : Kind2<ForOpenApiLens, M, T> =
+        this.fix().let { lens ->
+            RequiredLens(lens, onFailure)
+                .asOpenApi {
+                    /**
+                     * We don't know what the previous lens is, so here we just make
+                     * everything it could possibly have added to our docs "required"
+                     */
+                    lens.document(it).let { info ->
+                        info.mapParameters { parameter ->
+                            when (parameter) {
+                                is Real -> Real(parameter.value.copy(required = true))
+                                else -> parameter
+                            }
+                        }.requestBody { requestBody ->
+                            when (requestBody) {
+                                is Real -> Real(requestBody.value.copy(required = true))
+                                else -> requestBody
+                            }
+                        }
+                    }
+                }
+        }
 }
 
 fun addParameter(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo {
