@@ -52,7 +52,7 @@ class MappedPathTest {
         assertThat(
             path.get("widgets/123456.789NOTADOUBLE"),
             equalTo<PathResult<Double>>(
-                matchFailure("Expected a valid double string"))
+                matchFailure("Expected a double"))
         )
     }
 }

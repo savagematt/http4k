@@ -68,6 +68,6 @@ interface Routing<TServerRoute, TRoute, TLens, TPath> {
         Kind2<TLens, M, Result<T, E>>
 
     val path: Paths<TPath>
-    val request: RequestRouting<TLens, TPath>
+    val request: RequestRouting<TLens,  TPath>
     val response: ResponseRouting<TLens>
 }

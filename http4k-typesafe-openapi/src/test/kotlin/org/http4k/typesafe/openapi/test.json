@@ -1,16 +1,17 @@
 {
+  "openapi": "3.0.3",
   "info": {
     "title": "My api",
     "version": "0.0"
   },
   "paths": {
     "/nometa": {
-      "GET": {
+      "get": {
         "responses": {}
       }
     },
     "/descriptions": {
-      "GET": {
+      "get": {
         "responses": {},
         "summary": "endpoint",
         "description": "some rambling description of what this thing actually does",
@@ -18,7 +19,7 @@
       }
     },
     "/paths/{firstName}/bertrand/{age}": {
-      "POST": {
+      "post": {
         "responses": {},
         "parameters": [
           {
@@ -35,7 +36,7 @@
       }
     },
     "/headers": {
-      "POST": {
+      "post": {
         "responses": {},
         "parameters": [
           {
@@ -59,28 +60,31 @@
       }
     },
     "/body_string": {
-      "POST": {
+      "post": {
         "responses": {
           "default": {
-            "description": "text",
+            "description": "body",
             "content": {
               "text/plain": {
-                "examples": {
-                  "text": {
-                    "externalValue": "some text"
-                  }
-                }
+                "examples": {}
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": false
-          }
-        ]
+        }
+      }
+    },
+    "/body_json_noschema": {
+      "post": {
+        "responses": {},
+        "requestBody": {
+          "description": "body",
+          "content": {
+            "application/json": {
+              "examples": {}
+            }
+          },
+          "required": true
+        }
       }
     }
   },

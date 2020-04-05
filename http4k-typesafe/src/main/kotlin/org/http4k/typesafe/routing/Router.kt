@@ -7,10 +7,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
 
-interface RouteHandler<Route> {
-    fun handle(route: Route, request: Request): Result<Response, RoutingError>
-}
-
 interface ServerRoute {
     fun handle(request: Request): Result<Response, RoutingError>
 }

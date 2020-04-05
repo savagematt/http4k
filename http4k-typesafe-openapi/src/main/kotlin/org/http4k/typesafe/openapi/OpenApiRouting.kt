@@ -4,7 +4,7 @@ import com.natpryce.Result
 import com.natpryce.flatMap
 import com.natpryce.map
 import com.natpryce.recover
-import org.http4k.core.ContentType.Companion.TEXT_PLAIN
+import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
 import org.http4k.core.HttpMessage
 import org.http4k.core.Method.GET
@@ -200,33 +200,4 @@ fun <D> fold(vararg documentables: Documentable<D>): (D) -> D = { doc ->
 fun <D> fold(document: D, vararg documentables: Documentable<D>): D = documentables.fold(document)
 { doc, documentable ->
     documentable.document(doc)
-}
-
-fun <M : HttpMessage> documentTextLens(clazz: KClass<M>): (OpenApiRouteInfo) -> OpenApiRouteInfo {
-    val header = OpenApiParameter(HEADER, "Content-Type", required = false)
-
-    val mediaType = OpenApiMediaType(
-        mapOf("text" to OpenApiBodyExample(OpenApiBodyExampleValue.Real("some text"))))
-
-    val mediaTypes =
-        mapOf(TEXT_PLAIN to mediaType)
-
-    return {
-        it.parameters { params ->
-            params + header.real<OpenApiParameter>()
-        }.let { info ->
-            when (clazz) {
-                Request::class ->
-                    info.requestBody {
-                        OpenApiRequestBody("text", mediaTypes).real()
-                    }
-                Response::class ->
-                    // TODO: what do we do if there are already responses?
-                    info.responses {
-                        OpenApiResponses(default = OpenApiResponse("text", mediaTypes).real())
-                    }
-                else -> throw IllegalArgumentException("$clazz was not a recognised HttpMessage type")
-            }
-        }
-    }
 }

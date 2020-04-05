@@ -1,6 +1,7 @@
 package org.http4k.typesafe.routing
 
 import org.http4k.core.HttpMessage
+import org.http4k.format.Json
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
@@ -10,6 +11,7 @@ import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
 import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.RequiredLens
+import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
 import org.http4k.typesafe.routing.messages.fix
 
@@ -28,6 +30,10 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
     override fun text():
         Kind2<ForSimpleLens, M, String> =
         TextLens()
+
+    override fun <NODE> json(json: Json<NODE>):
+        Kind2<ForSimpleLens, M, NODE> =
+        JsonLens(json)
 
     override fun header(name: String) =
         HeaderReplaceLens<M>(name)

@@ -10,12 +10,16 @@ import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.testing.Approver
 import org.http4k.testing.JsonApprovalTest
+import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.openapi.OpenApiPaths.boolean
 import org.http4k.typesafe.openapi.OpenApiPaths.consume
 import org.http4k.typesafe.openapi.OpenApiPaths.div
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.bind
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.header
+import org.http4k.typesafe.openapi.OpenApiRequestRouting.required
 import org.http4k.typesafe.openapi.OpenApiRouting.and
+import org.http4k.typesafe.openapi.OpenApiRouting.but
+import org.http4k.typesafe.openapi.OpenApiRouting.request
 import org.http4k.typesafe.openapi.OpenApiRouting.response
 import org.http4k.typesafe.openapi.OpenApiRouting.route
 import org.junit.jupiter.api.Test
@@ -23,6 +27,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(JsonApprovalTest::class)
 class V3RendererTest {
+    val json = ConfigurableJackson(KotlinModule().asConfigurable().customise())
+
     @Test
     fun `description`(approver: Approver) {
 
@@ -55,7 +61,12 @@ class V3RendererTest {
                 response.any()),
             route(
                 POST bind "/body_string",
-                response.text())
+                response.text()),
+            route(
+                POST bind "/body_json_noschema"
+                    but request.json(json),
+                response.any()
+            )
         )
 //            routes += "/body_json_noschema" meta {
 //                receiving(json.body("json").toLens())
@@ -162,8 +173,6 @@ class V3RendererTest {
 
     private fun document(routes: List<OpenApiRoute<*, *>>): String {
         val api = api(routes)
-
-        val json = ConfigurableJackson(KotlinModule().asConfigurable().customise())
 
         val renderer = V3Renderer(json, object : JsonRenderer<Any, JsonNode>, Json<JsonNode> by json {
             override fun render(value: Any): JsonNode =

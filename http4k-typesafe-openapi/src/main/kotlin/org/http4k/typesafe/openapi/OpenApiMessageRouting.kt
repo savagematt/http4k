@@ -1,8 +1,12 @@
 package org.http4k.typesafe.openapi
 
+import org.http4k.core.ContentType
+import org.http4k.core.ContentType.Companion.APPLICATION_JSON
+import org.http4k.core.ContentType.Companion.TEXT_PLAIN
 import org.http4k.core.HttpMessage
+import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.core.Status.Companion.BAD_REQUEST
+import org.http4k.format.Json
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.openapi.ParameterLocation.HEADER
 import org.http4k.typesafe.routing.MessageRouting
@@ -14,6 +18,7 @@ import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
 import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.RequiredLens
+import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
 import kotlin.reflect.KClass
 
@@ -27,7 +32,11 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
     override fun text():
         Kind2<ForOpenApiLens, M, String> =
         TextLens<M>()
-            .asOpenApi(documentTextLens(clazz))
+            .asOpenApi(documentBody(clazz, TEXT_PLAIN))
+
+    override fun <NODE> json(json: Json<NODE>):
+        Kind2<ForOpenApiLens, M, NODE> =
+        JsonLens<M, NODE>(json).asOpenApi(documentBody(clazz, APPLICATION_JSON))
 
     override fun header(name: String) =
         HeaderReplaceLens<M>(name).asOpenApi(addParameter(name))
@@ -77,28 +86,28 @@ fun addParameter(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo {
     }
 }
 
-fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T?>.required(): OpenApiLens<M, T> {
-    val lens: OpenApiLens<M, T?> = this.fix()
-    return RequiredLens(lens) { RoutingError.RouteFailed("$this is required", Response(BAD_REQUEST)) }
-        .asOpenApi {
-            /**
-             * We don't know what the previous lens is, so here we just make
-             * everything it could possibly have added to our docs "required"
-             */
-            lens.document(it).let { info ->
-                info.mapParameters { parameter ->
-                    when (parameter) {
-                        is Real -> Real(parameter.value.copy(required = true))
-                        else -> parameter
-                    }
-                }.requestBody { requestBody ->
-                    when (requestBody) {
-                        is Real -> Real(requestBody.value.copy(required = true))
-                        else -> requestBody
-                    }
+fun <M : HttpMessage> documentBody(clazz: KClass<M>, contentType: ContentType): (OpenApiRouteInfo) -> OpenApiRouteInfo {
+    val mediaType = OpenApiMediaType()
+
+    val mediaTypes = mapOf(contentType to mediaType)
+
+    return { info ->
+        when (clazz) {
+            Request::class ->
+                info.requestBody {
+                    OpenApiRequestBody(
+                        "body",
+                        mediaTypes,
+                        required = true).real()
                 }
-            }
+            Response::class ->
+                // TODO: what do we do if there are already responses?
+                info.responses {
+                    OpenApiResponses(default = OpenApiResponse("body", mediaTypes).real())
+                }
+            else -> throw IllegalArgumentException("$clazz was not a recognised HttpMessage type")
         }
+    }
 }
 
 fun api(routes: List<OpenApiRoute<*, *>>): OpenApiObject =
@@ -108,5 +117,8 @@ fun api(routes: List<OpenApiRoute<*, *>>): OpenApiObject =
         }
     }
 
-fun OpenApiLens<*, *>.document() =
-    this.document(OpenApiRouteInfo(OpenApiObject.empty, OpenApiOperationInfo.empty))
+fun <M : HttpMessage> Kind2<ForOpenApiLens, M, *>.document() =
+    this.fix().document(OpenApiRouteInfo.empty)
+
+fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.get(from: M) =
+    this.fix().get(from)

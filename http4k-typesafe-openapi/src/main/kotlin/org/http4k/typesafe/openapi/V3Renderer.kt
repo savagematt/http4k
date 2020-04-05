@@ -2,6 +2,7 @@ package org.http4k.typesafe.openapi
 
 import org.http4k.format.Json
 import org.http4k.typesafe.data.checkUnique
+import org.http4k.typesafe.json.JsonRenderer
 
 
 class V3Renderer<NODE>(
@@ -157,7 +158,7 @@ fun <NODE> V3Renderer<NODE>.paths(paths: List<OpenApiOperationInfo>): NODE {
 
     return obj(byPath.entries.toList()
         .map { (path, routes) ->
-            val methods = routes.map { route -> route.method.name to render(route) }
+            val methods = routes.map { route -> route.method.name.toLowerCase() to render(route) }
             path to obj(
                 methods.checkUnique({ it.first },
                     { method ->

@@ -1,6 +1,7 @@
 package org.http4k.typesafe.routing
 
 import com.natpryce.Failure
+import org.http4k.core.Body
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -43,6 +44,14 @@ interface MessageLens<M : HttpMessage, T> : ResultLens<M, T, RoutingError>
 typealias RequestLens<T> = MessageLens<Request, T>
 
 typealias ResponseLens<T> = MessageLens<Response, T>
+
+/**
+ * gets/gets T on a Body
+ *
+ * For the lens to get/set T from the body of an HttpMessage, please
+ * @see [org.http4k.typesafe.routing.messages.MessageBodyLens]
+ */
+typealias BodyLens<T> = ResultLens<Body, T, RoutingError>
 
 interface Route<In, Out, TReqLens : RequestLens<In>, TResLens : ResponseLens<Out>>  {
     val request: TReqLens

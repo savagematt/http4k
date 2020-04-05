@@ -23,13 +23,13 @@ class TextLens<M : HttpMessage> : SimpleLens<M, String> {
 }
 
 fun <M:HttpMessage> M.textPlain(body: String) =
-    this.header("Content-Type", TEXT_PLAIN.toHeaderValue())
+    this.replaceHeader("Content-Type", TEXT_PLAIN.toHeaderValue())
         .body(body)
 
 fun Response.textPlain(body: String) =
-    this.header("Content-Type", TEXT_PLAIN.toHeaderValue())
+    this.replaceHeader("Content-Type", TEXT_PLAIN.toHeaderValue())
         .body(body)
 
 fun Request.textPlain(body: String) =
-    this.header("Content-Type", TEXT_PLAIN.toHeaderValue())
+    this.replaceHeader("Content-Type", TEXT_PLAIN.toHeaderValue())
         .body(body)

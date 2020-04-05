@@ -6,7 +6,9 @@ import com.natpryce.hamkrest.equalTo
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Status.Companion.BAD_REQUEST
+import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.header
+import org.http4k.typesafe.openapi.OpenApiRequestRouting.required
 import org.http4k.typesafe.openapi.ParameterLocation.HEADER
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
@@ -44,11 +46,11 @@ class HeadersTest {
 
     @Test
     fun `required() routing message is ok`() {
-        val lens = header("X-My-Header").required()
+        val lens: Kind2<ForOpenApiLens, Request, String> = header("X-My-Header").required()
 
         assertThat(
             lens.get(Request(GET, "/")),
-            equalTo<Result<String?, RoutingError>>(
+            equalTo<Result<String, RoutingError>>(
                 routeFailed(BAD_REQUEST, "Header 'X-My-Header' is required"))
         )
     }

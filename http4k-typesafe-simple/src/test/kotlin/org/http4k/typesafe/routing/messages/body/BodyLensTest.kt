@@ -13,7 +13,7 @@ import org.http4k.typesafe.routing.messages.responseContract
 import org.junit.jupiter.api.Test
 
 
-internal class TextLensTest {
+internal class BodyLensTest {
     @Test
     fun `injects text and content-type header`() {
         requestContract(

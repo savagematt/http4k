@@ -3,6 +3,7 @@ package org.http4k.typesafe.routing
 import org.http4k.core.HttpMessage
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
+import org.http4k.format.Json
 import org.http4k.typesafe.functional.Kind2
 
 interface MessageRouting<M : HttpMessage, TLens> {
@@ -15,6 +16,8 @@ interface MessageRouting<M : HttpMessage, TLens> {
      */
     fun text():
         Kind2<TLens, M, String>
+
+    fun <NODE> json(json: Json<NODE>): Kind2<TLens, M, NODE>
 
     /**
      * Always successfully gets or sets.

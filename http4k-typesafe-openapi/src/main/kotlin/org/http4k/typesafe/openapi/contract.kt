@@ -4,6 +4,9 @@ import org.http4k.core.ContentType
 import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Status
+import org.http4k.typesafe.json.Extension
+import org.http4k.typesafe.json.JsonRenderer
+import org.http4k.typesafe.json.Renderable
 import org.http4k.typesafe.openapi.ParameterLocation.PATH
 
 /**
@@ -46,7 +49,6 @@ data class Real<T : OpenApiConcept>(
 
 fun <T : OpenApiConcept> T.real(extensions: List<Extension> = emptyList()) =
     Real(this, extensions)
-
 
 /**
  * TODO: not yet supported
