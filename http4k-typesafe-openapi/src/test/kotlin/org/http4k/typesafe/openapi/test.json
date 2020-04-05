@@ -13,6 +13,14 @@
     "/descriptions": {
       "get": {
         "responses": {},
+        "tags": [
+          {
+            "name": "tag3"
+          },
+          {
+            "name": "tag1"
+          }
+        ],
         "summary": "endpoint",
         "description": "some rambling description of what this thing actually does",
         "deprecated": true
@@ -86,7 +94,44 @@
           "required": true
         }
       }
+    },
+    "/body_json_response": {
+      "post": {
+        "responses": {
+          "default": {
+            "description": "body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object1089648089"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "aNullField": null,
+                      "aNumberField": 123
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
-  "components": {}
+  "components": {
+    "schemas": {
+      "object1089648089": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "aNumberField": {
+            "type": "integer",
+            "example": 123
+          }
+        }
+      }
+    }
+  }
 }

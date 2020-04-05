@@ -34,9 +34,9 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
         TextLens<M>()
             .asOpenApi(documentBody(clazz, TEXT_PLAIN))
 
-    override fun <NODE> json(json: Json<NODE>):
+    override fun <NODE : Any> json(json: Json<NODE>):
         Kind2<ForOpenApiLens, M, NODE> =
-        JsonLens<M, NODE>(json).asOpenApi(documentBody(clazz, APPLICATION_JSON))
+        openApiJson(clazz, json)
 
     override fun header(name: String) =
         HeaderReplaceLens<M>(name).asOpenApi(addParameter(name))
@@ -75,6 +75,9 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
                 }
         }
 }
+
+fun <M : HttpMessage, NODE : Any> openApiJson(clazz: KClass<M>, json: Json<NODE>) = JsonLens<M, NODE>(json)
+    .asOpenApi(documentBody(clazz, APPLICATION_JSON))
 
 fun addParameter(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo {
     return { info ->

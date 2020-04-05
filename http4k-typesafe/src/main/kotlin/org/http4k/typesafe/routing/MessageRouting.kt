@@ -14,10 +14,9 @@ interface MessageRouting<M : HttpMessage, TLens> {
      * we want to be liberal in what we accept from others
      * https://en.wikipedia.org/wiki/Robustness_principle
      */
-    fun text():
-        Kind2<TLens, M, String>
+    fun text(): Kind2<TLens, M, String>
 
-    fun <NODE> json(json: Json<NODE>): Kind2<TLens, M, NODE>
+    fun <NODE : Any> json(json: Json<NODE>): Kind2<TLens, M, NODE>
 
     /**
      * Always successfully gets or sets.

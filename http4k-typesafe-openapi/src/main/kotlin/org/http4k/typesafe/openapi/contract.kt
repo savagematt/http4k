@@ -4,6 +4,7 @@ import org.http4k.core.ContentType
 import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Status
+import org.http4k.typesafe.data.plus
 import org.http4k.typesafe.json.Extension
 import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.json.Renderable
@@ -55,8 +56,9 @@ fun <T : OpenApiConcept> T.real(extensions: List<Extension> = emptyList()) =
  *
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject
  */
-data class OpenApiSchema(
-    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
+sealed class OpenApiSchema : OpenApiConcept() {
+    data class Raw(val schema: Renderable,
+                   override val extensions: List<Extension> = emptyList()) : OpenApiSchema()
 }
 
 sealed class OpenApiBodyExampleValue : OpenApiConcept() {
@@ -126,7 +128,7 @@ enum class ParameterLocation {
 data class OpenApiParameter(
     val in_: ParameterLocation,
     val name: String,
-    val required: Boolean? = if(in_== PATH) true else null,
+    val required: Boolean? = if (in_ == PATH) true else null,
     val deprecated: Boolean? = null,
     val description: String? = null,
     val schema: Referenceable<OpenApiSchema>? = null,
@@ -186,7 +188,7 @@ data class OpenApiResponses(
     override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
 
     operator fun OpenApiResponses.plus(byStatus: Pair<Status, Referenceable<OpenApiResponse>>) =
-        this.copy(byStatus = (this.byStatus ?: emptyMap()) + byStatus)
+        this.copy(byStatus = this.byStatus + byStatus)
 }
 
 /**
@@ -319,8 +321,8 @@ data class OpenApiObject(
 
 /**
  * Used by lenses to add or make modifications to OpenApiRoute, but also
- * to idempotently add components like the security schemes and schemas used
- * in this route to the top-level OpenApi.
+ * to idempotently add components like the security schemes and object
+ * schemas used in this route to the top-level OpenApi.
  *
  * So a single lens can for example both add a security method into
  * components/securitySchemes and add that scheme to a route
@@ -331,6 +333,9 @@ data class OpenApiRouteInfo(
 
     fun route(f: (OpenApiOperationInfo) -> OpenApiOperationInfo): OpenApiRouteInfo =
         this.copy(route = f(this.route))
+
+    fun api(f: (OpenApiObject) -> OpenApiObject): OpenApiRouteInfo =
+        this.copy(api = f(this.api))
 
     companion object {
         val empty = OpenApiRouteInfo(OpenApiObject.empty, OpenApiOperationInfo.empty)

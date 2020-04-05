@@ -9,9 +9,12 @@ import org.http4k.util.Appendable
  * no items have been assigned
  */
 class AppendableOrNull<T>(private val initial: List<T>?) {
-    var all: MutableList<T>? = null
+    var all: MutableList<T>? = initial?.toMutableList()
 
-    fun all() = all ?: (initial?.toMutableList() ?: mutableListOf())
+    fun all(): MutableList<T> {
+        if (all == null) all = mutableListOf()
+        return all!!
+    }
 
     operator fun plusAssign(t: T) {
         all() += t
@@ -27,6 +30,30 @@ class AppendableOrNull<T>(private val initial: List<T>?) {
     }
 
     fun toList() = all?.toList() ?: initial
+}
+
+class MutableMapOrNull<K, V>(private val initial: Map<K, V>?) {
+    var all: MutableMap<K, V>? = initial?.toMutableMap()
+
+    fun all(): MutableMap<K, V> {
+        if (all == null) all = mutableMapOf()
+        return all!!
+    }
+
+    operator fun plusAssign(t: Pair<K, V>) {
+        all() += t
+    }
+
+    operator fun plusAssign(t: Iterable<Pair<K, V>>) {
+        all() += t
+    }
+
+    fun map(fn: (Map.Entry<K, V>) -> V): MutableMapOrNull<K, V> {
+        all = all().mapValues(fn).toMutableMap()
+        return this
+    }
+
+    fun toMap() = all?.toMap() ?: initial
 }
 
 //class OpenApiResponsesDsl(original: OpenApiResponses) {
@@ -53,6 +80,20 @@ class OpenApiParameterDsl(val original: OpenApiParameter) {
         extensions.all
     )
 }
+
+class OpenApiComponentsDsl(original: OpenApiComponents) {
+    var security = AppendableOrNull(original.security)
+    var schemas = MutableMapOrNull(original.schemas)
+    var extensions = original.extensions.toMutableList()
+
+    fun build() = OpenApiComponents(
+        security.toList(),
+        schemas.toMap()
+    )
+}
+
+fun OpenApiObject.modifyComponents(f: OpenApiComponentsDsl.() -> Unit) =
+    this.copy(components = OpenApiComponentsDsl(this.components).also { f(it) }.build())
 
 class OpenApiOperationDsl(original: OpenApiOperationInfo) {
     private val operation = original.operation
@@ -106,10 +147,10 @@ infix fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.meta(
     fn: OpenApiOperationDsl.() -> Unit): OpenApiLens<M, T> {
     val lens = this.fix()
     return lens openapi {
-            lens.document(it).let { docs ->
-                docs.route { route ->
-                    OpenApiOperationDsl(route).apply(fn).build()
-                }
+        lens.document(it).let { docs ->
+            docs.route { route ->
+                OpenApiOperationDsl(route).apply(fn).build()
             }
         }
     }
+}

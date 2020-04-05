@@ -2,6 +2,7 @@ package org.http4k.typesafe.openapi
 
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.typesafe.data.plus
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.ResponseRouting
 import org.http4k.typesafe.routing.responses.CheckStatusLens
@@ -16,10 +17,7 @@ object OpenApiResponseRouting : OpenApiMessageRouting<Response>(Response::class)
                     responses.default?.let {
                         responses.copy(
                             default = null,
-                            byStatus = (responses.byStatus ?: emptyMap()).let
-                            { byStatus ->
-                                byStatus + (status to responses.default)
-                            })
+                            byStatus = responses.byStatus + (status to responses.default))
                     } ?: TODO("Cannot yet set status code on OpenApiResponses with no default response")
                 }
         }

@@ -45,14 +45,6 @@ typealias RequestLens<T> = MessageLens<Request, T>
 
 typealias ResponseLens<T> = MessageLens<Response, T>
 
-/**
- * gets/gets T on a Body
- *
- * For the lens to get/set T from the body of an HttpMessage, please
- * @see [org.http4k.typesafe.routing.messages.MessageBodyLens]
- */
-typealias BodyLens<T> = ResultLens<Body, T, RoutingError>
-
 interface Route<In, Out, TReqLens : RequestLens<In>, TResLens : ResponseLens<Out>>  {
     val request: TReqLens
     val response: TResLens

@@ -22,6 +22,7 @@ import org.http4k.typesafe.openapi.OpenApiRouting.but
 import org.http4k.typesafe.openapi.OpenApiRouting.request
 import org.http4k.typesafe.openapi.OpenApiRouting.response
 import org.http4k.typesafe.openapi.OpenApiRouting.route
+import org.http4k.typesafe.openapi.schema.induceSchema
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -31,7 +32,6 @@ class V3RendererTest {
 
     @Test
     fun `description`(approver: Approver) {
-
         val routes: List<OpenApiRoute<*, *>> = listOf(
             route(
                 GET bind "/nometa",
@@ -66,11 +66,15 @@ class V3RendererTest {
                 POST bind "/body_json_noschema"
                     but request.json(json),
                 response.any()
+            ),
+            route(
+                POST bind "/body_json_response",
+                induceSchema(json) {
+                    obj("aNullField" to nullNode(),
+                        "aNumberField" to number(123))
+                }
             )
         )
-//            routes += "/body_json_noschema" meta {
-//                receiving(json.body("json").toLens())
-//            } bindContract POST to { Response(OK) }
 //            routes += "/body_json_response" meta {
 //                returning("normal" to json {
 //                    val obj = obj("aNullField" to nullNode(), "aNumberField" to number(123))
@@ -182,3 +186,4 @@ class V3RendererTest {
         return json.asJsonString(renderer.render(api))
     }
 }
+

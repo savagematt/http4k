@@ -30,7 +30,10 @@ class V3Renderer<NODE>(
             }
 
             //https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject
-            is OpenApiSchema -> nullNode()
+            is OpenApiSchema -> when(concept){
+                is OpenApiSchema.Raw ->
+                    concept.schema.render(this)
+            }
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#exampleObject
             is OpenApiBodyExampleValue -> when (concept) {
@@ -44,8 +47,8 @@ class V3Renderer<NODE>(
                     "summary" to nullable(concept.summary),
                     "description" to nullable(concept.summary)) +
                     when (concept.value) {
-                        is OpenApiBodyExampleValue.External -> "value" to render(concept.value)
-                        is OpenApiBodyExampleValue.Real -> "externalValue" to render(concept.value)
+                        is OpenApiBodyExampleValue.External -> "externalValue" to render(concept.value)
+                        is OpenApiBodyExampleValue.Real -> "value" to render(concept.value)
                     }
             )
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#mediaTypeObject

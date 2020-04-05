@@ -31,7 +31,7 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
         Kind2<ForSimpleLens, M, String> =
         TextLens()
 
-    override fun <NODE> json(json: Json<NODE>):
+    override fun <NODE : Any> json(json: Json<NODE>):
         Kind2<ForSimpleLens, M, NODE> =
         JsonLens(json)
 

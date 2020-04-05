@@ -8,7 +8,7 @@ import org.http4k.format.Json
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 import org.http4k.typesafe.routing.messages.SimpleLens
 
-class JsonLens<M : HttpMessage, NODE>(val json: Json<NODE>) : SimpleLens<M, NODE> {
+class JsonLens<M : HttpMessage, NODE : Any>(val json: Json<NODE>) : SimpleLens<M, NODE> {
     override fun get(from: M) = try {
         Success(json.parse(from.bodyString()))
     } catch (e: Exception) {
