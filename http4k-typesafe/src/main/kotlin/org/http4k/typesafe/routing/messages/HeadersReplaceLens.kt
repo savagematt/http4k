@@ -13,4 +13,6 @@ class HeadersReplaceLens<M : HttpMessage>(
     @Suppress("UNCHECKED_CAST")
     override fun set(into: M, value: List<String?>) =
         Success(into.removeHeader(name).headers(value.map { name to it }) as M)
+
+    override fun toString() = "Header '$name'"
 }

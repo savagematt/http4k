@@ -17,5 +17,8 @@ class MethodLens : SimpleLens<Request, Method> {
 
     override fun set(into: Request, value: Method): Result<Request, RoutingError> =
         Success(into.method(value))
+
+
+    override fun toString() = "method"
 }
 

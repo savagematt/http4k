@@ -22,4 +22,6 @@ class CheckMethodLens<T>(val method: Method,
 
     override fun set(into: Request, value: T): Result<Request, RoutingError> =
         rest.set(into, value).map { it.method(method) }
+
+    override fun toString() = "Method $method"
 }

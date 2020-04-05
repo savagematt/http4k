@@ -7,6 +7,9 @@ import org.http4k.core.HttpMessage
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
+/**
+ * Maps an
+ */
 class RequiredLens<M : HttpMessage, T>(
     val opt: MessageLens<M, T?>,
     val onFailure: () -> RoutingError
@@ -23,4 +26,6 @@ class RequiredLens<M : HttpMessage, T>(
 
     override fun set(into: M, value: T) =
         opt.set(into, value)
+
+    override fun toString() = "required: $opt"
 }

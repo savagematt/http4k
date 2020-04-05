@@ -1,5 +1,7 @@
 package org.http4k.typesafe.routing.requests.paths
 
+import org.http4k.typesafe.routing.joinPaths
+
 class Literal(expected: String) : SimplePath<Unit> {
     private val expected = expected.replace(leading, "").replace(trailing, "")
 
@@ -20,7 +22,11 @@ class Literal(expected: String) : SimplePath<Unit> {
     }
 
     override fun set(into: String, value: Unit): String =
-        into / expected
+        joinPaths(into, expected)
 
     operator fun <T> div(next: Path<T>): IgnoreFirst<T> = IgnoreFirst(this, next)
+
+    override fun toString(): String {
+        return expected
+    }
 }

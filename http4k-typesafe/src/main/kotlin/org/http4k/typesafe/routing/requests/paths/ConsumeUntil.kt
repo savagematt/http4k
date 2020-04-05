@@ -1,5 +1,6 @@
 package org.http4k.typesafe.routing.requests.paths
 
+import org.http4k.typesafe.routing.joinPaths
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -31,5 +32,7 @@ class ConsumeUntil(val name: String, val index: IndexInString) : SimplePath<Stri
     }
 
     override fun set(into: String, value: String): String =
-        into / URLEncoder.encode(value, "utf8")
+        joinPaths(into, URLEncoder.encode(value, "utf8"))
+
+    override fun toString() = "{$name}"
 }

@@ -30,4 +30,6 @@ class PathLens<T>(val path: Path<T>) : SimpleLens<Request, T> {
             into.uri.path(
                 path.set(into.uri.path, value))
         ))
+
+    override fun toString(): String = path.toString()
 }

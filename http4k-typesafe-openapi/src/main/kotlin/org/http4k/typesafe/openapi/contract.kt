@@ -4,6 +4,7 @@ import org.http4k.core.ContentType
 import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Status
+import org.http4k.typesafe.openapi.ParameterLocation.PATH
 
 /**
  * By making this sealed and having all things we might want to render into json inherit from it,
@@ -105,97 +106,42 @@ data class OpenApiRequestBody(
 
 @Suppress("EnumEntryName")
 enum class ParameterLocation {
-    path,
-    query,
-    header,
-    cookie
-}
-
-interface IOpenApiParameter {
-    val name: String
-    @Suppress("PropertyName")
-    val in_: ParameterLocation
-    val required: Boolean?
-    val deprecated: Boolean?
-    val description: String?
-    val schema: Referenceable<OpenApiSchema>?
-    val extensions: List<Extension>
-
+    PATH,
+    QUERY,
+    HEADER,
+    COOKIE
 }
 
 /**
  * Describes a single operation parameter.
  *
- * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#parameterObject
- *
  * We do not yet support styles
- */
-sealed class OpenApiParameter() : OpenApiConcept(), IOpenApiParameter
-
-/**
+ *
+ * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#parameterObject
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#headerObject
- */
-data class OpenApiHeader(
-    override val name: String,
-    override val required: Boolean? = null,
-    override val deprecated: Boolean? = null,
-    override val description: String? = null,
-    override val schema: Referenceable<OpenApiSchema>? = null,
-    override val extensions: List<Extension> = emptyList()
-) : OpenApiParameter() {
-    override val in_ = ParameterLocation.header
-}
-
-/**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#pathObject
  */
-@Suppress("unused")
-data class OpenApiPathParam(
-    override val name: String,
-    override val deprecated: Boolean? = null,
-    override val description: String? = null,
-    override val schema: Referenceable<OpenApiSchema>? = null,
+data class OpenApiParameter(
+    val in_: ParameterLocation,
+    val name: String,
+    val required: Boolean? = if(in_== PATH) true else null,
+    val deprecated: Boolean? = null,
+    val description: String? = null,
+    val schema: Referenceable<OpenApiSchema>? = null,
     override val extensions: List<Extension> = emptyList()
-) : OpenApiParameter() {
-    override val in_ = ParameterLocation.path
-    /**
-     * Path parameters are always required. See: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#parameterObject
-     */
-    override val required: Boolean = true
-}
-
-@Suppress("unused")
-data class OpenApiQueryParam(
-    override val name: String,
-    override val required: Boolean? = null,
-    override val deprecated: Boolean? = null,
-    override val description: String? = null,
-    override val schema: Referenceable<OpenApiSchema>? = null,
-    override val extensions: List<Extension> = emptyList()
-) : OpenApiParameter() {
-    override val in_ = ParameterLocation.query
-}
-
-@Suppress("unused")
-data class OpenApiCookieParam(
-    override val name: String,
-    override val required: Boolean,
-    override val deprecated: Boolean = false,
-    override val description: String?,
-    override val schema: Referenceable<OpenApiSchema>?,
-    override val extensions: List<Extension> = emptyList()
-) : OpenApiParameter() {
-    override val in_ = ParameterLocation.cookie
-}
+) : OpenApiConcept()
 
 
 data class HeaderName(val value: String) {
     override fun toString(): String = value
 }
 
+/**
+ * TODO: make sure all OpenApiParameters are headers
+ */
 class OpenApiHeaders(
-    x: Map<HeaderName, OpenApiHeader>,
-    override val extensions: List<Extension> = emptyList()) : OpenApiConcept(), Map<HeaderName, OpenApiHeader> by x {
+    x: Map<HeaderName, OpenApiParameter>,
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept(), Map<HeaderName, OpenApiParameter> by x {
 }
 
 /**
@@ -236,6 +182,9 @@ data class OpenApiResponses(
     val default: Referenceable<OpenApiResponse>? = null,
     val byStatus: Map<Status, Referenceable<OpenApiResponse>>? = null,
     override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
+
+    operator fun OpenApiResponses.plus(byStatus: Pair<Status, Referenceable<OpenApiResponse>>) =
+        this.copy(byStatus = (this.byStatus ?: emptyMap()) + byStatus)
 }
 
 /**
@@ -258,6 +207,7 @@ data class OpenApiOperation(
         val empty = OpenApiOperation(OpenApiResponses())
     }
 }
+
 
 /**
  * Marker interface to make implementations easier to find
@@ -379,6 +329,10 @@ data class OpenApiRouteInfo(
 
     fun route(f: (OpenApiOperationInfo) -> OpenApiOperationInfo): OpenApiRouteInfo =
         this.copy(route = f(this.route))
+
+    companion object {
+        val empty = OpenApiRouteInfo(OpenApiObject.empty, OpenApiOperationInfo.empty)
+    }
 }
 
 /**

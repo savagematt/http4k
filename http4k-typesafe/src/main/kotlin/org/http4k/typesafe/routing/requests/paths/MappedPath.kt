@@ -30,6 +30,8 @@ open class MappedPath<A, B>(
 
     override fun set(into: String, value: B): String =
         initial.set(into, setter(value))
+
+    override fun toString() = initial.toString()
 }
 
 fun <A, B> Path<A>.map(mapping: BiDiMapping<A, B>, failureMessage: String) =

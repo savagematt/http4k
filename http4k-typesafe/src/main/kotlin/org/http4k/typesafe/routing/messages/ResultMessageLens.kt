@@ -26,4 +26,6 @@ class ResultMessageLens<M : HttpMessage, T, E>(
             is Success -> success.set(into, value.value)
             is Failure -> failure.set(into, value.reason)
         }
+
+    override fun toString() = "$success or $failure"
 }

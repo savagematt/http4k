@@ -21,16 +21,6 @@ interface Path<T> : PolymorphicLens<String, String, T, PathResult<T>> {
 val trailing = Regex("/*$")
 val leading = Regex("^/*")
 
-operator fun String.div(path: String) =
-    joinPaths(this, path)
-
-operator fun <T> String.div(path: Path<T>) =
-    Literal(this) / path
-
-operator fun <A, B> Path<A>.div(next: Path<B>) = Path2(this, next)
-
-fun joinPaths(a: String, b: String) =
-    a.replace(trailing, "") + "/" + b.replace(leading, "")
 
 fun <A, B> Path<A>.map(getter: (Match<A>) -> PathResult<B>,
                        setter: (B) -> A) =

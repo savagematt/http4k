@@ -63,7 +63,7 @@ class V3Renderer<NODE>(
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#parameterObject
             is OpenApiParameter -> obj(
                 "name" to string(concept.name),
-                "in" to string(concept.in_.name),
+                "in" to string(concept.in_.name.toLowerCase()),
                 "description" to nullable(concept.description),
                 "required" to nullable(concept.required),
                 "deprecated" to nullable(concept.deprecated),
@@ -106,7 +106,7 @@ class V3Renderer<NODE>(
             )
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#securityRequirementObject
-            is OpenApiSecurity -> nullable(concept.content)
+            is OpenApiSecurity -> concept.content.render(this)
 
             is OpenApiOperationInfo -> render(concept.operation)
 
@@ -140,6 +140,7 @@ class V3Renderer<NODE>(
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#openapi-object
             is OpenApiObject -> obj(
+                "openapi" to string("3.0.3"),
                 "info" to render(concept.info),
                 "paths" to paths(concept.paths),
                 "components" to render(concept.components)
@@ -151,7 +152,6 @@ fun <NODE> V3Renderer<NODE>.paths(paths: List<OpenApiOperationInfo>): NODE {
     val byPath = paths
         .fold(emptyMap<String, List<OpenApiOperationInfo>>()) { routesByPath, route ->
             val k = route.path
-
             routesByPath + (k to ((routesByPath[k] ?: emptyList()) + route))
         }
 

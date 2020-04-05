@@ -13,4 +13,6 @@ class HeaderAppendLens<M : HttpMessage>(
     @Suppress("UNCHECKED_CAST")
     override fun set(into: M, value: String?) =
         Success(into.header(name, value) as M)
+
+    override fun toString() = "Header '$name'"
 }

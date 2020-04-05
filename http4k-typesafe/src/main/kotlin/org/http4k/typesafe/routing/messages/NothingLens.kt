@@ -12,4 +12,6 @@ class NothingLens<M : HttpMessage> : SimpleLens<M, Nothing> {
 
     override fun set(into: M, value: Nothing) =
         throw IllegalStateException("Expected nothing")
+
+    override fun toString() = "nothing"
 }

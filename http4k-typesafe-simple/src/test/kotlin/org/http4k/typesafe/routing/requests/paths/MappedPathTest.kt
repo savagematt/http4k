@@ -4,7 +4,10 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import org.http4k.typesafe.routing.SimplePaths.bigInteger
 import org.http4k.typesafe.routing.SimplePaths.consume
+import org.http4k.typesafe.routing.SimplePaths.div
 import org.http4k.typesafe.routing.SimplePaths.double
+import org.http4k.typesafe.routing.SimplePaths.get
+import org.http4k.typesafe.routing.SimplePaths.set
 import org.http4k.typesafe.routing.SimplePaths.uuid
 import org.junit.jupiter.api.Test
 import java.math.BigInteger

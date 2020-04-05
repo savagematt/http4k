@@ -8,5 +8,8 @@ dependencies {
     provided project(":http4k-core")
     compile project(":http4k-typesafe")
 
+    testCompile project(":http4k-testing-approval")
+    testCompile project(":http4k-format-jackson")
+    testCompile project(path: ":http4k-format", configuration: 'testArtifacts')
     testCompile Config.TestDependencies
 }

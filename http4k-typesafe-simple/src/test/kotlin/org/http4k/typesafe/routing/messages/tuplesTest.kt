@@ -16,16 +16,16 @@ class TuplesTest {
     @Test
     fun `can combine up to 10 lenses`() {
         with(request) {
-            val a = replaceHeader("a")
-            val b = replaceHeader("b")
-            val c = replaceHeader("c")
-            val d = replaceHeader("d")
-            val e = replaceHeader("e")
-            val f = replaceHeader("f")
-            val g = replaceHeader("g")
-            val h = replaceHeader("h")
-            val i = replaceHeader("i")
-            val j = replaceHeader("j")
+            val a = header("a")
+            val b = header("b")
+            val c = header("c")
+            val d = header("d")
+            val e = header("e")
+            val f = header("f")
+            val g = header("g")
+            val h = header("h")
+            val i = header("i")
+            val j = header("j")
 
             val lens = a and b and c and d and e and f and g and h and i and j
 

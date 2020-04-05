@@ -31,14 +31,20 @@ interface MessageRouting<M : HttpMessage, TLens> {
     fun nothing():
         Kind2<TLens, M, Nothing>
 
-    fun replaceHeader(name: String):
+    /**
+     * Replaces the existing value(s) of the header
+     */
+    fun header(name: String):
         Kind2<TLens, M, String?>
+
+    /**
+     * Replaces the existing value(s) of the header
+     */
+    fun headers(name: String):
+        Kind2<TLens, M, List<String?>>
 
     fun appendHeader(name: String):
         Kind2<TLens, M, String?>
-
-    fun replaceHeaders(name: String):
-        Kind2<TLens, M, List<String?>>
 
     fun appendHeaders(name: String):
         Kind2<TLens, M, List<String?>>

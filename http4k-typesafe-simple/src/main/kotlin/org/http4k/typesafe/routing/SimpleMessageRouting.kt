@@ -29,7 +29,7 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
         Kind2<ForSimpleLens, M, String> =
         TextLens()
 
-    override fun replaceHeader(name: String) =
+    override fun header(name: String) =
         HeaderReplaceLens<M>(name)
 
     override fun appendHeader(name: String) =
@@ -38,7 +38,7 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
     override fun appendHeaders(name: String) =
         HeadersAppendLens<M>(name)
 
-    override fun replaceHeaders(name: String) =
+    override fun headers(name: String) =
         HeadersReplaceLens<M>(name)
 
     override fun <T> Kind2<ForSimpleLens, M, T?>.required(onFailure: () -> RoutingError) =

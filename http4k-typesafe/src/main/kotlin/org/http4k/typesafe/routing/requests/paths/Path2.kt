@@ -3,6 +3,7 @@ package org.http4k.typesafe.routing.requests.paths
 import com.natpryce.flatMap
 import org.http4k.typesafe.data.Tuple2
 import org.http4k.typesafe.data.tuple
+import org.http4k.typesafe.routing.joinPaths
 
 data class Path2<A, B>(
     val a: Path<A>,
@@ -20,4 +21,5 @@ data class Path2<A, B>(
     override fun set(into: String, value: Tuple2<A, B>): String =
         b.set(b.set(into, value.b), value.b)
 
+    override fun toString() = joinPaths(a,b)
 }

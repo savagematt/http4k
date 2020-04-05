@@ -11,7 +11,7 @@ import org.http4k.typesafe.routing.Simple.request
 import org.junit.jupiter.api.Test
 
 class HeaderTest {
-    private val header = request.replaceHeader("Content-Type")
+    private val header = request.header("Content-Type")
 
     @Test
     fun `can set`() {
@@ -40,7 +40,7 @@ class HeaderTest {
 
     @Test
     fun `can get value`() {
-        val header = request.replaceHeader("Content-Type")
+        val header = request.header("Content-Type")
 
         val actual = header.get(Request(GET, "/")
             .header("Content-Type", "text/plain"))
@@ -55,7 +55,7 @@ class HeaderTest {
 
     @Test
     fun `can get null`() {
-        val header = request.replaceHeader("Content-Type")
+        val header = request.header("Content-Type")
 
         val actual = header.get(Request(GET, "/"))
 

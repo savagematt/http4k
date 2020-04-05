@@ -35,6 +35,18 @@ fun OpenApiOperationInfo.parameters(f: (List<Referenceable<OpenApiParameter>>) -
 fun OpenApiRouteInfo.parameters(f: (List<Referenceable<OpenApiParameter>>) -> List<Referenceable<OpenApiParameter>>): OpenApiRouteInfo =
     this.copy(route = route.parameters(f))
 
+// mapParameters
+
+fun OpenApiOperation.mapParameters(f: (Referenceable<OpenApiParameter>) -> Referenceable<OpenApiParameter>): OpenApiOperation =
+    this.parameters { it.map(f) }
+
+fun OpenApiOperationInfo.mapParameters(f: (Referenceable<OpenApiParameter>) -> Referenceable<OpenApiParameter>): OpenApiOperationInfo =
+    this.parameters { it.map(f) }
+
+fun OpenApiRouteInfo.mapParameters(f: (Referenceable<OpenApiParameter>) -> Referenceable<OpenApiParameter>): OpenApiRouteInfo =
+    this.parameters { it.map(f) }
+
+
 // operation
 
 fun OpenApiOperationInfo.operation(f: (OpenApiOperation) -> OpenApiOperation): OpenApiOperationInfo =

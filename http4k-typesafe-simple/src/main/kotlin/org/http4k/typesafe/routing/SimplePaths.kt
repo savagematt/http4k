@@ -3,6 +3,7 @@ package org.http4k.typesafe.routing
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
 import org.http4k.typesafe.routing.requests.paths.ForSimplePath
+import org.http4k.typesafe.routing.requests.paths.IgnoreFirst
 import org.http4k.typesafe.routing.requests.paths.IgnoreSecond
 import org.http4k.typesafe.routing.requests.paths.IndexInString
 import org.http4k.typesafe.routing.requests.paths.Literal
@@ -12,14 +13,21 @@ import org.http4k.typesafe.routing.requests.paths.fix
 import java.time.format.DateTimeFormatter
 
 object SimplePaths : Paths<ForSimplePath> {
+    override fun <T> Kind<ForSimplePath, T>.get(from: String) =
+        this.fix().get(from)
 
-    override fun <T> Kind<ForSimplePath, T>.div(
-        next: String): Kind<ForSimplePath, T> =
-        IgnoreSecond(fix(), literal(next).fix())
+    override fun <T> Kind<ForSimplePath, T>.set(into: String, value: T) =
+        this.fix().set(into, value)
 
     override fun <A, B> Kind<ForSimplePath, A>.div(
         next: Kind<ForSimplePath, B>) =
         Path2(this.fix(), next.fix())
+
+    override infix fun <T> Kind<ForSimplePath, Unit>.but(next: Kind<ForSimplePath, T>) =
+        IgnoreFirst(this.fix(), next.fix())
+
+    override infix fun <T> Kind<ForSimplePath, T>.ignore(next: Kind<ForSimplePath, Unit>) =
+        IgnoreSecond(this.fix(), next.fix())
 
     override fun consume(
         name: String, index: IndexInString) =

@@ -4,7 +4,11 @@ import org.http4k.core.Uri
 import org.http4k.typesafe.data.Tuple2
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.routing.requests.paths.IndexInString
+import org.http4k.typesafe.routing.requests.paths.Path
+import org.http4k.typesafe.routing.requests.paths.PathResult
+import org.http4k.typesafe.routing.requests.paths.leading
 import org.http4k.typesafe.routing.requests.paths.nextSlash
+import org.http4k.typesafe.routing.requests.paths.trailing
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.Duration
@@ -21,10 +25,32 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
 import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 import java.util.*
 
+
+fun joinPaths(a: String, b: String) =
+    a.replace(trailing, "") + "/" + b.replace(leading, "")
+
+fun joinPaths(vararg paths: Path<*>) =
+    paths.fold("/") { acc, path -> joinPaths(acc, path.toString()) }
+
 interface Paths<TPath> {
-    operator fun <T> Kind<TPath, T>.div(next: String): Kind<TPath, T>
+    fun <T> Kind<TPath, T>.get(from: String): PathResult<T>
+
+    fun <T> Kind<TPath, T>.set(into: String, value: T): String
+
+    operator fun String.div(path: String) =
+        joinPaths(this, path)
+
+    operator fun <T> String.div(next: Kind<TPath, T>) =
+        literal(this) but next
+
+    operator fun <T> Kind<TPath, T>.div(next: String) =
+        this ignore literal(next)
 
     operator fun <A, B> Kind<TPath, A>.div(next: Kind<TPath, B>): Kind<TPath, Tuple2<A, B>>
+
+    infix fun <T> Kind<TPath, Unit>.but(next: Kind<TPath, T>): Kind<TPath, T>
+
+    infix fun <T> Kind<TPath, T>.ignore(next: Kind<TPath, Unit>): Kind<TPath, T>
 
     fun consume(name: String, index: IndexInString = ::nextSlash): Kind<TPath, String>
 

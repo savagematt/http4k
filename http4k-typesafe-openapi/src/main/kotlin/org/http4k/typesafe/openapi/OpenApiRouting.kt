@@ -13,6 +13,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
+import org.http4k.typesafe.openapi.ParameterLocation.HEADER
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.Routing
@@ -49,6 +50,7 @@ open class OpenApiPath<T>(
     override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
         documenter(doc)
 
+    override fun toString(): String = delegate.toString()
 }
 
 /*
@@ -66,19 +68,24 @@ class ForOpenApiLens private constructor() {
 fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.fix() = this as OpenApiLens<M, T>
 
 class OpenApiLens<M : HttpMessage, T>(
-    private val delegate: MessageLens<M, T>,
+    private val original: MessageLens<M, T>,
     private val documenter: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) :
-    MessageLens<M, T> by delegate,
+    MessageLens<M, T> by original,
     Documentable<OpenApiRouteInfo>,
     Kind2<ForOpenApiLens, M, T> {
 
     override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
         documenter(doc)
 
+    override fun toString() = original.toString()
 }
 
 fun <M : HttpMessage, T> MessageLens<M, T>.asOpenApi(
     docs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) =
+    OpenApiLens(this, docs)
+
+infix fun <M : HttpMessage, T> MessageLens<M, T>.openapi(
+    docs: (OpenApiRouteInfo) -> OpenApiRouteInfo) =
     OpenApiLens(this, docs)
 
 /*
@@ -196,7 +203,7 @@ fun <D> fold(document: D, vararg documentables: Documentable<D>): D = documentab
 }
 
 fun <M : HttpMessage> documentTextLens(clazz: KClass<M>): (OpenApiRouteInfo) -> OpenApiRouteInfo {
-    val header = OpenApiHeader("Content-Type", required = false)
+    val header = OpenApiParameter(HEADER, "Content-Type", required = false)
 
     val mediaType = OpenApiMediaType(
         mapOf("text" to OpenApiBodyExample(OpenApiBodyExampleValue.Real("some text"))))

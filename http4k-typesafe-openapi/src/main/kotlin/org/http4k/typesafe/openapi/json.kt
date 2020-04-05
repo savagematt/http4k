@@ -25,12 +25,20 @@ fun <NODE> Json<NODE>.nullable(value: Renderable?) =
 
 fun <T, NODE, R : Json<NODE>> R.nullable(value: T?, toNode: R.(T) -> NODE) =
     when (value) {
-        null -> this.nullNode()
+        null -> null
         else -> this.toNode(value)
     }
 
 fun <T : C, C, NODE> JsonRenderer<C, NODE>.nullable(value: T?) =
     nullable(value, { this.render(it) })
+
+@Suppress("UNCHECKED_CAST")
+fun <C, NODE> JsonRenderer<C, NODE>.obj(fields: Iterable<Pair<String, NODE?>>) =
+    obj(fields.filter { it.second != null }.map { it as Pair<String, NODE> })
+
+fun <C, NODE> JsonRenderer<C, NODE>.obj(vararg fields: Pair<String, NODE?>) =
+    obj(fields.toList())
+
 
 fun <T : C, C, NODE> JsonRenderer<C, NODE>.list(values: List<T>) =
     this.array(values.map(this::render))

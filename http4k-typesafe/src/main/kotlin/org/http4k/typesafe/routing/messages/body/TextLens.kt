@@ -18,6 +18,8 @@ class TextLens<M : HttpMessage> : SimpleLens<M, String> {
     override fun set(into: M, value: String) =
         Success(
             into.textPlain(value) as M)
+
+    override fun toString() = "text/plain body"
 }
 
 fun <M:HttpMessage> M.textPlain(body: String) =

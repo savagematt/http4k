@@ -1,0 +1,88 @@
+{
+  "info": {
+    "title": "My api",
+    "version": "0.0"
+  },
+  "paths": {
+    "/nometa": {
+      "GET": {
+        "responses": {}
+      }
+    },
+    "/descriptions": {
+      "GET": {
+        "responses": {},
+        "summary": "endpoint",
+        "description": "some rambling description of what this thing actually does",
+        "deprecated": true
+      }
+    },
+    "/paths/{firstName}/bertrand/{age}": {
+      "POST": {
+        "responses": {},
+        "parameters": [
+          {
+            "name": "firstName",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "age",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/headers": {
+      "POST": {
+        "responses": {},
+        "parameters": [
+          {
+            "name": "b",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "s",
+            "in": "header"
+          },
+          {
+            "name": "i",
+            "in": "header"
+          },
+          {
+            "name": "j",
+            "in": "header"
+          }
+        ]
+      }
+    },
+    "/body_string": {
+      "POST": {
+        "responses": {
+          "default": {
+            "description": "text",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "text": {
+                    "externalValue": "some text"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false
+          }
+        ]
+      }
+    }
+  },
+  "components": {}
+}

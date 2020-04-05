@@ -23,4 +23,6 @@ class CheckStatusLens<T>(
 
     override fun set(into: Response, value: T): Result<Response, RoutingError> =
         rest.set(into, value).map { it.status(status) }
+
+    override fun toString() = "Status ${status.code}"
 }

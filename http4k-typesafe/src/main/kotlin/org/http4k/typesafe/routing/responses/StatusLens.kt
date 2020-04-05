@@ -16,4 +16,6 @@ class StatusLens : SimpleLens<Response, Status> {
 
     override fun set(into: Response, value: Status): Result<Response, RoutingError> =
         Success(into.status(value))
+
+    override fun toString() = "status"
 }

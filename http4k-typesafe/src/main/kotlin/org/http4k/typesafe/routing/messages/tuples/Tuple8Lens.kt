@@ -57,4 +57,5 @@ class Tuple8Lens<M : HttpMessage, A, B, C, D, E, F, G, H>(
             }
         }
 
+    override fun toString() = listOf(a, b, c, d, e, f, g, h).joinToString("; ")
 }

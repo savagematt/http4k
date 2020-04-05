@@ -16,4 +16,6 @@ class HeaderReplaceLens<M : HttpMessage>(
             null -> Success(into.removeHeader(name) as M)
             else -> Success(into.replaceHeader(name, value) as M)
         }
+
+    override fun toString() = "Header '$name'"
 }

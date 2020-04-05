@@ -2,116 +2,152 @@ package org.http4k.typesafe.openapi
 
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.routing.Paths
+import org.http4k.typesafe.routing.joinPaths
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
+import org.http4k.typesafe.routing.requests.paths.IgnoreFirst
 import org.http4k.typesafe.routing.requests.paths.IgnoreSecond
 import org.http4k.typesafe.routing.requests.paths.IndexInString
 import org.http4k.typesafe.routing.requests.paths.Literal
 import org.http4k.typesafe.routing.requests.paths.Mapped
+import org.http4k.typesafe.routing.requests.paths.MappedPath
 import org.http4k.typesafe.routing.requests.paths.Path
-import org.http4k.typesafe.routing.requests.paths.div
 import java.time.format.DateTimeFormatter
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
+import kotlin.reflect.KFunction3
 
 object OpenApiPaths : Paths<ForOpenApiPath> {
-    override fun <T> Kind<ForOpenApiPath, T>.div(
-        next: String): Kind<ForOpenApiPath, T> {
-        val path = this.fix()
-        return IgnoreSecond(path, literal(next).fix())
-            .asOpenApi()
-    }
+    override fun <T> Kind<ForOpenApiPath, T>.get(from: String) =
+        this.fix().get(from)
+
+    override fun <T> Kind<ForOpenApiPath, T>.set(into: String, value: T) =
+        this.fix().set(into, value)
 
     override fun <A, B> Kind<ForOpenApiPath, A>.div(
         next: Kind<ForOpenApiPath, B>) =
         OpenApiPath2(this.fix(), next.fix())
 
+    override infix fun <T> Kind<ForOpenApiPath, Unit>.but(next: Kind<ForOpenApiPath, T>) =
+        IgnoreFirst(this.fix(), next.fix())
+            .asOpenApi(fold(this.fix(), next.fix()))
+
+    override infix fun <T> Kind<ForOpenApiPath, T>.ignore(next: Kind<ForOpenApiPath, Unit>) =
+        IgnoreSecond(this.fix(), next.fix())
+            .asOpenApi(fold(this.fix(), next.fix()))
+
     override fun consume(
         name: String, index: IndexInString) =
-        ConsumeUntil(name, index).asOpenApi { doc -> doc.path { it / "{${name}}" } }
+        ConsumeUntil(name, index).asOpenApi(pathParam(name))
 
     override fun literal(value: String) =
         Literal(value)
-            .asOpenApi()
+            .asOpenApi(operationPath(value))
 
     override fun Kind<ForOpenApiPath, String>.nonEmptyString() =
-        Mapped.nonEmptyString(this.fix())
-            .asOpenApi()
+        wrap(Mapped::nonEmptyString, this)
 
     override fun Kind<ForOpenApiPath, String>.int() =
-        Mapped.int(this.fix())
-            .asOpenApi()
+        wrap(Mapped::int, this)
 
     override fun Kind<ForOpenApiPath, String>.float() =
-        Mapped.float(this.fix())
-            .asOpenApi()
+        wrap(Mapped::float, this)
 
     override fun Kind<ForOpenApiPath, String>.double() =
-        Mapped.double(this.fix())
-            .asOpenApi()
+        wrap(Mapped::double, this)
 
     override fun Kind<ForOpenApiPath, String>.long() =
-        Mapped.long(this.fix())
-            .asOpenApi()
+        wrap(Mapped::long, this)
 
     override fun Kind<ForOpenApiPath, String>.bigDecimal() =
-        Mapped.bigDecimal(this.fix())
-            .asOpenApi()
+        wrap(Mapped::bigDecimal, this)
 
     override fun Kind<ForOpenApiPath, String>.bigInteger() =
-        Mapped.bigInteger(this.fix())
-            .asOpenApi()
+        wrap(Mapped::bigInteger, this)
 
     override fun Kind<ForOpenApiPath, String>.boolean() =
-        Mapped.boolean(this.fix())
-            .asOpenApi()
+        wrap(Mapped::boolean, this)
 
     override fun Kind<ForOpenApiPath, String>.base64() =
-        Mapped.base64(this.fix())
-            .asOpenApi()
+        wrap(Mapped::base64, this)
 
     override fun Kind<ForOpenApiPath, String>.uuid() =
-        Mapped.uuid(this.fix())
-            .asOpenApi()
+        wrap(Mapped::uuid, this)
 
     override fun Kind<ForOpenApiPath, String>.uri() =
-        Mapped.uri(this.fix())
-            .asOpenApi()
+        wrap(Mapped::uri, this)
 
     override fun Kind<ForOpenApiPath, String>.regex(pattern: String, group: Int) =
-        Mapped.regex(this.fix(), pattern, group)
-            .asOpenApi()
+        wrap(Mapped::regex, this, pattern, group)
 
     override fun Kind<ForOpenApiPath, String>.regexObject() =
-        Mapped.regexObject(this.fix())
-            .asOpenApi()
+        wrap(Mapped::regexObject, this)
 
     override fun Kind<ForOpenApiPath, String>.duration() =
-        Mapped.duration(this.fix())
-            .asOpenApi()
+        wrap(Mapped::duration, this)
 
     override fun Kind<ForOpenApiPath, String>.yearMonth() =
-        Mapped.yearMonth(this.fix())
-            .asOpenApi()
+        wrap(Mapped::yearMonth, this)
 
     override fun Kind<ForOpenApiPath, String>.instant() =
-        Mapped.instant(this.fix())
-            .asOpenApi()
+        wrap(Mapped::instant, this)
 
     override fun Kind<ForOpenApiPath, String>.dateTime(formatter: DateTimeFormatter) =
-        Mapped.dateTime(this.fix(), formatter)
-            .asOpenApi()
+        wrap(Mapped::dateTime, this, formatter)
 
     override fun Kind<ForOpenApiPath, String>.zonedDateTime(formatter: DateTimeFormatter) =
-        Mapped.zonedDateTime(this.fix(), formatter)
-            .asOpenApi()
+        wrap(Mapped::zonedDateTime, this, formatter)
 
     override fun Kind<ForOpenApiPath, String>.localDate(formatter: DateTimeFormatter) =
-        Mapped.localDate(this.fix(), formatter)
-            .asOpenApi()
+        wrap(Mapped::localDate, this, formatter)
 
     override fun Kind<ForOpenApiPath, String>.localTime(formatter: DateTimeFormatter) =
-        Mapped.localTime(this.fix(), formatter)
-            .asOpenApi()
+        wrap(Mapped::localTime, this, formatter)
 }
 
 fun <T> Path<T>.asOpenApi(
     docs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) =
     OpenApiPath(this, docs)
+
+fun operationPath(value: String): (OpenApiRouteInfo) -> OpenApiRouteInfo = {
+    it.path { path ->
+        joinPaths(path, value)
+    }
+}
+
+private fun pathParam(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo = { info ->
+    info.path { path ->
+        joinPaths(path, "{$name}")
+    }.parameters {
+        it + OpenApiParameter(ParameterLocation.PATH, name).real()
+    }
+}
+
+/**
+ * Uses wrapper to wrap path in a MappedPath,
+ * but preserves the behaviour of path.document()
+ */
+private fun <T> wrap(wrapper: KFunction1<Path<String>, MappedPath<String, T>>,
+                     path: Kind<ForOpenApiPath, String>): Kind<ForOpenApiPath, T> =
+    wrapper(path.fix())
+        .asOpenApi(fold(path.fix()))
+
+/**
+ * Uses wrapper to wrap path in a MappedPath,
+ * but preserves the behaviour of path.document()
+ */
+private fun <T, A, B> wrap(wrapper: KFunction3<Path<String>, A, B, MappedPath<String, T>>,
+                           path: Kind<ForOpenApiPath, String>,
+                           a: A,
+                           b: B): Kind<ForOpenApiPath, T> =
+    wrapper(path.fix(), a, b)
+        .asOpenApi(fold(path.fix()))
+
+/**
+ * Uses wrapper to wrap path in a MappedPath,
+ * but preserves the behaviour of path.document()
+ */
+private fun <T, A> wrap(wrapper: KFunction2<Path<String>, A, MappedPath<String, T>>,
+                        path: Kind<ForOpenApiPath, String>,
+                        a: A): Kind<ForOpenApiPath, T> =
+    wrapper(path.fix(), a)
+        .asOpenApi(fold(path.fix()))
