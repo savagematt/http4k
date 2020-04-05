@@ -1,5 +1,7 @@
 package org.http4k.typesafe.routing
 
+import com.natpryce.Result
+import org.http4k.core.Credentials
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.typesafe.functional.Kind
@@ -9,6 +11,8 @@ import org.http4k.typesafe.routing.messages.fix
 import org.http4k.typesafe.routing.requests.CheckMethodLens
 import org.http4k.typesafe.routing.requests.MethodLens
 import org.http4k.typesafe.routing.requests.PathLens
+import org.http4k.typesafe.routing.requests.auth.BasicAuthClientLens
+import org.http4k.typesafe.routing.requests.auth.BasicAuthServerLens
 import org.http4k.typesafe.routing.requests.paths.ForSimplePath
 import org.http4k.typesafe.routing.requests.paths.Literal
 import org.http4k.typesafe.routing.requests.paths.fix
@@ -33,4 +37,10 @@ object SimpleRequestRouting :
 
     override fun method() =
         MethodLens()
+
+    override fun basicAuthServer(validator: (Credentials) -> Result<String, RoutingError>) =
+        BasicAuthServerLens(validator)
+
+    override fun basicAuthClient(provider: (String) -> Credentials?) =
+        BasicAuthClientLens(provider)
 }

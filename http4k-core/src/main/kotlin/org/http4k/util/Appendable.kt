@@ -8,4 +8,9 @@ class Appendable<T>(val all: MutableList<T> = mutableListOf()) {
     operator fun plusAssign(t: Collection<T>) {
         all += t
     }
+
+    companion object {
+        fun <T> of(all: List<T>) = Appendable(all.toMutableList())
+
+    }
 }

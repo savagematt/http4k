@@ -1,7 +1,11 @@
 package org.http4k.typesafe.routing
 
+import com.natpryce.Result
+import com.natpryce.Success
+import org.http4k.core.Credentials
 import org.http4k.core.Method
 import org.http4k.core.Request
+import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
 
@@ -28,4 +32,23 @@ interface RequestRouting<TLens, TPath> : MessageRouting<Request, TLens> {
      */
     fun method():
         Kind2<TLens, Request, Method>
+
+    /**
+     * Returns username as a string
+     */
+    fun basicAuthServer(validator: (Credentials) -> Result<String, RoutingError>):
+        Kind2<TLens, Request, String>
+
+    /**
+     * Returns username as a string
+     */
+    fun basicAuthClient(provider: (String) -> Credentials?):
+        Kind2<TLens, Request, String>
+}
+
+fun basicAuthValidator(validator: (Credentials) -> Boolean): (Credentials) -> Result<String, RoutingError> = {
+    if (validator(it))
+        Success(it.user)
+    else
+        RoutingError.routeFailed(Status.UNAUTHORIZED, "Invalid credentials")
 }

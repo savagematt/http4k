@@ -30,7 +30,7 @@ class V3Renderer<NODE>(
             }
 
             //https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject
-            is OpenApiSchema -> when(concept){
+            is OpenApiSchema -> when (concept) {
                 is OpenApiSchema.Raw ->
                     concept.schema.render(this)
             }
@@ -102,21 +102,76 @@ class V3Renderer<NODE>(
                 "parameters" to nullable(concept.parameters),
                 "requestBody" to nullable(concept.requestBody),
                 "deprecated" to nullable(concept.deprecated),
-                "security" to nullable(concept.security, { security ->
-                    obj(security.entries.map { entry ->
-                        entry.key.value to this.array(entry.value.map { string(it) })
-                    })
-                })
+                "security" to nullableObj(concept.security)
             )
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#securityRequirementObject
-            is OpenApiSecurity -> concept.content.render(this)
+            is OpenApiOperationSecurity -> array(concept.values.map { string(it) })
+
+            is OpenApiApiKeySecurity -> obj(
+                "type" to string(concept.type),
+                "description" to nullable(concept.description),
+                "name" to string(concept.name),
+                "in" to string(concept.in_.name.toLowerCase())
+            )
+
+            is OpenApiHttpSecurity -> obj(
+                "type" to string(concept.type),
+                "description" to nullable(concept.description),
+                "scheme" to string(concept.scheme),
+                "bearerFormat" to nullable(concept.bearerFormat)
+            )
+
+            is OpenApiOpenIdConnectSecurity -> obj(
+                "type" to string(concept.type),
+                "description" to nullable(concept.description),
+                "openIdConnectUrl" to string(
+                    concept.openIdConnectUrl.toString())
+            )
+
+            is OpenApiOauth2Security -> obj(
+                "type" to string(concept.type),
+                "description" to nullable(concept.description),
+                "flows" to render(concept.flows)
+            )
+
+            is OpenApiOauth2Flows -> obj(
+                "implicit" to nullable(concept.implicit),
+                "password" to nullable(concept.password),
+                "clientCredentials" to nullable(concept.clientCredentials),
+                "authorizationCode" to nullable(concept.authorizationCode)
+            )
+
+            is OpenApiOauth2ImplicitFlow -> obj(
+                "authorizationUrl" to string(concept.authorizationUrl.toString()),
+                "refreshUrl" to nullable(concept.refreshUrl?.toString()),
+                "scopes" to obj(concept.scopes)
+            )
+
+            is OpenApiOauth2PasswordFlow -> obj(
+                "tokenUrl" to string(concept.tokenUrl.toString()),
+                "refreshUrl" to nullable(concept.refreshUrl?.toString())
+            )
+
+            is OpenApiOauth2ClientCredentialsFlow -> obj(
+                "tokenUrl" to string(concept.tokenUrl.toString()),
+                "refreshUrl" to nullable(concept.refreshUrl?.toString()),
+                "scopes" to obj(concept.scopes)
+            )
+
+            is OpenApiOauth2AuthorizationCodeFlow -> obj(
+                "authorizationUrl" to string(concept.authorizationUrl.toString()),
+                "tokenUrl" to string(concept.tokenUrl.toString()),
+                "refreshUrl" to nullable(concept.refreshUrl?.toString()),
+                "scopes" to obj(concept.scopes)
+            )
 
             is OpenApiOperationInfo -> render(concept.operation)
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#componentsObject
             is OpenApiComponents -> obj(
-                "schemas" to nullableObj(concept.schemas)
+                "schemas" to nullableObj(concept.schemas),
+                "securitySchemes" to nullableObj(concept.securitySchemes)
             )
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#contactObject

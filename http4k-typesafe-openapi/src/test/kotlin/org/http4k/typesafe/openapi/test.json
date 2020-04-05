@@ -172,6 +172,37 @@
           }
         }
       }
+    },
+    "/basic_auth": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/object1089648089"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "aNumberField": 123
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": {
+          "BasicAuth": []
+        }
+      }
     }
   },
   "components": {
@@ -194,6 +225,12 @@
             "$ref": "#/components/schemas/object1089648089"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
       }
     }
   }

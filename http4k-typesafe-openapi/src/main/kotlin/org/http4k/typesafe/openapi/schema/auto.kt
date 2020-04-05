@@ -21,7 +21,6 @@ import org.http4k.typesafe.openapi.Real
 import org.http4k.typesafe.openapi.SchemaId
 import org.http4k.typesafe.openapi.asOpenApi
 import org.http4k.typesafe.openapi.fix
-import org.http4k.typesafe.openapi.modifyComponents
 import org.http4k.typesafe.openapi.openApiJson
 import org.http4k.typesafe.openapi.real
 import org.http4k.typesafe.openapi.requestBody
@@ -29,7 +28,7 @@ import org.http4k.typesafe.openapi.responses
 import org.http4k.util.json.JsonToJsonSchema
 
 /**
- * Guesses a body json schema based on an example
+ * Guesses a json schema for request or response body, based on an example
  */
 inline fun <reified M : HttpMessage, NODE : Any> induce(
     json: JsonLibAutoMarshallingJson<NODE>,
@@ -39,7 +38,7 @@ inline fun <reified M : HttpMessage, NODE : Any> induce(
     openApiJson(M::class, json).induce(json, schemaId, example)
 
 /**
- * Guesses a body json schema based on an example
+ * Guesses a json schema for request or response body, based on an example
  */
 inline fun <reified M : HttpMessage, NODE : Any> Kind2<ForOpenApiLens, M, NODE>.induce(
     json: JsonLibAutoMarshallingJson<NODE>,
@@ -60,8 +59,8 @@ inline fun <reified M : HttpMessage, NODE : Any> Kind2<ForOpenApiLens, M, NODE>.
 
     return this.fix()
         .asOpenApi {
-            it.api { api ->
-                api.modifyComponents {
+            it.api {
+                components {
                     this.schemas += additionalSchemas
                 }
             }.let { info ->

@@ -1,7 +1,8 @@
-package org.http4k.typesafe.openapi
+package org.http4k.util.builders
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import org.http4k.util.builders.AppendableOrNull
 import org.junit.jupiter.api.Test
 
 internal class AppendableOrNullTest {

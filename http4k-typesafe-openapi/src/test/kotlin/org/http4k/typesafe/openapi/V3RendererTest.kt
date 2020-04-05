@@ -15,6 +15,7 @@ import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.openapi.OpenApiPaths.boolean
 import org.http4k.typesafe.openapi.OpenApiPaths.consume
 import org.http4k.typesafe.openapi.OpenApiPaths.div
+import org.http4k.typesafe.openapi.OpenApiRequestRouting.basicAuthServer
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.bind
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.header
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.required
@@ -24,7 +25,9 @@ import org.http4k.typesafe.openapi.OpenApiRouting.but
 import org.http4k.typesafe.openapi.OpenApiRouting.request
 import org.http4k.typesafe.openapi.OpenApiRouting.response
 import org.http4k.typesafe.openapi.OpenApiRouting.route
+import org.http4k.typesafe.openapi.builders.meta
 import org.http4k.typesafe.openapi.schema.induce
+import org.http4k.typesafe.routing.basicAuthValidator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -53,7 +56,7 @@ class V3RendererTest {
                 POST bind "/paths" / consume("firstName") / "bertrand" / consume("age").boolean(),
                 response.any()),
             route(
-                // TODO: these should be typed, and some should be required()
+                // TODO: these should be typed
                 POST bind "/headers"
                     and header("b").required() // boolean, required()
                     and header("s") // string
@@ -86,6 +89,16 @@ class V3RendererTest {
             ),
             route(
                 POST bind "/body_json_list_schema",
+                OK with induce(json) {
+                    array(listOf(obj("aNumberField" to number(123))))
+                }
+            ),
+            route(
+                POST bind "/basic_auth"
+                    but basicAuthServer(
+                    basicAuthValidator {
+                        it.password == "password"
+                    }),
                 OK with induce(json) {
                     array(listOf(obj("aNumberField" to number(123))))
                 }
@@ -174,6 +187,7 @@ class V3RendererTest {
 
         println(document(routes))
     }
+
 
     private fun document(routes: List<OpenApiRoute<*, *>>): String {
         val api = api(routes)

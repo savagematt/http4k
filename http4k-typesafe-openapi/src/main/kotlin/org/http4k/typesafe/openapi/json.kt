@@ -39,5 +39,8 @@ fun <T : C, C, NODE> JsonRenderer<C, NODE>.nullable(values: List<T>?) =
 fun <K, T : C, C, NODE> JsonRenderer<C, NODE>.obj(value: Map<K, T>, keyFn: (K) -> String = { it.toString() }) =
     obj(value.map { keyFn(it.key) to render(it.value) })
 
+fun <NODE> Json<NODE>.obj(value: Map<String,String>) =
+    obj(value.map { it.key to string(it.value) })
+
 fun <K, T : C, C, NODE> JsonRenderer<C, NODE>.nullableObj(value: Map<K, T>?, keyFn: (K) -> String = { it.toString() }) =
     nullable(value, { this.obj(it, keyFn) })
