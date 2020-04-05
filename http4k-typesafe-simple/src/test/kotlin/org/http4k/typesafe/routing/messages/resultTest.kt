@@ -7,7 +7,7 @@ import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.result
-import org.http4k.typesafe.routing.SimpleResponseRouting.status
+import org.http4k.typesafe.routing.SimpleResponseRouting.with
 import org.http4k.typesafe.routing.messages.body.textPlain
 import org.junit.jupiter.api.Test
 
@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test
 internal class ResultTest {
 
     val lens = result(
-        status(OK, response.text()),
-        status(BAD_REQUEST, response.text()))
+        OK with response.text(),
+        BAD_REQUEST with response.text())
 
     @Test
     fun `works for failure`() {

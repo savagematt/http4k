@@ -13,14 +13,14 @@ import org.http4k.typesafe.routing.Simple.request
 import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.route
 import org.http4k.typesafe.routing.SimpleRequestRouting.method
-import org.http4k.typesafe.routing.SimpleResponseRouting.status
+import org.http4k.typesafe.routing.SimpleResponseRouting.with
 import org.junit.jupiter.api.Test
 
 @Suppress("MemberVisibilityCanBePrivate")
 class ClientTest {
     val get = route(
         method(GET, request.text()),
-        status(OK, response.text()))
+        OK with response.text())
 
     val server = { request: Request ->
         when (request.bodyString()) {

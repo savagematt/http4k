@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
+import org.http4k.core.Status.Companion.OK
 import org.http4k.format.ConfigurableJackson
 import org.http4k.format.Json
 import org.http4k.format.asConfigurable
@@ -17,6 +18,7 @@ import org.http4k.typesafe.openapi.OpenApiPaths.div
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.bind
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.header
 import org.http4k.typesafe.openapi.OpenApiRequestRouting.required
+import org.http4k.typesafe.openapi.OpenApiResponseRouting.with
 import org.http4k.typesafe.openapi.OpenApiRouting.and
 import org.http4k.typesafe.openapi.OpenApiRouting.but
 import org.http4k.typesafe.openapi.OpenApiRouting.request
@@ -69,18 +71,12 @@ class V3RendererTest {
             ),
             route(
                 POST bind "/body_json_response",
-                induceSchema(json) {
+                OK with induceSchema(json) {
                     obj("aNullField" to nullNode(),
                         "aNumberField" to number(123))
                 }
             )
         )
-//            routes += "/body_json_response" meta {
-//                returning("normal" to json {
-//                    val obj = obj("aNullField" to nullNode(), "aNumberField" to number(123))
-//                    Response(OK).with(body("json").toLens() of obj)
-//                })
-//            } bindContract POST to { Response(OK) }
 //            routes += "/body_json_schema" meta {
 //                receiving(json.body("json").toLens() to json {
 //                    obj("anAnotherObject" to obj("aNullField" to nullNode(), "aNumberField" to number(123)))

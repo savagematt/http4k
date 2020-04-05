@@ -38,8 +38,14 @@ inline fun <reified M : HttpMessage, NODE : Any> induceSchema(
  */
 class Hack(val node: Any) : Renderable {
     override fun <NODE> render(json: Json<NODE>): NODE {
-        @Suppress("UNCHECKED_CAST")
-        return node as NODE
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return node as NODE
+        } catch (e: ClassCastException) {
+            throw ClassCastException(
+                "Sadly this ${node::class} cannot be rendered with ${json::class}. " +
+                "You need to use the same Json when defining your routes and rendering to openapi.")
+        }
     }
 
 }

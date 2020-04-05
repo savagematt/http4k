@@ -11,8 +11,8 @@ import org.http4k.typesafe.routing.responses.StatusLens
 object SimpleResponseRouting :
     SimpleMessageRouting<Response>(),
     ResponseRouting<ForSimpleLens> {
-    override fun <T> status(status: Status, rest: Kind2<ForSimpleLens, Response, T>) =
-        CheckStatusLens(status, rest.fix())
+    override infix fun <T> Status.with(rest: Kind2<ForSimpleLens, Response, T>) =
+        CheckStatusLens(this, rest.fix())
 
     override fun status() =
         StatusLens()

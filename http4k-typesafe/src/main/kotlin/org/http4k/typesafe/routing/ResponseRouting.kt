@@ -11,7 +11,7 @@ interface ResponseRouting<TLens> : MessageRouting<Response, TLens> {
      *
      * Injects status into the result of `rest.set(Response, T)`
      */
-    fun <T> status(status: Status, rest: Kind2<TLens, Response, T>):
+    fun <T> Status.with(rest: Kind2<TLens, Response, T>):
         Kind2<TLens, Response, T>
 
     /**

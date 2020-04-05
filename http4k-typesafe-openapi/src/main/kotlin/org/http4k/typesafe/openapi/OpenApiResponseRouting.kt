@@ -9,15 +9,15 @@ import org.http4k.typesafe.routing.responses.CheckStatusLens
 import org.http4k.typesafe.routing.responses.StatusLens
 
 object OpenApiResponseRouting : OpenApiMessageRouting<Response>(Response::class), ResponseRouting<ForOpenApiLens> {
-    override fun <T> status(status: Status, rest: Kind2<ForOpenApiLens, Response, T>): OpenApiLens<Response, T> {
+    override infix fun <T> Status.with(rest: Kind2<ForOpenApiLens, Response, T>): OpenApiLens<Response, T> {
         val restLens = rest.fix()
-        return CheckStatusLens(status, restLens).asOpenApi {
+        return CheckStatusLens(this, restLens).asOpenApi {
             restLens.document(it)
                 .responses { responses ->
                     responses.default?.let {
                         responses.copy(
                             default = null,
-                            byStatus = responses.byStatus + (status to responses.default))
+                            byStatus = responses.byStatus + (this to responses.default))
                     } ?: TODO("Cannot yet set status code on OpenApiResponses with no default response")
                 }
         }

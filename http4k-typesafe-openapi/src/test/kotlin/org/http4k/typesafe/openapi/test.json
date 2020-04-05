@@ -98,7 +98,7 @@
     "/body_json_response": {
       "post": {
         "responses": {
-          "default": {
+          "200": {
             "description": "body",
             "content": {
               "application/json": {
