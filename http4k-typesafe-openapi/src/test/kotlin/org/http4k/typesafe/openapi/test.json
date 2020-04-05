@@ -144,6 +144,34 @@
           }
         }
       }
+    },
+    "/body_json_list_schema": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/object1089648089"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "aNumberField": 123
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

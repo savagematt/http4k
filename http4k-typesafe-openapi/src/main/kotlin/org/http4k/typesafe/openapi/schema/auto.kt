@@ -28,35 +28,20 @@ import org.http4k.typesafe.openapi.requestBody
 import org.http4k.typesafe.openapi.responses
 import org.http4k.util.json.JsonToJsonSchema
 
-inline fun <reified M : HttpMessage, NODE : Any> induceSchema(
+/**
+ * Guesses a body json schema based on an example
+ */
+inline fun <reified M : HttpMessage, NODE : Any> induce(
     json: JsonLibAutoMarshallingJson<NODE>,
     schemaId: SchemaId? = null,
     crossinline example: Json<NODE>.() -> NODE
 ): Kind2<ForOpenApiLens, M, NODE> =
-    openApiJson(M::class, json).induceSchema(json, schemaId, example)
-
-
-/**
- * TODO: something has clearly gone wrong here
- */
-class Hack(val node: Any) : Renderable {
-    override fun <NODE> render(json: Json<NODE>): NODE {
-        try {
-            @Suppress("UNCHECKED_CAST")
-            return node as NODE
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                "Sadly this ${node::class} cannot be rendered with ${json::class}. " +
-                    "You need to use the same Json when defining your routes and rendering to openapi.")
-        }
-    }
-
-}
+    openApiJson(M::class, json).induce(json, schemaId, example)
 
 /**
- * Guesses a json schema based on an example
+ * Guesses a body json schema based on an example
  */
-inline fun <reified M : HttpMessage, NODE : Any> Kind2<ForOpenApiLens, M, NODE>.induceSchema(
+inline fun <reified M : HttpMessage, NODE : Any> Kind2<ForOpenApiLens, M, NODE>.induce(
     json: JsonLibAutoMarshallingJson<NODE>,
     schemaId: SchemaId? = null,
     crossinline example: Json<NODE>.() -> NODE): Kind2<ForOpenApiLens, M, NODE> {
@@ -108,4 +93,25 @@ inline fun <reified M : HttpMessage, NODE : Any> Kind2<ForOpenApiLens, M, NODE>.
                 }
             }
         }
+}
+
+
+/**
+ * TODO: something has clearly gone wrong here
+ *
+ * We have to pass Json<NODE_1> into JsonLens, because it needs to have it to hand
+ * immediately when we call get(), and
+ */
+class Hack(val node: Any) : Renderable {
+    override fun <NODE> render(json: Json<NODE>): NODE {
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return node as NODE
+        } catch (e: ClassCastException) {
+            throw ClassCastException(
+                "Sadly this ${node::class} cannot be rendered with ${json::class}. " +
+                    "You need to use the same Json when defining your routes and rendering to openapi.")
+        }
+    }
+
 }

@@ -24,13 +24,13 @@ import org.http4k.typesafe.openapi.OpenApiRouting.but
 import org.http4k.typesafe.openapi.OpenApiRouting.request
 import org.http4k.typesafe.openapi.OpenApiRouting.response
 import org.http4k.typesafe.openapi.OpenApiRouting.route
-import org.http4k.typesafe.openapi.schema.induceSchema
+import org.http4k.typesafe.openapi.schema.induce
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(JsonApprovalTest::class)
 class V3RendererTest {
-    val json = ConfigurableJackson(KotlinModule().asConfigurable().customise())
+    val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
 
     @Test
     fun `description`(approver: Approver) {
@@ -71,25 +71,26 @@ class V3RendererTest {
             ),
             route(
                 POST bind "/body_json_response",
-                OK with induceSchema(json) {
+                OK with induce(json) {
                     obj("aNullField" to nullNode(),
                         "aNumberField" to number(123))
                 }
             ),
             route(
                 POST bind "/body_json_schema",
-                OK with induceSchema(json, SchemaId("someDefinitionId")) {
+                OK with induce(json, SchemaId("someDefinitionId")) {
                     obj("anAnotherObject" to obj(
                         "aNullField" to nullNode(),
                         "aNumberField" to number(123)))
                 }
+            ),
+            route(
+                POST bind "/body_json_list_schema",
+                OK with induce(json) {
+                    array(listOf(obj("aNumberField" to number(123))))
+                }
             )
         )
-//            routes += "/body_json_list_schema" meta {
-//                receiving(json.body("json").toLens() to json {
-//                    array(obj("aNumberField" to number(123)))
-//                })
-//            } bindContract POST to { Response(OK) }
 //            routes += "/basic_auth" meta {
 //                security = BasicAuthSecurity("realm", credentials)
 //            } bindContract POST to { Response(OK) }
