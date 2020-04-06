@@ -5,15 +5,13 @@ import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Status
 import org.http4k.core.Uri
+import org.http4k.format.Json
 import org.http4k.typesafe.data.plus
 import org.http4k.typesafe.json.Extension
 import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.json.Renderable
 import org.http4k.typesafe.openapi.ParameterLocation.HEADER
 import org.http4k.typesafe.openapi.ParameterLocation.PATH
-import org.http4k.typesafe.openapi.builders.OpenApiObjectDsl
-import org.http4k.typesafe.openapi.builders.OpenApiOperationDsl
-import org.http4k.typesafe.openapi.builders.OpenApiOperationInfoDsl
 
 /**
  * By making this sealed and having all things we might want to render into json inherit from it,
@@ -64,6 +62,12 @@ fun <T : OpenApiConcept> T.real(extensions: List<Extension> = emptyList()) =
 sealed class OpenApiSchema : OpenApiConcept() {
     data class Raw(val schema: Renderable,
                    override val extensions: List<Extension> = emptyList()) : OpenApiSchema()
+
+    companion object {
+        val empty = Raw(object : Renderable {
+            override fun <NODE> render(json: Json<NODE>) = json.nullNode()
+        })
+    }
 }
 
 sealed class OpenApiBodyExampleValue : OpenApiConcept() {
@@ -141,23 +145,6 @@ data class OpenApiParameter(
 ) : OpenApiConcept()
 
 
-data class HeaderName(val value: String) {
-    override fun toString(): String = value
-}
-
-class OpenApiHeaders(
-    values: Map<HeaderName, OpenApiParameter>,
-    override val extensions: List<Extension> = emptyList()) : OpenApiConcept(), Map<HeaderName, OpenApiParameter> by values {
-    init {
-        entries.forEach {
-            if (it.value.in_ != HEADER)
-                throw IllegalArgumentException(
-                    "Parameter ${it.key} passed to ${this::class.simpleName} " +
-                        "was a ${it.value.in_.name.toLowerCase()} parameter")
-        }
-    }
-}
-
 /**
  * Describes a single response from an API Operation, including design-time, static links to
  * operations based on the response.
@@ -169,8 +156,18 @@ class OpenApiHeaders(
 data class OpenApiResponse(
     val description: String,
     val content: Map<ContentType, OpenApiMediaType>? = null,
-    val headers: OpenApiHeaders? = null,
+    val headers: Map<String, OpenApiParameter>? = null,
     override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
+
+    init {
+        headers?.forEach {
+            if (it.value.in_ != HEADER)
+                throw IllegalArgumentException(
+                    "Parameter ${it.key} passed to ${this::class.simpleName} " +
+                        "was a ${it.value.in_.name.toLowerCase()} parameter")
+        }
+    }
+
     companion object {
         val empty = OpenApiResponse("response")
     }
@@ -254,8 +251,12 @@ data class OpenApiApiKeySecurity(
     val name: String,
     val in_: ApiKeyLocation,
     override val description: String? = null,
-    override val extensions: List<Extension>) : OpenApiSecurityScheme() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiSecurityScheme() {
     override val type: String = "apiKey"
+
+    companion object {
+        val empty = OpenApiApiKeySecurity("ApiKey", ApiKeyLocation.HEADER)
+    }
 }
 
 /**
@@ -266,7 +267,12 @@ data class OpenApiHttpSecurity(
     val bearerFormat: String? = null,
     override val description: String? = null,
     override val extensions: List<Extension> = emptyList()) : OpenApiSecurityScheme() {
+
     override val type: String = "http"
+
+    companion object {
+        val empty = OpenApiHttpSecurity("bearer")
+    }
 }
 
 /**
@@ -275,8 +281,13 @@ data class OpenApiHttpSecurity(
 data class OpenApiOpenIdConnectSecurity(
     val openIdConnectUrl: Uri,
     override val description: String? = null,
-    override val extensions: List<Extension>) : OpenApiSecurityScheme() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiSecurityScheme() {
+
     override val type: String = "openIdConnect"
+
+    companion object {
+        val empty = OpenApiOpenIdConnectSecurity(Uri.of("/"))
+    }
 }
 
 /**
@@ -286,8 +297,12 @@ data class OpenApiOauth2ImplicitFlow(
     val authorizationUrl: Uri,
     val refreshUrl: Uri? = null,
     val scopes: Map<String, String> = emptyMap(),
-    override val extensions: List<Extension>
-) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiOauth2ImplicitFlow(Uri.of("/"))
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#oauthFlowObject
@@ -296,8 +311,12 @@ data class OpenApiOauth2PasswordFlow(
     val tokenUrl: Uri,
     val refreshUrl: Uri? = null,
     val scopes: Map<String, String> = emptyMap(),
-    override val extensions: List<Extension>
-) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiOauth2PasswordFlow(Uri.of("/"))
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#oauthFlowObject
@@ -306,8 +325,12 @@ data class OpenApiOauth2ClientCredentialsFlow(
     val tokenUrl: Uri,
     val refreshUrl: Uri? = null,
     val scopes: Map<String, String> = emptyMap(),
-    override val extensions: List<Extension>
-) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiOauth2ClientCredentialsFlow(Uri.of("/"))
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#oauthFlowObject
@@ -317,8 +340,12 @@ data class OpenApiOauth2AuthorizationCodeFlow(
     val tokenUrl: Uri,
     val refreshUrl: Uri? = null,
     val scopes: Map<String, String> = emptyMap(),
-    override val extensions: List<Extension>
-) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiOauth2AuthorizationCodeFlow(Uri.of("/"), Uri.of("/"))
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#oauthFlowsObject
@@ -328,17 +355,26 @@ data class OpenApiOauth2Flows(
     val password: OpenApiOauth2PasswordFlow? = null,
     val clientCredentials: OpenApiOauth2ClientCredentialsFlow? = null,
     val authorizationCode: OpenApiOauth2AuthorizationCodeFlow? = null,
-    override val extensions: List<Extension>
-) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiOauth2Flows()
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#securitySchemeObject
  */
-data class OpenApiOauth2Security(
+data class OpenApiOAuth2Security(
     val flows: OpenApiOauth2Flows,
     override val description: String? = null,
-    override val extensions: List<Extension>) : OpenApiSecurityScheme() {
+    override val extensions: List<Extension> = emptyList()) : OpenApiSecurityScheme() {
+
     override val type: String = "openIdConnect"
+
+    companion object {
+        val empty = OpenApiOAuth2Security(OpenApiOauth2Flows.empty)
+    }
 }
 
 data class SecurityId(val value: String) {
@@ -448,17 +484,6 @@ data class OpenApiObject(
 data class OpenApiRouteInfo(
     val api: OpenApiObject,
     val route: OpenApiOperationInfo) {
-
-    fun operation(f: OpenApiOperationDsl.() -> Unit): OpenApiRouteInfo =
-        route {
-            operation(f)
-        }
-
-    fun route(f: OpenApiOperationInfoDsl.() -> Unit): OpenApiRouteInfo =
-        this.copy(route = OpenApiOperationInfoDsl(this.route).also(f).build())
-
-    fun api(f: OpenApiObjectDsl.() -> Unit): OpenApiRouteInfo =
-        this.copy(api = OpenApiObjectDsl(this.api).also(f).build())
 
     companion object {
         val empty = OpenApiRouteInfo(OpenApiObject.empty, OpenApiOperationInfo.empty)

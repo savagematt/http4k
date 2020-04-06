@@ -4,7 +4,6 @@ import com.natpryce.Result
 import com.natpryce.flatMap
 import com.natpryce.map
 import com.natpryce.recover
-import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
 import org.http4k.core.HttpMessage
 import org.http4k.core.Method.GET
@@ -13,17 +12,18 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.openapi.ParameterLocation.HEADER
+import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.Routing
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
 import org.http4k.typesafe.routing.messages.ButLens
+import org.http4k.typesafe.routing.messages.FirstLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
+import org.http4k.typesafe.routing.messages.oneOf.OneOf2Lens
 import org.http4k.typesafe.routing.messages.tuples.Tuple2Lens
 import org.http4k.typesafe.routing.requests.paths.Path
-import kotlin.reflect.KClass
 
 /*
 Path
@@ -69,24 +69,40 @@ fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.fix() = this as OpenApiLens
 
 class OpenApiLens<M : HttpMessage, T>(
     private val original: MessageLens<M, T>,
-    private val documenter: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) :
+    private val documenter: ((OpenApiRouteInfo) -> OpenApiRouteInfo)? = null) :
     MessageLens<M, T> by original,
     Documentable<OpenApiRouteInfo>,
     Kind2<ForOpenApiLens, M, T> {
 
     override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
-        documenter(doc)
+        when (documenter) {
+            null -> doc
+            else -> documenter.invoke(doc)
+        }
 
     override fun toString() = original.toString()
+
+    infix fun documentation(more: ((OpenApiRouteInfo) -> OpenApiRouteInfo)) =
+        OpenApiLens(this) { more(this.document(it)) }
+
+    infix fun documentation(more: Documentable<OpenApiRouteInfo>) =
+        OpenApiLens(this) { more.document(this.document(it)) }
+
+    infix fun openapi(more: OpenApiRouteInfoDsl.() -> Unit) =
+        OpenApiLens(this) { OpenApiRouteInfoDsl(this.document(it)).also(more).build() }
 }
 
-fun <M : HttpMessage, T> MessageLens<M, T>.asOpenApi(
-    docs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) =
-    OpenApiLens(this, docs)
-
 infix fun <M : HttpMessage, T> MessageLens<M, T>.openapi(
+    docs: (OpenApiRouteInfoDsl.() -> Unit)) =
+    this documentation { OpenApiRouteInfoDsl(it).also(docs).build() }
+
+infix fun <M : HttpMessage, T> MessageLens<M, T>.documentation(
     docs: (OpenApiRouteInfo) -> OpenApiRouteInfo) =
     OpenApiLens(this, docs)
+
+infix fun <M : HttpMessage, T> MessageLens<M, T>.documentation(
+    docs: Documentable<OpenApiRouteInfo>) =
+    OpenApiLens(this) { docs.document(it) }
 
 /*
 Routes
@@ -173,31 +189,32 @@ object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenA
 
     override fun <M : HttpMessage, A, B> Kind2<ForOpenApiLens, M, A>.and(
         other: Kind2<ForOpenApiLens, M, B>) =
-        Tuple2Lens(this.fix(), other.fix())
-            .asOpenApi(fold(this.fix(), other.fix()))
+        Tuple2Lens(this.fix(), other.fix()) documentation fold(this.fix(), other.fix())
+
+    override fun <M : HttpMessage, A, B> Kind2<ForOpenApiLens, M, A>.or(other: Kind2<ForOpenApiLens, M, B>) =
+        OneOf2Lens(this.fix(), other.fix())
+            .documentation {
+                fix().document(it) or other.fix().document(it)
+            }
+
+    override fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.alternatively(other: Kind2<ForOpenApiLens, M, T>) =
+        FirstLens(listOf(this.fix(), other.fix()))
+            .documentation {
+                fix().document(it) or other.fix().document(it)
+            }
 
     override fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, Unit>.but(
         other: Kind2<ForOpenApiLens, M, T>) =
-        ButLens(this.fix(), other.fix()).asOpenApi(
-            fold(this.fix(), other.fix()))
+        ButLens(this.fix(), other.fix()) documentation fold(this.fix(), other.fix())
 
 
     override fun <M : HttpMessage, T, E> result(
         success: Kind2<ForOpenApiLens, M, T>,
         failure: Kind2<ForOpenApiLens, M, E>) =
-        ResultMessageLens(success.fix(), failure.fix())
-            .asOpenApi(fold(success.fix(), failure.fix()))
+        ResultMessageLens(success.fix(), failure.fix()) documentation fold(success.fix(), failure.fix())
 
     override val path = OpenApiPaths
     override val request = OpenApiRequestRouting
     override val response = OpenApiResponseRouting
 }
 
-fun <D> fold(vararg documentables: Documentable<D>): (D) -> D = { doc ->
-    fold(doc, *documentables)
-}
-
-fun <D> fold(document: D, vararg documentables: Documentable<D>): D = documentables.fold(document)
-{ doc, documentable ->
-    documentable.document(doc)
-}

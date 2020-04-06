@@ -5,6 +5,7 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
+import org.http4k.typesafe.data.OneOf2
 import org.http4k.typesafe.data.Tuple2
 import org.http4k.typesafe.functional.Kind2
 
@@ -36,9 +37,14 @@ interface Routing<TServerRoute, TRoute, TLens, TPath> {
                         response: Kind2<TLens, Response, Out>):
         Kind2<TRoute, In, Out>
 
-
     infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.and(other: Kind2<TLens, M, B>):
         Kind2<TLens, M, Tuple2<A, B>>
+
+    infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.or(other: Kind2<TLens, M, B>):
+        Kind2<TLens, M, OneOf2<A, B>>
+
+    infix fun <M : HttpMessage, T> Kind2<TLens, M, T>.alternatively(other: Kind2<TLens, M, T>):
+        Kind2<TLens, M, T>
 
     /**
      * If I have:
@@ -68,6 +74,6 @@ interface Routing<TServerRoute, TRoute, TLens, TPath> {
         Kind2<TLens, M, Result<T, E>>
 
     val path: Paths<TPath>
-    val request: RequestRouting<TLens,  TPath>
+    val request: RequestRouting<TLens, TPath>
     val response: ResponseRouting<TLens>
 }

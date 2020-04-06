@@ -36,7 +36,7 @@ class V3RendererTest {
     val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
 
     @Test
-    fun `description`(approver: Approver) {
+    fun `produces sensible output for examples in ContractRendererContract`(approver: Approver) {
         val routes: List<OpenApiRoute<*, *>> = listOf(
             route(
                 GET bind "/nometa",
@@ -99,14 +99,15 @@ class V3RendererTest {
                     basicAuthValidator("realm") {
                         it.password == "password"
                     }),
-                OK with induce(json) {
-                    array(listOf(obj("aNumberField" to number(123))))
-                }
-            )
+                response.any())
+//            route(
+//                POST bind "/and_auth"
+//                    but basicAuthServer(
+//                    basicAuthValidator("realm") {
+//                        it.password == "password"
+//                    }),
+//                response.any())
         )
-//            routes += "/basic_auth" meta {
-//                security = BasicAuthSecurity("realm", credentials)
-//            } bindContract POST to { Response(OK) }
 //            routes += "/and_auth" meta {
 //                security = BasicAuthSecurity("foo", credentials, "and1").and(BasicAuthSecurity("foo", credentials, "and2"))
 //            } bindContract POST to { Response(OK) }

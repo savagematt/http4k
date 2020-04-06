@@ -9,6 +9,7 @@ import org.http4k.core.Response
 import org.http4k.format.Json
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.openapi.ParameterLocation.HEADER
+import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.routing.MessageRouting
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.AnyLens
@@ -24,93 +25,115 @@ import kotlin.reflect.KClass
 
 open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) : MessageRouting<M, ForOpenApiLens> {
     override fun any() =
-        AnyLens<M>().asOpenApi()
+        AnyLens<M>().openapi(null ?: {})
 
     override fun nothing() =
-        NothingLens<M>().asOpenApi()
+        NothingLens<M>().openapi(null ?: {})
 
     override fun text():
         Kind2<ForOpenApiLens, M, String> =
-        TextLens<M>()
-            .asOpenApi(documentBody(clazz, TEXT_PLAIN))
+        TextLens<M>() openapi documentBody(clazz, TEXT_PLAIN)
 
     override fun <NODE : Any> json(json: Json<NODE>):
         Kind2<ForOpenApiLens, M, NODE> =
         openApiJson(clazz, json)
 
     override fun header(name: String) =
-        HeaderReplaceLens<M>(name).asOpenApi(addParameter(name))
+        HeaderReplaceLens<M>(name) openapi headerParameter(name)
 
     override fun appendHeader(name: String) =
-        HeaderAppendLens<M>(name).asOpenApi(addParameter(name))
+        HeaderAppendLens<M>(name) openapi headerParameter(name)
 
     override fun appendHeaders(name: String) =
-        HeadersAppendLens<M>(name).asOpenApi(addParameter(name))
+        HeadersAppendLens<M>(name) openapi headerParameter(name)
 
     override fun headers(name: String) =
-        HeadersReplaceLens<M>(name).asOpenApi(addParameter(name))
+        HeadersReplaceLens<M>(name) openapi headerParameter(name)
 
     override fun <T> Kind2<ForOpenApiLens, M, T?>.required(onFailure: () -> RoutingError)
         : Kind2<ForOpenApiLens, M, T> =
         this.fix().let { lens ->
             RequiredLens(lens, onFailure)
-                .asOpenApi {
+                .documentation(lens)
+                .openapi {
                     /**
                      * We don't know what the previous lens is, so here we just make
                      * everything it could possibly have added to our docs "required"
                      */
-                    lens.document(it).let { info ->
-                        info.mapParameters { parameter ->
-                            when (parameter) {
-                                is Real -> Real(parameter.value.copy(required = true))
-                                else -> parameter
+                    /**
+                     * We don't know what the previous lens is, so here we just make
+                     * everything it could possibly have added to our docs "required"
+                     */
+                    route {
+                        operation {
+                            requestBody.map {
+                                mapReferenceable {
+                                    required = true
+                                }
                             }
-                        }.requestBody { requestBody ->
-                            when (requestBody) {
-                                is Real -> Real(requestBody.value.copy(required = true))
-                                else -> requestBody
+                            parameters.map {
+                                mapReferenceable {
+                                    required = true
+                                }
                             }
                         }
                     }
+
                 }
+
         }
 }
 
-fun <M : HttpMessage, NODE : Any> openApiJson(clazz: KClass<M>, json: Json<NODE>) = JsonLens<M, NODE>(json)
-    .asOpenApi(documentBody(clazz, APPLICATION_JSON))
+fun <M : HttpMessage, NODE : Any> openApiJson(clazz: KClass<M>, json: Json<NODE>) =
+    JsonLens<M, NODE>(json) openapi documentBody(clazz, APPLICATION_JSON)
 
-fun addParameter(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo {
-    return { info ->
-        info.parameters {
-            it + OpenApiParameter(
+fun headerParameter(name: String): OpenApiRouteInfoDsl.() -> Unit = {
+    route {
+        operation {
+            parameters += OpenApiParameter(
                 HEADER,
                 name).real()
         }
     }
 }
 
-fun <M : HttpMessage> documentBody(clazz: KClass<M>, contentType: ContentType): (OpenApiRouteInfo) -> OpenApiRouteInfo {
+fun <M : HttpMessage> documentBody(clazz: KClass<M>, contentType: ContentType)
+    : OpenApiRouteInfoDsl.() -> Unit = {
+
     val mediaType = OpenApiMediaType()
 
-    val mediaTypes = mapOf(contentType to mediaType)
+    val newContent = contentType to mediaType
 
-    return { info ->
-        when (clazz) {
-            Request::class ->
-                info.requestBody {
-                    OpenApiRequestBody(
-                        "body",
-                        mediaTypes,
-                        required = true).real()
+    route {
+        operation {
+            when (clazz) {
+                Request::class -> {
+                    requestBody {
+                        mapNullable {
+                            mapReferenceable {
+                                content += newContent
+                                required = true
+                            }
+                        }
+                    }
                 }
-            Response::class ->
-                // TODO: what do we do if there are already responses?
-                info.responses {
-                    OpenApiResponses(default = OpenApiResponse("body", mediaTypes).real())
+                Response::class -> {
+                    responses {
+                        default {
+                            mapNullable {
+                                mapReferenceable {
+                                    content += newContent
+                                }
+                            }
+                        }
+                    }
                 }
-            else -> throw IllegalArgumentException("$clazz was not a recognised HttpMessage type")
+                else -> throw IllegalArgumentException("$clazz was not a recognised HttpMessage type")
+            }
+
         }
     }
+
 }
 
 fun api(routes: List<OpenApiRoute<*, *>>): OpenApiObject =

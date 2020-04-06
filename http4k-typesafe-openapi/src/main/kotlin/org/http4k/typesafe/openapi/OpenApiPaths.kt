@@ -1,6 +1,7 @@
 package org.http4k.typesafe.openapi
 
 import org.http4k.typesafe.functional.Kind
+import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.routing.Paths
 import org.http4k.typesafe.routing.joinPaths
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
@@ -28,20 +29,17 @@ object OpenApiPaths : Paths<ForOpenApiPath> {
         OpenApiPath2(this.fix(), next.fix())
 
     override infix fun <T> Kind<ForOpenApiPath, Unit>.but(next: Kind<ForOpenApiPath, T>) =
-        IgnoreFirst(this.fix(), next.fix())
-            .asOpenApi(fold(this.fix(), next.fix()))
+        IgnoreFirst(this.fix(), next.fix()) documentation fold(this.fix(), next.fix())
 
     override infix fun <T> Kind<ForOpenApiPath, T>.ignore(next: Kind<ForOpenApiPath, Unit>) =
-        IgnoreSecond(this.fix(), next.fix())
-            .asOpenApi(fold(this.fix(), next.fix()))
+        IgnoreSecond(this.fix(), next.fix()) documentation fold(this.fix(), next.fix())
 
     override fun consume(
         name: String, index: IndexInString) =
-        ConsumeUntil(name, index).asOpenApi(pathParam(name))
+        ConsumeUntil(name, index) openapi pathParam(name)
 
     override fun literal(value: String) =
-        Literal(value)
-            .asOpenApi(operationPath(value))
+        Literal(value) openapi operationPath(value)
 
     override fun Kind<ForOpenApiPath, String>.nonEmptyString() =
         wrap(Mapped::nonEmptyString, this)
@@ -104,21 +102,26 @@ object OpenApiPaths : Paths<ForOpenApiPath> {
         wrap(Mapped::localTime, this, formatter)
 }
 
-fun <T> Path<T>.asOpenApi(
-    docs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it }) =
+infix fun <T> Path<T>.openapi(
+    docs: (OpenApiRouteInfoDsl.() -> Unit)) =
+    this documentation { OpenApiRouteInfoDsl(it).also(docs).build() }
+
+infix fun <T> Path<T>.documentation(
+    docs: (OpenApiRouteInfo) -> OpenApiRouteInfo) =
     OpenApiPath(this, docs)
 
-fun operationPath(value: String): (OpenApiRouteInfo) -> OpenApiRouteInfo = {
-    it.path { path ->
-        joinPaths(path, value)
+fun operationPath(value: String): OpenApiRouteInfoDsl.() -> Unit = {
+    route {
+        path = joinPaths(path, value)
     }
 }
 
-private fun pathParam(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo = { info ->
-    info.path { path ->
-        joinPaths(path, "{$name}")
-    }.parameters {
-        it + OpenApiParameter(ParameterLocation.PATH, name).real()
+private fun pathParam(name: String): OpenApiRouteInfoDsl.() -> Unit = {
+    route {
+        path = joinPaths(path, "{$name}")
+        operation {
+            parameters += OpenApiParameter(ParameterLocation.PATH, name).real()
+        }
     }
 }
 
@@ -128,8 +131,7 @@ private fun pathParam(name: String): (OpenApiRouteInfo) -> OpenApiRouteInfo = { 
  */
 private fun <T> wrap(wrapper: KFunction1<Path<String>, MappedPath<String, T>>,
                      path: Kind<ForOpenApiPath, String>): Kind<ForOpenApiPath, T> =
-    wrapper(path.fix())
-        .asOpenApi(fold(path.fix()))
+    wrapper(path.fix()) documentation fold(path.fix())
 
 /**
  * Uses wrapper to wrap path in a MappedPath,
@@ -139,8 +141,7 @@ private fun <T, A, B> wrap(wrapper: KFunction3<Path<String>, A, B, MappedPath<St
                            path: Kind<ForOpenApiPath, String>,
                            a: A,
                            b: B): Kind<ForOpenApiPath, T> =
-    wrapper(path.fix(), a, b)
-        .asOpenApi(fold(path.fix()))
+    wrapper(path.fix(), a, b) documentation fold(path.fix())
 
 /**
  * Uses wrapper to wrap path in a MappedPath,
@@ -149,5 +150,4 @@ private fun <T, A, B> wrap(wrapper: KFunction3<Path<String>, A, B, MappedPath<St
 private fun <T, A> wrap(wrapper: KFunction2<Path<String>, A, MappedPath<String, T>>,
                         path: Kind<ForOpenApiPath, String>,
                         a: A): Kind<ForOpenApiPath, T> =
-    wrapper(path.fix(), a)
-        .asOpenApi(fold(path.fix()))
+    wrapper(path.fix(), a) documentation fold(path.fix())

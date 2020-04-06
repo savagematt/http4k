@@ -74,8 +74,6 @@ class V3Renderer<NODE>(
                 "schema" to nullable(concept.schema)
             )
 
-            is OpenApiHeaders -> obj(concept)
-
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#responseObject
             is OpenApiResponse -> obj(
                 "description" to nullable(concept.description),
@@ -129,7 +127,7 @@ class V3Renderer<NODE>(
                     concept.openIdConnectUrl.toString())
             )
 
-            is OpenApiOauth2Security -> obj(
+            is OpenApiOAuth2Security -> obj(
                 "type" to string(concept.type),
                 "description" to nullable(concept.description),
                 "flows" to render(concept.flows)
@@ -216,12 +214,15 @@ fun <NODE> V3Renderer<NODE>.paths(paths: List<OpenApiOperationInfo>): NODE {
 
     return obj(byPath.entries.toList()
         .map { (path, routes) ->
-            val methods = routes.map { route -> route.method.name.toLowerCase() to render(route) }
             path to obj(
-                methods.checkUnique({ it.first },
-                    { method ->
+                routes.checkUnique(
+                    { it.method },
+                    { (method, route) ->
                         throw IllegalStateException(
-                            "Path '$path' has duplicate operations for method $method")
-                    }))
+                            "Path '$path' has duplicate operations for method ${method}, including $route")
+                    })
+                    .map { route ->
+                        route.method.name.toLowerCase() to render(route)
+                    })
         })
 }

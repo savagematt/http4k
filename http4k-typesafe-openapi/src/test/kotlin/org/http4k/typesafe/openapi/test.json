@@ -71,7 +71,7 @@
       "post": {
         "responses": {
           "default": {
-            "description": "body",
+            "description": "response",
             "content": {
               "text/plain": {
                 "examples": {}
@@ -99,7 +99,7 @@
       "post": {
         "responses": {
           "200": {
-            "description": "body",
+            "description": "response",
             "content": {
               "application/json": {
                 "schema": {
@@ -123,7 +123,7 @@
       "post": {
         "responses": {
           "200": {
-            "description": "body",
+            "description": "response",
             "content": {
               "application/json": {
                 "schema": {
@@ -149,7 +149,7 @@
       "post": {
         "responses": {
           "200": {
-            "description": "body",
+            "description": "response",
             "content": {
               "application/json": {
                 "schema": {
@@ -175,30 +175,15 @@
     },
     "/basic_auth": {
       "post": {
-        "responses": {
-          "200": {
-            "description": "body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/object1089648089"
-                  }
-                },
-                "examples": {
-                  "example": {
-                    "value": [
-                      {
-                        "aNumberField": 123
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
+        "responses": {},
+        "security": {
+          "BasicAuth": []
+        }
+      }
+    },
+    "/and_auth": {
+      "post": {
+        "responses": {},
         "security": {
           "BasicAuth": []
         }

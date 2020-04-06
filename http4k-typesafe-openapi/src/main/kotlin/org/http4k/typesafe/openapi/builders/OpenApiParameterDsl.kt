@@ -4,16 +4,23 @@ import org.http4k.typesafe.openapi.OpenApiParameter
 import org.http4k.typesafe.openapi.ParameterLocation
 import org.http4k.util.Appendable
 
-class OpenApiParameterDsl(val original: OpenApiParameter) {
+class OpenApiParameterDsl(original: OpenApiParameter)
+    : BaseBuilder<OpenApiParameter, OpenApiParameterDsl>(::OpenApiParameterDsl) {
+
+    @Suppress("PropertyName")
+    var in_ = original.in_
     var name = original.name
     var required = original.required
     var deprecated = original.deprecated
     var description = original.description
     // TODO: schema
+    val schema = original.schema
     var extensions = Appendable.of(original.extensions)
 
-    fun build() = OpenApiParameter(
-        original.in_,
+    override operator fun invoke(f: OpenApiParameterDsl.() -> Unit) = f(this)
+
+    override fun build() = OpenApiParameter(
+        in_,
         name,
         /**
          * Path params are always required
@@ -21,10 +28,10 @@ class OpenApiParameterDsl(val original: OpenApiParameter) {
         /**
          * Path params are always required
          */
-        if (original.in_ == ParameterLocation.PATH) true else required,
+        if (in_ == ParameterLocation.PATH) true else required,
         deprecated,
         description,
-        original.schema,
+        schema,
         extensions.all
     )
 }

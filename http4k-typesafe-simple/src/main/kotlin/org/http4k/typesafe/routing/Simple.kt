@@ -12,10 +12,12 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.routing.messages.ButLens
+import org.http4k.typesafe.routing.messages.FirstLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
 import org.http4k.typesafe.routing.messages.SimpleLens
 import org.http4k.typesafe.routing.messages.fix
+import org.http4k.typesafe.routing.messages.oneOf.OneOf2Lens
 import org.http4k.typesafe.routing.messages.tuples.Tuple2Lens
 import org.http4k.typesafe.routing.requests.paths.ForSimplePath
 
@@ -91,6 +93,12 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens, For
     override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.and(
         other: Kind2<ForSimpleLens, M, B>) =
         Tuple2Lens(this.fix(), other.fix())
+
+    override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.or(other: Kind2<ForSimpleLens, M, B>) =
+        OneOf2Lens(this.fix(), other.fix())
+
+    override fun <M : HttpMessage, T> Kind2<ForSimpleLens, M, T>.alternatively(other: Kind2<ForSimpleLens, M, T>) =
+        FirstLens(listOf(this.fix(), other.fix()))
 
     override fun <M : HttpMessage, T> Kind2<ForSimpleLens, M, Unit>.but(
         other: Kind2<ForSimpleLens, M, T>) =

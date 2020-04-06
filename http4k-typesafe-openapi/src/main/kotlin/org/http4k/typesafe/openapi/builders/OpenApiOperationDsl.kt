@@ -5,55 +5,54 @@ import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.openapi.ForOpenApiLens
 import org.http4k.typesafe.openapi.OpenApiLens
 import org.http4k.typesafe.openapi.OpenApiOperation
-import org.http4k.typesafe.openapi.Real
+import org.http4k.typesafe.openapi.OpenApiRequestBody
 import org.http4k.typesafe.openapi.fix
 import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.openapi.real
 import org.http4k.util.Appendable
-import org.http4k.util.builders.AppendableOrNull
-import org.http4k.util.builders.MutableMapOrNull
+import org.http4k.util.builders.NullableListBuilder
+import org.http4k.util.builders.NullableMapBuilder
 
-class OpenApiOperationDsl(val original: OpenApiOperation) {
+class OpenApiOperationDsl(original: OpenApiOperation)
+    : BaseBuilder<OpenApiOperation, OpenApiOperationDsl>(::OpenApiOperationDsl) {
     // TODO responses
-    var responses = original.responses
-    var tags = AppendableOrNull(original.tags)
+    var responses = OpenApiResponsesDsl(original.responses)
+    var tags = NullableListBuilder(original.tags, ::TagDsl)
     var summary = original.summary
     var description = original.description
     var operationId = original.operationId
-    var parameters = AppendableOrNull(original.parameters)
+    var parameters = NullableListBuilder(original.parameters) { ReferenceableDsl(it, ::OpenApiParameterDsl) }
     // TODO requestBody
+    var requestBody = NullableDsl(
+        original.requestBody,
+        { OpenApiRequestBody.empty.real() }, 
+        { ReferenceableDsl(it, ::OpenApiRequestBodyDsl) })
     var deprecated = original.deprecated
-    var security = MutableMapOrNull(original.security)
+    var security = NullableMapBuilder(original.security, ::OpenApiOperationSecurityDsl)
     var extensions = Appendable.of(original.extensions)
 
-    fun build() = OpenApiOperation(
-        original.responses,
-        tags.toList(),
+    override operator fun invoke(f: OpenApiOperationDsl.() -> Unit) = f(this)
+
+    override fun build() = OpenApiOperation(
+        responses.build(),
+        tags.build(),
         summary,
         description,
         operationId,
-        parameters.toList(),
-        original.requestBody,
+        parameters.build(),
+        requestBody.build(),
         deprecated,
-        security.toMap(),
+        security.build(),
         extensions.all.toList()
     )
-
-    fun mapHeaders(fn: OpenApiParameterDsl.() -> Unit) {
-        parameters = parameters.map {
-            when (it) {
-                is Real -> OpenApiParameterDsl(it.value).also(fn).build().real()
-                // TODO: dereference ref and modify value
-                else -> it
-            }
-        }
-    }
 }
 
 infix fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.meta(
     fn: OpenApiOperationDsl.() -> Unit): OpenApiLens<M, T> {
     val lens = this.fix()
     return lens openapi {
-        lens.document(it).operation(fn)
+        route {
+            operation(fn)
+        }
     }
 }
