@@ -6,7 +6,6 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Status
 import org.http4k.core.Uri
 import org.http4k.format.Json
-import org.http4k.typesafe.data.plus
 import org.http4k.typesafe.json.Extension
 import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.json.Renderable

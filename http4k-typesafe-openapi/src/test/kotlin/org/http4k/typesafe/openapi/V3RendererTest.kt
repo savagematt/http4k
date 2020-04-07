@@ -17,8 +17,8 @@ import org.http4k.format.Json
 import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.typesafe.json.JsonRenderer
-import org.http4k.typesafe.openapi.builders.meta
 import org.http4k.typesafe.openapi.documentable.description
+import org.http4k.typesafe.openapi.documentable.meta
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.boolean
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.consume
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.div

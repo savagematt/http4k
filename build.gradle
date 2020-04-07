@@ -213,6 +213,7 @@ dependencies {
     provided project(":http4k-jsonrpc")
     provided project(":http4k-metrics-micrometer")
     provided project(":http4k-multipart")
+    provided project(":http4k-openapi")
     provided project(":http4k-resilience4j")
     provided project(":http4k-security-oauth")
     provided project(":http4k-server-apache")

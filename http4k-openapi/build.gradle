@@ -1,4 +1,4 @@
-description = 'Fully typesafe bi-directional http routing, including auto-gen of openapi docs'
+description = 'Types, rendering, mutations and merging for openapi'
 
 dependencies {
     provided Libs.kotlin_stdlib_jdk8
@@ -7,11 +7,7 @@ dependencies {
 
     provided project(":http4k-core")
     provided project(":http4k-format-jackson")
-    provided project(":http4k-openapi")
-    provided project(":http4k-typesafe")
 
-    testCompile project(":http4k-openapi")
-    testCompile project(":http4k-typesafe")
     testCompile project(":http4k-testing-approval")
     testCompile project(":http4k-format-jackson")
     testCompile project(path: ":http4k-core", configuration: "testArtifacts")

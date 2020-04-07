@@ -1,12 +1,8 @@
 package org.http4k.typesafe.openapi.builders
 
 import org.http4k.core.HttpMessage
-import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.openapi.ForOpenApiLens
-import org.http4k.typesafe.openapi.OpenApiLens
 import org.http4k.typesafe.openapi.OpenApiOperation
 import org.http4k.typesafe.openapi.OpenApiRequestBody
-import org.http4k.typesafe.openapi.fix
 import org.http4k.typesafe.openapi.real
 import org.http4k.util.Appendable
 import org.http4k.util.builders.NullableListBuilder
@@ -44,14 +40,4 @@ class OpenApiOperationDsl(original: OpenApiOperation)
         security.build(),
         extensions.all.toList()
     )
-}
-
-infix fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.meta(
-    fn: OpenApiOperationDsl.() -> Unit): OpenApiLens<M, T> {
-    val lens = this.fix()
-    return lens openapi {
-        route {
-            operation(fn)
-        }
-    }
 }
