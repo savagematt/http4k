@@ -6,6 +6,9 @@ import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.format.Json
 import org.http4k.util.functional.Kind2
 
+/**
+ * For what's going on with these generic parameters, @see [org.http4k.util.functional.Kind2]
+ */
 interface MessageRouting<M : HttpMessage, TLens> {
     /**
      * Injects some text as the message body, and sets Content-Type to text/plain

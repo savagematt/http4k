@@ -32,6 +32,9 @@ fun joinPaths(a: String, b: String) =
 fun joinPaths(vararg paths: Path<*>) =
     paths.fold("/") { acc, path -> joinPaths(acc, path.toString()) }
 
+/**
+ * For what's going on with these generic parameters, @see [org.http4k.util.functional.Kind2]
+ */
 interface Paths<TPath> {
     fun <T> Kind<TPath, T>.get(from: String): PathResult<T>
 

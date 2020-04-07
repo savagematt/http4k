@@ -11,6 +11,9 @@ import org.http4k.util.functional.Kind
 import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 
+/**
+ * For what's going on with these generic parameters, @see [org.http4k.util.functional.Kind2]
+ */
 interface RequestRouting<TLens, TPath> : MessageRouting<Request, TLens> {
     fun <T> path(path: Kind<TPath, T>): Kind2<TLens, Request, T>
 

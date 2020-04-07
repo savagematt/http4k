@@ -4,6 +4,9 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.util.functional.Kind2
 
+/**
+ * For what's going on with these generic parameters, @see [org.http4k.util.functional.Kind2]
+ */
 interface ResponseRouting<TLens> : MessageRouting<Response, TLens> {
     /**
      * Matches any `Response` with the correct `status`, and returns the result
