@@ -12,7 +12,7 @@ import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.Simple.request
 import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.route
-import org.http4k.typesafe.routing.Simple.serve
+import org.http4k.typesafe.routing.Simple.server
 import org.http4k.typesafe.routing.SimpleRequestRouting.method
 import org.junit.jupiter.api.Test
 
@@ -39,8 +39,8 @@ class RouterTest {
 
     val behaviour = ServerBehaviour()
 
-    val getText: Kind2<ForSimpleServerRoute, Unit, String> = Routes.get serve behaviour.get
-    val postText: Kind2<ForSimpleServerRoute, String, String> = Routes.post serve behaviour.post
+    val getText: Kind2<ForSimpleServerRoute, Unit, String> = Routes.get server behaviour.get
+    val postText: Kind2<ForSimpleServerRoute, String, String> = Routes.post server behaviour.post
 
     val router = Router(
         listOf(

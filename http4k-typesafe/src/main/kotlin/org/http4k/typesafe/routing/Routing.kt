@@ -11,6 +11,8 @@ import org.http4k.util.functional.Kind2
 
 /**
  * For what's going on with these generic parameters, @see [org.http4k.util.functional.Kind2]
+ *
+ * This is the interface for all implementations of typesafe routing.
  */
 interface Routing<TServerRoute, TRoute, TLens, TPath> {
     /**
@@ -27,10 +29,10 @@ interface Routing<TServerRoute, TRoute, TLens, TPath> {
      * cases, so by definition a routing failure here is
      * unexpected, and is a genuine exception.
      */
-    infix fun <In, Out> Kind2<TRoute, In, Out>.consume(http: HttpHandler):
+    infix fun <In, Out> Kind2<TRoute, In, Out>.client(http: HttpHandler):
         (In) -> Out
 
-    infix fun <In, Out> Kind2<TRoute, In, Out>.serve(handler: (In) -> Out):
+    infix fun <In, Out> Kind2<TRoute, In, Out>.server(handler: (In) -> Out):
         Kind2<TServerRoute, In, Out>
 
     fun <In, Out> route(request: Kind2<TLens, Request, In>,

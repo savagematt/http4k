@@ -35,13 +35,13 @@ object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenA
         response: Kind2<ForOpenApiLens, Response, Out>) =
         OpenApiRoute(request.fix(), response.fix())
 
-    override fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.serve(
+    override fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.server(
         handler: (In) -> Out) =
         OpenApiServerRoute(this.fix(), handler).fix()
 
-    override fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.consume(
+    override fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.client(
         http: HttpHandler): (In) -> Out {
-        val route = this@consume.fix()
+        val route = this@client.fix()
         return { param: In ->
             route.request.set(Request(Method.GET, "/"), param)
                 .map(http)

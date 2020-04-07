@@ -8,7 +8,7 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.Simple.consume
+import org.http4k.typesafe.routing.Simple.client
 import org.http4k.typesafe.routing.Simple.request
 import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.route
@@ -29,7 +29,7 @@ class ClientTest {
         }
     }
 
-    val client = get consume server
+    val client = get client server
 
     @Test
     fun `round trip works`() {

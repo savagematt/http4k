@@ -77,12 +77,12 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens, For
                                  response: Kind2<ForSimpleLens, Response, Out>) =
         SimpleRoute(request.fix(), response.fix())
 
-    override fun <In, Out> Kind2<ForSimpleRoute, In, Out>.serve(handler: (In) -> Out) =
+    override fun <In, Out> Kind2<ForSimpleRoute, In, Out>.server(handler: (In) -> Out) =
         SimpleServerRoute(this.fix(), handler).fix()
 
-    override fun <In, Out> Kind2<ForSimpleRoute, In, Out>.consume(http: HttpHandler):
+    override fun <In, Out> Kind2<ForSimpleRoute, In, Out>.client(http: HttpHandler):
         (In) -> Out {
-        val route = this@consume.fix()
+        val route = this@client.fix()
         return { param: In ->
             route.request.set(Request(Method.GET, "/"), param)
                 .map(http)
