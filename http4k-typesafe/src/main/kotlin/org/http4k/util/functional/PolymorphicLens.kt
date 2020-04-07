@@ -1,4 +1,4 @@
-package org.http4k.typesafe.functional
+package org.http4k.util.functional
 
 /**
  * A lens is something that, for example, knows how to both extract a named

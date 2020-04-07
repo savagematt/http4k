@@ -4,7 +4,7 @@ import com.natpryce.Result
 import com.natpryce.flatMapFailure
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.typesafe.data.OneOf5
+import org.http4k.util.data.OneOf5
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.SimpleLens

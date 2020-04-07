@@ -10,7 +10,7 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.messages.ButLens
 import org.http4k.typesafe.routing.messages.FirstLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
@@ -27,12 +27,12 @@ Routes
 ------------------------------------------------------------------
  */
 
-/** @see [org.http4k.typesafe.functional.Kind2] */
+/** @see [org.http4k.util.functional.Kind2] */
 class ForSimpleRoute private constructor() {
     companion object
 }
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 fun <In, Out> Kind2<ForSimpleRoute, In, Out>.fix() = this as SimpleRoute<In, Out>
 
@@ -48,13 +48,13 @@ Server Route
 ------------------------------------------------------------------
  */
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 class ForSimpleServerRoute private constructor() {
     companion object
 }
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 fun <In, Out> Kind2<ForSimpleServerRoute, In, Out>.fix() = this as SimpleServerRoute<In, Out>
 

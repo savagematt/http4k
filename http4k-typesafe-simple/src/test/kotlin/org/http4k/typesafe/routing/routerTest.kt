@@ -8,7 +8,7 @@ import org.http4k.core.Method.POST
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.Simple.request
 import org.http4k.typesafe.routing.Simple.response
 import org.http4k.typesafe.routing.Simple.route

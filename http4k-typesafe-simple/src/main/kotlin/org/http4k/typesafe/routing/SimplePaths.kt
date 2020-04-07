@@ -1,6 +1,6 @@
 package org.http4k.typesafe.routing
 
-import org.http4k.typesafe.functional.Kind
+import org.http4k.util.functional.Kind
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
 import org.http4k.typesafe.routing.requests.paths.ForSimplePath
 import org.http4k.typesafe.routing.requests.paths.IgnoreFirst

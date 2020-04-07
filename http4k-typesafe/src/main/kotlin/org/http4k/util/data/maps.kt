@@ -1,4 +1,4 @@
-package org.http4k.typesafe.data
+package org.http4k.util.data
 
 /**
  * NB: appends an entry to a Map<K,V>? (note nullable type)

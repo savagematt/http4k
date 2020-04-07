@@ -4,7 +4,7 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.format.Json
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 
 interface MessageRouting<M : HttpMessage, TLens> {
     /**

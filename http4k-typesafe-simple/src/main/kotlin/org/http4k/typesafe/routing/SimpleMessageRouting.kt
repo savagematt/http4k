@@ -2,7 +2,7 @@ package org.http4k.typesafe.routing
 
 import org.http4k.core.HttpMessage
 import org.http4k.format.Json
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
 import org.http4k.typesafe.routing.messages.HeaderAppendLens

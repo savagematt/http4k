@@ -4,8 +4,8 @@ import com.natpryce.Result
 import org.http4k.core.Credentials
 import org.http4k.core.Method
 import org.http4k.core.Request
-import org.http4k.typesafe.functional.Kind
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.messages.ForSimpleLens
 import org.http4k.typesafe.routing.messages.fix
 import org.http4k.typesafe.routing.requests.CheckMethodLens

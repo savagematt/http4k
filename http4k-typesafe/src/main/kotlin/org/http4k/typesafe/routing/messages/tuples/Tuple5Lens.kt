@@ -3,8 +3,8 @@ package org.http4k.typesafe.routing.messages.tuples
 import com.natpryce.flatMap
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.typesafe.data.Tuple5
-import org.http4k.typesafe.data.tuple
+import org.http4k.util.data.Tuple5
+import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.messages.SimpleLens
 

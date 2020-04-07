@@ -3,8 +3,8 @@ package org.http4k.typesafe.routing.messages.tuples
 import com.natpryce.flatMap
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.typesafe.data.Tuple10
-import org.http4k.typesafe.data.tuple
+import org.http4k.util.data.Tuple10
+import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.messages.SimpleLens
 
@@ -31,7 +31,7 @@ class Tuple10Lens<M : HttpMessage, A, B, C,D,E,F,G,H,I,J>(
                                     h.get(from).flatMap { h ->
                                         i.get(from).flatMap { i ->
                                             j.get(from).map { j ->
-                                                tuple(a,b,c,d,e,f,g,h,i,j)
+                                                tuple(a, b, c, d, e, f, g, h, i, j)
                                             }
                                         }
                                     }

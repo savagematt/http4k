@@ -1,4 +1,4 @@
-package org.http4k.typesafe.functional
+package org.http4k.util.functional
 
 import com.natpryce.Result
 

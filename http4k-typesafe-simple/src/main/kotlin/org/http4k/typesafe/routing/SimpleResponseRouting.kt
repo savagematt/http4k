@@ -2,7 +2,7 @@ package org.http4k.typesafe.routing
 
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.messages.ForSimpleLens
 import org.http4k.typesafe.routing.messages.fix
 import org.http4k.typesafe.routing.responses.CheckStatusLens

@@ -1,8 +1,8 @@
 package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.flatMap
-import org.http4k.typesafe.data.Tuple3
-import org.http4k.typesafe.data.tuple
+import org.http4k.util.data.Tuple3
+import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.joinPaths
 
 data class Path3<A, B, C>(

@@ -6,7 +6,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
-import org.http4k.typesafe.data.tuple
+import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.Simple.and
 import org.http4k.typesafe.routing.Simple.request

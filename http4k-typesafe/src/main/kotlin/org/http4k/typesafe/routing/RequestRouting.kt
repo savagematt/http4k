@@ -7,8 +7,8 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.functional.Kind
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 
 interface RequestRouting<TLens, TPath> : MessageRouting<Request, TLens> {

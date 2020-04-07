@@ -1,14 +1,14 @@
 package org.http4k.typesafe.openapi
 
-import org.http4k.typesafe.data.Tuple10
-import org.http4k.typesafe.data.Tuple2
-import org.http4k.typesafe.data.Tuple3
-import org.http4k.typesafe.data.Tuple4
-import org.http4k.typesafe.data.Tuple5
-import org.http4k.typesafe.data.Tuple6
-import org.http4k.typesafe.data.Tuple7
-import org.http4k.typesafe.data.Tuple8
-import org.http4k.typesafe.data.Tuple9
+import org.http4k.util.data.Tuple10
+import org.http4k.util.data.Tuple2
+import org.http4k.util.data.Tuple3
+import org.http4k.util.data.Tuple4
+import org.http4k.util.data.Tuple5
+import org.http4k.util.data.Tuple6
+import org.http4k.util.data.Tuple7
+import org.http4k.util.data.Tuple8
+import org.http4k.util.data.Tuple9
 import org.http4k.typesafe.routing.requests.paths.Path10
 import org.http4k.typesafe.routing.requests.paths.Path2
 import org.http4k.typesafe.routing.requests.paths.Path3

@@ -3,7 +3,7 @@ package org.http4k.typesafe.routing.requests.paths
 import com.natpryce.Failure
 import com.natpryce.Result
 import com.natpryce.Success
-import org.http4k.typesafe.functional.PolymorphicLens
+import org.http4k.util.functional.PolymorphicLens
 
 data class Match<T>(val value: T, val remaining: String)
 data class NoMatch(val reason: String)

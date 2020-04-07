@@ -2,10 +2,10 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.data.Tuple10
-import org.http4k.typesafe.data.Tuple2
-import org.http4k.typesafe.data.Tuple3
-import org.http4k.typesafe.data.tuple
+import org.http4k.util.data.Tuple10
+import org.http4k.util.data.Tuple2
+import org.http4k.util.data.Tuple3
+import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.SimplePaths.consume
 import org.http4k.typesafe.routing.SimplePaths.div
 import org.http4k.typesafe.routing.SimplePaths.get

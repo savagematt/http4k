@@ -5,7 +5,7 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Status
 import org.http4k.format.JsonLibAutoMarshallingJson
 import org.http4k.openapi.SchemaId
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.openapi.documentable.bodySchemaOf
 import org.http4k.typesafe.openapi.routing.OpenApiRouting.map
 import org.http4k.typesafe.routing.RoutingError
@@ -16,7 +16,7 @@ import org.http4k.util.json.JsonToJsonSchema
 
 inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLibAutoMarshallingJson<NODE>.typed(
     example: T
-): Kind2<ForOpenApiLens, M, T>  =
+): Kind2<ForOpenApiLens, M, T> =
     this.typed(null, example)
 
 /**

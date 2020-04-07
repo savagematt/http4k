@@ -1,12 +1,10 @@
 package org.http4k.typesafe.routing
 
 import com.natpryce.Failure
-import org.http4k.core.Body
-import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.functional.ResultLens
+import org.http4k.util.functional.ResultLens
 
 
 class RoutingErrorException(error: RoutingError) : Exception(error.message)

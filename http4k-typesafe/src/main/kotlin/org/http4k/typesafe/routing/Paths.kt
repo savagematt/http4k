@@ -1,8 +1,8 @@
 package org.http4k.typesafe.routing
 
 import org.http4k.core.Uri
-import org.http4k.typesafe.data.Tuple2
-import org.http4k.typesafe.functional.Kind
+import org.http4k.util.data.Tuple2
+import org.http4k.util.functional.Kind
 import org.http4k.typesafe.routing.requests.paths.IndexInString
 import org.http4k.typesafe.routing.requests.paths.Path
 import org.http4k.typesafe.routing.requests.paths.PathResult

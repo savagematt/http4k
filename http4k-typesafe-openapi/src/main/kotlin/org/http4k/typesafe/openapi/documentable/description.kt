@@ -3,7 +3,7 @@ package org.http4k.typesafe.openapi.documentable
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.openapi.ForOpenApiLens
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.openapi.fix

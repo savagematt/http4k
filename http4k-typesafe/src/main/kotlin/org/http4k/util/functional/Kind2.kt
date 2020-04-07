@@ -1,4 +1,4 @@
-package org.http4k.typesafe.functional
+package org.http4k.util.functional
 
 
 /**
@@ -63,5 +63,5 @@ package org.http4k.typesafe.functional
 @Suppress("KDocUnresolvedReference")
 interface Kind<F, A>
 
-/** @see [org.http4k.typesafe.functional.Kind] */
+/** @see [org.http4k.util.functional.Kind] */
 interface Kind2<F, A, B>

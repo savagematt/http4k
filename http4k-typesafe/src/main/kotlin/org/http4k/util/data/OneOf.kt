@@ -1,4 +1,4 @@
-package org.http4k.typesafe.data
+package org.http4k.util.data
 
 sealed class OneOf
 

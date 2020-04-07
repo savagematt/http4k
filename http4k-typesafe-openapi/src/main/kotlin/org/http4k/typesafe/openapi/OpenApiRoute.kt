@@ -7,18 +7,18 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.openapi.OpenApiRouteInfo
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 class ForOpenApiServerRoute private constructor() {
     companion object
 }
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 fun <In, Out> Kind2<ForOpenApiServerRoute, In, Out>.fix() = this as OpenApiServerRoute<In, Out>
 
@@ -36,12 +36,12 @@ data class OpenApiServerRoute<In, Out>(
             .flatMap { route.response.set(Response(Status.OK), it) }
 }
 
-/** @see [org.http4k.typesafe.functional.Kind2] */
+/** @see [org.http4k.util.functional.Kind2] */
 class ForOpenApiRoute private constructor() {
     companion object
 }
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 fun <In, Out> Kind2<ForOpenApiRoute, In, Out>.fix() = this as OpenApiRoute<In, Out>
 

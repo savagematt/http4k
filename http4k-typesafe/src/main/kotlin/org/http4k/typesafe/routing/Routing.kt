@@ -5,12 +5,12 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.typesafe.data.OneOf2
-import org.http4k.typesafe.data.Tuple2
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.data.OneOf2
+import org.http4k.util.data.Tuple2
+import org.http4k.util.functional.Kind2
 
 /**
- * For what's going on with these generic parameters, @see [org.http4k.typesafe.functional.Kind2]
+ * For what's going on with these generic parameters, @see [org.http4k.util.functional.Kind2]
  */
 interface Routing<TServerRoute, TRoute, TLens, TPath> {
     /**

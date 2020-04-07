@@ -2,17 +2,17 @@ package org.http4k.typesafe.openapi
 
 import org.http4k.core.HttpMessage
 import org.http4k.openapi.OpenApiRouteInfo
-import org.http4k.typesafe.functional.Kind2
+import org.http4k.util.functional.Kind2
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.routing.MessageLens
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 class ForOpenApiLens private constructor() {
     companion object
 }
 
-/** @see [org.http4k.typesafe.functional.Kind2]
+/** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
 fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.fix() = this as OpenApiLens<M, T>
 
