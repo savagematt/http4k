@@ -1,11 +1,11 @@
 package org.http4k.typesafe.openapi.documentable
 
-import org.http4k.typesafe.openapi.OpenApiHttpSecurity
-import org.http4k.typesafe.openapi.OpenApiSecurityRequirement
-import org.http4k.typesafe.openapi.OpenApiSecurityScheme
-import org.http4k.typesafe.openapi.SecurityId
-import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
-import org.http4k.typesafe.openapi.real
+import org.http4k.openapi.OpenApiHttpSecurity
+import org.http4k.openapi.OpenApiSecurityRequirement
+import org.http4k.openapi.OpenApiSecurityScheme
+import org.http4k.openapi.SecurityId
+import org.http4k.openapi.builders.OpenApiRouteInfoDsl
+import org.http4k.openapi.real
 
 fun basicAuth(securityId: SecurityId = SecurityId("BasicAuth")): OpenApiRouteInfoDsl.() -> Unit =
     securityOf(securityId, OpenApiHttpSecurity("basic"))

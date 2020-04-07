@@ -1,5 +1,6 @@
 package org.http4k.typesafe.openapi
 
+import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.routing.requests.paths.Path
 

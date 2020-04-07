@@ -1,8 +1,9 @@
 package org.http4k.typesafe.openapi
 
 import org.http4k.core.HttpMessage
+import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
+import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.routing.MessageLens
 
 /** @see [org.http4k.typesafe.functional.Kind2]

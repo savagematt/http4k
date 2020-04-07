@@ -2,6 +2,7 @@ package org.http4k.typesafe.openapi
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.consume
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.div
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.literal

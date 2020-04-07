@@ -5,14 +5,14 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.format.Json
-import org.http4k.typesafe.json.Renderable
-import org.http4k.typesafe.openapi.OpenApiBodyExample
-import org.http4k.typesafe.openapi.OpenApiBodyExampleValue
-import org.http4k.typesafe.openapi.OpenApiMediaType
-import org.http4k.typesafe.openapi.OpenApiSchema
-import org.http4k.typesafe.openapi.SchemaId
-import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
-import org.http4k.typesafe.openapi.real
+import org.http4k.util.Renderable
+import org.http4k.openapi.OpenApiBodyExample
+import org.http4k.openapi.OpenApiBodyExampleValue
+import org.http4k.openapi.OpenApiMediaType
+import org.http4k.openapi.OpenApiSchema
+import org.http4k.openapi.SchemaId
+import org.http4k.openapi.builders.OpenApiRouteInfoDsl
+import org.http4k.openapi.real
 import org.http4k.util.json.JsonSchema
 
 /**

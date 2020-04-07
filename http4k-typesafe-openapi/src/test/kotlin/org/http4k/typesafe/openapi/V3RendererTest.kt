@@ -16,7 +16,10 @@ import org.http4k.format.ConfigurableJackson
 import org.http4k.format.Json
 import org.http4k.format.asConfigurable
 import org.http4k.format.customise
-import org.http4k.typesafe.json.JsonRenderer
+import org.http4k.openapi.SchemaId
+import org.http4k.openapi.Tag
+import org.http4k.openapi.V3Renderer
+import org.http4k.util.JsonRenderer
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.boolean

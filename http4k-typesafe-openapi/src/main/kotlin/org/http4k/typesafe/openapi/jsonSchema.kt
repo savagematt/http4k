@@ -4,6 +4,7 @@ import com.natpryce.Success
 import org.http4k.core.HttpMessage
 import org.http4k.core.Status
 import org.http4k.format.JsonLibAutoMarshallingJson
+import org.http4k.openapi.SchemaId
 import org.http4k.typesafe.functional.Kind2
 import org.http4k.typesafe.openapi.documentable.bodySchemaOf
 import org.http4k.typesafe.openapi.routing.OpenApiRouting.map
