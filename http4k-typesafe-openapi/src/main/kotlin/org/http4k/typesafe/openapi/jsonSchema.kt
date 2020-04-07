@@ -13,6 +13,11 @@ import org.http4k.util.json.AutoJsonToJsonSchema
 import org.http4k.util.json.JsonSchema
 import org.http4k.util.json.JsonToJsonSchema
 
+inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLibAutoMarshallingJson<NODE>.typed(
+    example: T
+): Kind2<ForOpenApiLens, M, T>  =
+    this.typed(null, example)
+
 /**
  * Guesses a json schema for request or response body, based on an example, and
  * adds it to the openapi docs.
@@ -21,8 +26,8 @@ import org.http4k.util.json.JsonToJsonSchema
  * to deserialize/serialise a value of type [T].
  */
 inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLibAutoMarshallingJson<NODE>.typed(
-    example: T,
-    schemaId: SchemaId? = null
+    schemaId: SchemaId?,
+    example: T
 ): Kind2<ForOpenApiLens, M, T> {
 
     val schema = AutoJsonToJsonSchema(this).toSchema(example, schemaId?.value)
@@ -54,6 +59,15 @@ inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE
         example,
         JsonToJsonSchema(this).toSchema(example, schemaId?.value))
 }
+
+/**
+ * Guesses a json schema for request or response body, based on an example, and
+ * adds it to the openapi docs
+ */
+inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE>.plain(
+    schemaId: SchemaId? = null,
+    exampleBuilder: JsonLibAutoMarshallingJson<NODE>.() -> NODE): Kind2<ForOpenApiLens, M, NODE> {
+    return this.plain(exampleBuilder(this), schemaId)}
 
 inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE>.jsonSchema(
     example: NODE,

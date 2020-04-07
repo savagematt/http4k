@@ -88,26 +88,25 @@ class V3RendererTest {
             ),
             route(
                 POST bind "/body_json_response",
-                OK with json.plain(json.run {
+                OK with json.plain {
                     obj("aNullField" to nullNode(),
                         "aNumberField" to number(123))
-                })
+                }
             ),
             route(
                 POST bind "/body_json_schema",
                 OK with json.plain(
-                    json.run {
-                        obj("anAnotherObject" to obj(
-                            "aNullField" to nullNode(),
-                            "aNumberField" to number(123)))
-                    },
-                    SchemaId("someDefinitionId"))
+                    SchemaId("someDefinitionId")) {
+                    obj("anAnotherObject" to obj(
+                        "aNullField" to nullNode(),
+                        "aNumberField" to number(123)))
+                }
             ),
             route(
                 POST bind "/body_json_list_schema",
-                OK with json.plain(json.run {
+                OK with json.plain {
                     array(listOf(obj("aNumberField" to number(123))))
-                })
+                }
             ),
             route(
                 POST bind "/basic_auth"
@@ -118,33 +117,30 @@ class V3RendererTest {
                 response.any()),
             route(
                 POST bind "/body_auto_schema"
-                    but json.typed(
-                    ArbObject2(
-                        "s",
-                        ArbObject1(Foo.bar),
-                        listOf(1),
-                        true
-                    ),
-                    SchemaId("someOtherId")),
+                    but json
+                    .typed(SchemaId("someOtherId"),
+                        ArbObject2(
+                            "s",
+                            ArbObject1(Foo.bar),
+                            listOf(1),
+                            true
+                        )),
                 response.any()),
             route(
                 PUT bind "/body_auto_schema"
-                    but json.typed(
-                    ArbObject3(Uri.of("http://foowang"), mapOf("foo" to 123))),
-                CREATED with json.typed(
-                    listOf(ArbObject1(Foo.bing)))),
+                    but json
+                    .typed(ArbObject3(
+                        Uri.of("http://foowang"),
+                        mapOf("foo" to 123))),
+                CREATED with json
+                    .typed(listOf(ArbObject1(Foo.bing)))),
             route(
-                // This
                 POST bind "/returning",
-                FORBIDDEN with json.plain<Response, JsonNode>(json.run {
-                    obj("aString" to string("a message of some kind"))
-                }).description("no way jose"))
+                FORBIDDEN with json
+                    .plain<Response, JsonNode> {
+                        obj("aString" to string("a message of some kind"))
+                    }.description("no way jose"))
         )
-
-//            routes += "/returning" meta {
-//                returning("no way jose" to Response(FORBIDDEN).with(customBody of json { obj("aString" to string("a message of some kind")) }))
-//            } bindContract POST to { Response(OK) }
-
 
 //            routes += "/produces_and_consumes" meta {
 //                produces += APPLICATION_JSON

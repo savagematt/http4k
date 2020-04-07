@@ -8,6 +8,10 @@ import org.http4k.typesafe.openapi.ForOpenApiLens
 import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.openapi.fix
 
+/**
+ * Returns an [org.http4k.typesafe.openapi.OpenApiLens] with request/response
+ * descriptions set as specified in the docs.
+ */
 inline fun <reified M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.description(value: String) =
     this.fix() openapi descriptionOf<M>(value)
 
