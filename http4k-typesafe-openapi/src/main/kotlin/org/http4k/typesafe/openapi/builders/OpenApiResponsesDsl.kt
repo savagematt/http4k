@@ -27,7 +27,6 @@ class OpenApiResponsesDsl(original: OpenApiResponses)
         default.build(),
         byStatus.build(),
         extensions.all
-
     )
 
 }

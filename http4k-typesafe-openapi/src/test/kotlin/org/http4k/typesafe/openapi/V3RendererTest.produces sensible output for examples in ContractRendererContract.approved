@@ -95,7 +95,7 @@
                   "$ref" : "#/components/schemas/object1089648089"
                 },
                 "examples" : {
-                  "example" : {
+                  "body" : {
                     "value" : {
                       "aNullField" : null,
                       "aNumberField" : 123
@@ -119,7 +119,7 @@
                   "$ref" : "#/components/schemas/someDefinitionId"
                 },
                 "examples" : {
-                  "example" : {
+                  "body" : {
                     "value" : {
                       "anAnotherObject" : {
                         "aNullField" : null,
@@ -148,7 +148,7 @@
                   }
                 },
                 "examples" : {
-                  "example" : {
+                  "body" : {
                     "value" : [ {
                       "aNumberField" : 123
                     } ]
@@ -180,7 +180,7 @@
                 "example" : null
               },
               "examples" : {
-                "example" : {
+                "body" : {
                   "value" : {
                     "string" : "s",
                     "child" : {
@@ -214,7 +214,7 @@
                   "type" : "array"
                 },
                 "examples" : {
-                  "example" : {
+                  "body" : {
                     "value" : [ {
                       "anotherString" : "bing"
                     } ]
@@ -233,7 +233,7 @@
                 "example" : null
               },
               "examples" : {
-                "example" : {
+                "body" : {
                   "value" : {
                     "uri" : "http://foowang",
                     "additional" : {
@@ -245,6 +245,29 @@
             }
           },
           "required" : true
+        }
+      }
+    },
+    "/returning" : {
+      "post" : {
+        "responses" : {
+          "403" : {
+            "description" : "no way jose",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/object-2055192556"
+                },
+                "examples" : {
+                  "body" : {
+                    "value" : {
+                      "aString" : "a message of some kind"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -355,6 +378,16 @@
         },
         "type" : "object",
         "required" : [ "additional", "uri" ]
+      },
+      "object-2055192556" : {
+        "type" : "object",
+        "required" : [ ],
+        "properties" : {
+          "aString" : {
+            "type" : "string",
+            "example" : "a message of some kind"
+          }
+        }
       }
     },
     "securitySchemes" : {

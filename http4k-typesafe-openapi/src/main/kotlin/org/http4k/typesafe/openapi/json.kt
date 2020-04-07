@@ -1,4 +1,4 @@
-package org.http4k.typesafe.openapi.messages
+package org.http4k.typesafe.openapi
 
 import org.http4k.format.Json
 import org.http4k.typesafe.json.JsonRenderer

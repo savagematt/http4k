@@ -3,9 +3,6 @@ package org.http4k.typesafe.openapi
 import org.http4k.format.Json
 import org.http4k.typesafe.data.checkUnique
 import org.http4k.typesafe.json.JsonRenderer
-import org.http4k.typesafe.openapi.messages.nullable
-import org.http4k.typesafe.openapi.messages.nullableObj
-import org.http4k.typesafe.openapi.messages.obj
 
 
 class V3Renderer<NODE>(

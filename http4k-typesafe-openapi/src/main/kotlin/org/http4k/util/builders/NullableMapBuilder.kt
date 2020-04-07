@@ -24,6 +24,8 @@ class NullableMapBuilder<K, V, Dsl : Builder<V, Dsl>>(
         ensureValue().putAll(t.map { (k, v) -> k to toBuilder(v) })
     }
 
+    fun map(f: Dsl.() -> Unit) = all?.mapValues { f(it.value) }
+
     fun invoke(f: Map<K, Dsl>.() -> Unit) = f(ensureValue())
 
     fun build(): Map<K, V>? = all?.mapValues { (_, v) -> v.build() }

@@ -1,4 +1,4 @@
-package org.http4k.typesafe.openapi.messages
+package org.http4k.typesafe.openapi.documentable
 
 import org.http4k.typesafe.openapi.OpenApiHttpSecurity
 import org.http4k.typesafe.openapi.OpenApiSecurityRequirement
@@ -8,7 +8,7 @@ import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.openapi.real
 
 fun basicAuth(securityId: SecurityId = SecurityId("BasicAuth")): OpenApiRouteInfoDsl.() -> Unit =
-    security(securityId, OpenApiHttpSecurity("basic"))
+    securityOf(securityId, OpenApiHttpSecurity("basic"))
 
 /**
  * Returns an extension method that will add security in to `securitySchemes` in
@@ -16,9 +16,9 @@ fun basicAuth(securityId: SecurityId = SecurityId("BasicAuth")): OpenApiRouteInf
  * [org.http4k.typesafe.openapi.OpenApiOperation.security] for
  * [org.http4k.typesafe.openapi.OpenApiRouteInfo.route]
  */
-fun security(id: SecurityId,
-             security: OpenApiSecurityScheme,
-             requirement: OpenApiSecurityRequirement = OpenApiSecurityRequirement.empty)
+fun securityOf(id: SecurityId,
+               security: OpenApiSecurityScheme,
+               requirement: OpenApiSecurityRequirement = OpenApiSecurityRequirement.empty)
     : OpenApiRouteInfoDsl.() -> Unit = {
     api {
         components {

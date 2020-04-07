@@ -7,7 +7,9 @@ import com.oneeyedmen.okeydoke.junit5.KotlinApprovalsExtension
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PUT
+import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
+import org.http4k.core.Status.Companion.FORBIDDEN
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Uri
 import org.http4k.format.ConfigurableJackson
@@ -16,6 +18,7 @@ import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.openapi.builders.meta
+import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.boolean
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.consume
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.div
@@ -30,8 +33,6 @@ import org.http4k.typesafe.openapi.routing.OpenApiRouting.request
 import org.http4k.typesafe.openapi.routing.OpenApiRouting.response
 import org.http4k.typesafe.openapi.routing.OpenApiRouting.route
 import org.http4k.typesafe.openapi.routing.api
-import org.http4k.typesafe.openapi.schema.plain
-import org.http4k.typesafe.openapi.schema.typed
 import org.http4k.typesafe.routing.basicAuthValidator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -131,8 +132,18 @@ class V3RendererTest {
                     but json.typed(
                     ArbObject3(Uri.of("http://foowang"), mapOf("foo" to 123))),
                 CREATED with json.typed(
-                    listOf(ArbObject1(Foo.bing))))
+                    listOf(ArbObject1(Foo.bing)))),
+            route(
+                // This
+                POST bind "/returning",
+                FORBIDDEN with json.plain<Response, JsonNode>(json.run {
+                    obj("aString" to string("a message of some kind"))
+                }).description("no way jose"))
         )
+
+//            routes += "/returning" meta {
+//                returning("no way jose" to Response(FORBIDDEN).with(customBody of json { obj("aString" to string("a message of some kind")) }))
+//            } bindContract POST to { Response(OK) }
 
 
 //            routes += "/produces_and_consumes" meta {
@@ -141,9 +152,6 @@ class V3RendererTest {
 //                consumes += OCTET_STREAM
 //                consumes += APPLICATION_FORM_URLENCODED
 //            } bindContract GET to { Response(OK) }
-//            routes += "/returning" meta {
-//                returning("no way jose" to Response(FORBIDDEN).with(customBody of json { obj("aString" to string("a message of some kind")) }))
-//            } bindContract POST to { Response(OK) }
 //            routes += "/body_auto_schema_multiple_response_schemas" meta {
 //                returning(OK, Body.auto<ArbObject1>().toLens() to ArbObject1(Foo.bing))
 //                returning(CREATED, Body.auto<ArbObject1>().toLens() to ArbObject1(Foo.bing))
