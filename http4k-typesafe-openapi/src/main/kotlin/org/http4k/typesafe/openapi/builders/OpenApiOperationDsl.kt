@@ -7,7 +7,6 @@ import org.http4k.typesafe.openapi.OpenApiLens
 import org.http4k.typesafe.openapi.OpenApiOperation
 import org.http4k.typesafe.openapi.OpenApiRequestBody
 import org.http4k.typesafe.openapi.fix
-import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.openapi.real
 import org.http4k.util.Appendable
 import org.http4k.util.builders.NullableListBuilder

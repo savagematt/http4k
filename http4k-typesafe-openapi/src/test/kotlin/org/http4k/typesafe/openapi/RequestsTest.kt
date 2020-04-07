@@ -2,8 +2,10 @@ package org.http4k.typesafe.openapi
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.openapi.OpenApiPaths.div
-import org.http4k.typesafe.openapi.OpenApiRequestRouting.path
+import org.http4k.typesafe.openapi.routing.OpenApiPaths
+import org.http4k.typesafe.openapi.routing.OpenApiPaths.div
+import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.path
+import org.http4k.typesafe.openapi.routing.document
 import org.junit.jupiter.api.Test
 
 class RequestsTest {

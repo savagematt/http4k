@@ -1,4 +1,4 @@
-package org.http4k.typesafe.openapi
+package org.http4k.typesafe.openapi.routing
 
 import com.natpryce.Result
 import org.http4k.core.Credentials
@@ -6,8 +6,15 @@ import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.typesafe.functional.Kind
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.openapi.OpenApiPaths.literal
-import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
+import org.http4k.typesafe.openapi.ForOpenApiLens
+import org.http4k.typesafe.openapi.ForOpenApiPath
+import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.documentation
+import org.http4k.typesafe.openapi.routing.OpenApiPaths.literal
+import org.http4k.typesafe.openapi.fix
+import org.http4k.typesafe.openapi.fold
+import org.http4k.typesafe.openapi.messages.basicAuth
+import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.routing.RequestRouting
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.requests.CheckMethodLens
@@ -49,21 +56,9 @@ object OpenApiRequestRouting :
         MethodLens().openapi(null ?: {})
 
     override fun basicAuthServer(validator: (Credentials) -> Result<String, RoutingError>) =
-        BasicAuthServerLens(validator) openapi basicAuth
+        BasicAuthServerLens(validator) openapi basicAuth()
 
     override fun basicAuthClient(provider: (String) -> Credentials?) =
-        BasicAuthClientLens(provider) openapi basicAuth
+        BasicAuthClientLens(provider) openapi basicAuth()
 }
 
-val basicAuth: OpenApiRouteInfoDsl.() -> Unit = {
-    api {
-        components {
-            security += SecurityId("BasicAuth") to OpenApiHttpSecurity("basic").real<OpenApiSecurityScheme>()
-        }
-    }
-    route {
-        operation {
-            security += SecurityId("BasicAuth") to OpenApiOperationSecurity()
-        }
-    }
-}

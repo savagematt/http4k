@@ -1,8 +1,13 @@
-package org.http4k.typesafe.openapi
+package org.http4k.typesafe.openapi.routing
 
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.typesafe.functional.Kind2
+import org.http4k.typesafe.openapi.ForOpenApiLens
+import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.documentation
+import org.http4k.typesafe.openapi.fix
+import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.routing.ResponseRouting
 import org.http4k.typesafe.routing.responses.CheckStatusLens
 import org.http4k.typesafe.routing.responses.StatusLens

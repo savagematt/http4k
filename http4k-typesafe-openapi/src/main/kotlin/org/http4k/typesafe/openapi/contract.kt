@@ -212,7 +212,7 @@ data class OpenApiOperation(
     val parameters: List<Referenceable<OpenApiParameter>>? = null,
     val requestBody: Referenceable<OpenApiRequestBody>? = null,
     val deprecated: Boolean? = null,
-    val security: Map<SecurityId, OpenApiOperationSecurity>? = null,
+    val security: Map<SecurityId, OpenApiSecurityRequirement>? = null,
     override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
     companion object {
         val empty = OpenApiOperation(OpenApiResponses())
@@ -223,9 +223,13 @@ data class OpenApiOperation(
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#securityRequirementObject
  */
-data class OpenApiOperationSecurity(
+data class OpenApiSecurityRequirement(
     val values: List<String> = emptyList(),
-    override val extensions: List<Extension> = emptyList()) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept(){
+    companion object{
+        val empty = OpenApiSecurityRequirement()
+    }
+}
 
 interface IOpenApiSecurityScheme {
     val type: String

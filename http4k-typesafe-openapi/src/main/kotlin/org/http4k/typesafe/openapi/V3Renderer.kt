@@ -3,6 +3,9 @@ package org.http4k.typesafe.openapi
 import org.http4k.format.Json
 import org.http4k.typesafe.data.checkUnique
 import org.http4k.typesafe.json.JsonRenderer
+import org.http4k.typesafe.openapi.messages.nullable
+import org.http4k.typesafe.openapi.messages.nullableObj
+import org.http4k.typesafe.openapi.messages.obj
 
 
 class V3Renderer<NODE>(
@@ -104,7 +107,7 @@ class V3Renderer<NODE>(
             )
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#securityRequirementObject
-            is OpenApiOperationSecurity -> array(concept.values.map { string(it) })
+            is OpenApiSecurityRequirement -> array(concept.values.map { string(it) })
 
             is OpenApiApiKeySecurity -> obj(
                 "type" to string(concept.type),

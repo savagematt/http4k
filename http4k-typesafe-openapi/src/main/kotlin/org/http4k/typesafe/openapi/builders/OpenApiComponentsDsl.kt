@@ -6,7 +6,7 @@ import org.http4k.util.builders.NullableMapBuilder
 
 class OpenApiComponentsDsl(original: OpenApiComponents)
     : BaseBuilder<OpenApiComponents, OpenApiComponentsDsl>(::OpenApiComponentsDsl) {
-    var security = NullableMapBuilder(
+    var securitySchemes = NullableMapBuilder(
         original.securitySchemes) {
         ReferenceableDsl(it, ::OpenApiSecuritySchemeDsl)
     }
@@ -19,7 +19,7 @@ class OpenApiComponentsDsl(original: OpenApiComponents)
         OpenApiComponentsDsl(this).also(f).build()
 
     override fun build() = OpenApiComponents(
-        security.build(),
+        securitySchemes.build(),
         schemas.build(),
         extensions.all
     )

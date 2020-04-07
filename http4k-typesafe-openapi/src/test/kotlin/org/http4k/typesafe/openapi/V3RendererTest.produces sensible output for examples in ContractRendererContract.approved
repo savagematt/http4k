@@ -167,6 +167,86 @@
           "BasicAuth" : [ ]
         }
       }
+    },
+    "/body_auto_schema" : {
+      "post" : {
+        "responses" : { },
+        "requestBody" : {
+          "description" : "body",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/someOtherId",
+                "example" : null
+              },
+              "examples" : {
+                "example" : {
+                  "value" : {
+                    "string" : "s",
+                    "child" : {
+                      "anotherString" : "bar"
+                    },
+                    "numbers" : [ 1 ],
+                    "bool" : true
+                  }
+                }
+              }
+            }
+          },
+          "required" : true
+        }
+      },
+      "put" : {
+        "responses" : {
+          "201" : {
+            "description" : "response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "oneOf" : [ {
+                      "$ref" : "#/components/schemas/ArbObject1"
+                    } ]
+                  },
+                  "example" : [ {
+                    "anotherString" : "bing"
+                  } ],
+                  "type" : "array"
+                },
+                "examples" : {
+                  "example" : {
+                    "value" : [ {
+                      "anotherString" : "bing"
+                    } ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "description" : "body",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ArbObject3",
+                "example" : null
+              },
+              "examples" : {
+                "example" : {
+                  "value" : {
+                    "uri" : "http://foowang",
+                    "additional" : {
+                      "foo" : 123
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required" : true
+        }
+      }
     }
   },
   "components" : {
@@ -189,6 +269,92 @@
             "$ref" : "#/components/schemas/object1089648089"
           }
         }
+      },
+      "someOtherId" : {
+        "properties" : {
+          "string" : {
+            "example" : "s",
+            "type" : "string"
+          },
+          "child" : {
+            "$ref" : "#/components/schemas/ArbObject1",
+            "example" : null
+          },
+          "numbers" : {
+            "items" : {
+              "oneOf" : [ {
+                "type" : "number"
+              } ]
+            },
+            "example" : [ 1 ],
+            "type" : "array"
+          },
+          "bool" : {
+            "example" : true,
+            "type" : "boolean"
+          }
+        },
+        "example" : {
+          "string" : "s",
+          "child" : {
+            "anotherString" : "bar"
+          },
+          "numbers" : [ 1 ],
+          "bool" : true
+        },
+        "type" : "object",
+        "required" : [ "bool", "numbers", "string" ]
+      },
+      "ArbObject1" : {
+        "properties" : {
+          "anotherString" : {
+            "$ref" : "#/components/schemas/Foo",
+            "example" : null
+          }
+        },
+        "example" : {
+          "anotherString" : "bing"
+        },
+        "type" : "object",
+        "required" : [ "anotherString" ]
+      },
+      "Foo" : {
+        "example" : "bing",
+        "enum" : [ "bar", "bing" ],
+        "type" : "string"
+      },
+      "ArbObject3" : {
+        "properties" : {
+          "uri" : {
+            "example" : "http://foowang",
+            "type" : "string"
+          },
+          "additional" : {
+            "additionalProperties" : {
+              "properties" : {
+                "foo" : {
+                  "example" : 123,
+                  "type" : "number"
+                }
+              },
+              "example" : {
+                "foo" : 123
+              },
+              "type" : "object",
+              "required" : [ "foo" ]
+            },
+            "example" : null,
+            "type" : "object"
+          }
+        },
+        "example" : {
+          "uri" : "http://foowang",
+          "additional" : {
+            "foo" : 123
+          }
+        },
+        "type" : "object",
+        "required" : [ "additional", "uri" ]
       }
     },
     "securitySchemes" : {

@@ -7,9 +7,11 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.typesafe.functional.Kind2
-import org.http4k.typesafe.openapi.OpenApiRequestRouting.header
-import org.http4k.typesafe.openapi.OpenApiRequestRouting.required
+import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.header
+import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.required
 import org.http4k.typesafe.openapi.ParameterLocation.HEADER
+import org.http4k.typesafe.openapi.routing.document
+import org.http4k.typesafe.openapi.routing.get
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 import org.junit.jupiter.api.Test

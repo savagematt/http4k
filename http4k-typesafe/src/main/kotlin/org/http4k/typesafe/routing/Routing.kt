@@ -46,6 +46,11 @@ interface Routing<TServerRoute, TRoute, TLens, TPath> {
     infix fun <M : HttpMessage, T> Kind2<TLens, M, T>.alternatively(other: Kind2<TLens, M, T>):
         Kind2<TLens, M, T>
 
+    fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.map(
+        getter: (A) -> Result<B, RoutingError>,
+        setter: (B) -> A):
+        Kind2<TLens, M, B>
+
     /**
      * If I have:
      *

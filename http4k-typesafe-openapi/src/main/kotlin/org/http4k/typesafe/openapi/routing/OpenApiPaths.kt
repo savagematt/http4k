@@ -1,7 +1,16 @@
-package org.http4k.typesafe.openapi
+package org.http4k.typesafe.openapi.routing
 
 import org.http4k.typesafe.functional.Kind
+import org.http4k.typesafe.openapi.ForOpenApiPath
+import org.http4k.typesafe.openapi.OpenApiParameter
+import org.http4k.typesafe.openapi.OpenApiPath
+import org.http4k.typesafe.openapi.OpenApiPath2
+import org.http4k.typesafe.openapi.OpenApiRouteInfo
+import org.http4k.typesafe.openapi.ParameterLocation
 import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
+import org.http4k.typesafe.openapi.fix
+import org.http4k.typesafe.openapi.fold
+import org.http4k.typesafe.openapi.real
 import org.http4k.typesafe.routing.Paths
 import org.http4k.typesafe.routing.joinPaths
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil

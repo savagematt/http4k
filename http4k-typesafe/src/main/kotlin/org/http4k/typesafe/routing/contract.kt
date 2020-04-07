@@ -39,7 +39,7 @@ sealed class RoutingError {
     }
 }
 
-interface MessageLens<M : HttpMessage, T> : ResultLens<M, T, RoutingError>
+interface MessageLens<M, T> : ResultLens<M, T, RoutingError>
 
 typealias RequestLens<T> = MessageLens<Request, T>
 

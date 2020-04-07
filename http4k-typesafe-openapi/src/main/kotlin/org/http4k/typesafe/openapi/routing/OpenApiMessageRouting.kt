@@ -1,4 +1,4 @@
-package org.http4k.typesafe.openapi
+package org.http4k.typesafe.openapi.routing
 
 import org.http4k.core.ContentType
 import org.http4k.core.ContentType.Companion.APPLICATION_JSON
@@ -8,8 +8,20 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.format.Json
 import org.http4k.typesafe.functional.Kind2
+import org.http4k.typesafe.openapi.ForOpenApiLens
+import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.OpenApiMediaType
+import org.http4k.typesafe.openapi.OpenApiObject
+import org.http4k.typesafe.openapi.OpenApiOperationInfo
+import org.http4k.typesafe.openapi.OpenApiParameter
+import org.http4k.typesafe.openapi.OpenApiRoute
+import org.http4k.typesafe.openapi.OpenApiRouteInfo
 import org.http4k.typesafe.openapi.ParameterLocation.HEADER
 import org.http4k.typesafe.openapi.builders.OpenApiRouteInfoDsl
+import org.http4k.typesafe.openapi.documentation
+import org.http4k.typesafe.openapi.fix
+import org.http4k.typesafe.openapi.openapi
+import org.http4k.typesafe.openapi.real
 import org.http4k.typesafe.routing.MessageRouting
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.AnyLens
@@ -84,7 +96,10 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
         }
 }
 
-fun <M : HttpMessage, NODE : Any> openApiJson(clazz: KClass<M>, json: Json<NODE>) =
+/**
+ * Returns a simple json lens, with an empty request or response body marked as application/json
+ */
+fun <M : HttpMessage, NODE : Any> openApiJson(clazz: KClass<M>, json: Json<NODE>): OpenApiLens<M, NODE> =
     JsonLens<M, NODE>(json) openapi documentBody(clazz, APPLICATION_JSON)
 
 fun headerParameter(name: String): OpenApiRouteInfoDsl.() -> Unit = {
@@ -97,6 +112,10 @@ fun headerParameter(name: String): OpenApiRouteInfoDsl.() -> Unit = {
     }
 }
 
+/**
+ * Returns an extension method that adds an empty request or response body
+ * of the specified content type
+ */
 fun <M : HttpMessage> documentBody(clazz: KClass<M>, contentType: ContentType)
     : OpenApiRouteInfoDsl.() -> Unit = {
 
