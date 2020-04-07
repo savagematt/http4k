@@ -345,4 +345,9 @@ object Libs {
       * https://github.com/douglascrockford/JSON-java
       */
      const val json: String = "org.json:json:" + Versions.json
+
+     /**
+      * https://github.com/dmcg/okey-doke
+      */
+     const val okeyDoke: String = "com.oneeyedmen:okeydoke:" + Versions.okeyDoke
 }

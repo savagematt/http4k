@@ -167,14 +167,6 @@
           "BasicAuth" : [ ]
         }
       }
-    },
-    "/and_auth" : {
-      "post" : {
-        "responses" : { },
-        "security" : {
-          "BasicAuth" : [ ]
-        }
-      }
     }
   },
   "components" : {

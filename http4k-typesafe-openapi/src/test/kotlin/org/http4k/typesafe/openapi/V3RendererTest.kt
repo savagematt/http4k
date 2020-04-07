@@ -2,6 +2,8 @@ package org.http4k.typesafe.openapi
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.oneeyedmen.okeydoke.junit5.KotlinApprovalsExtension
+import com.oneeyedmen.okeydoke.Approver
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Status.Companion.OK
@@ -9,8 +11,6 @@ import org.http4k.format.ConfigurableJackson
 import org.http4k.format.Json
 import org.http4k.format.asConfigurable
 import org.http4k.format.customise
-import org.http4k.testing.Approver
-import org.http4k.testing.JsonApprovalTest
 import org.http4k.typesafe.json.JsonRenderer
 import org.http4k.typesafe.openapi.OpenApiPaths.boolean
 import org.http4k.typesafe.openapi.OpenApiPaths.consume
@@ -31,7 +31,7 @@ import org.http4k.typesafe.routing.basicAuthValidator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(JsonApprovalTest::class)
+@ExtendWith(KotlinApprovalsExtension::class)
 class V3RendererTest {
     val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
 
@@ -100,13 +100,6 @@ class V3RendererTest {
                         it.password == "password"
                     }),
                 response.any())
-//            route(
-//                POST bind "/and_auth"
-//                    but basicAuthServer(
-//                    basicAuthValidator("realm") {
-//                        it.password == "password"
-//                    }),
-//                response.any())
         )
 //            routes += "/and_auth" meta {
 //                security = BasicAuthSecurity("foo", credentials, "and1").and(BasicAuthSecurity("foo", credentials, "and2"))
@@ -186,7 +179,7 @@ class V3RendererTest {
 //                cookies += Cookies.optional("s", "optionalCookie")
 //            } bindContract POST to { Response(OK).body("hello") }
 
-        println(document(routes))
+        approver.assertApproved(document(routes))
     }
 
 
@@ -198,7 +191,7 @@ class V3RendererTest {
                 json.asJsonObject(value)
         })
 
-        return json.asJsonString(renderer.render(api))
+        return json.pretty(json.asJsonObject(renderer.render(api)))
     }
 }
 

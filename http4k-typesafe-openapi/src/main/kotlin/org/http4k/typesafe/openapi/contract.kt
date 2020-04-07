@@ -435,7 +435,11 @@ data class OpenApiContact(
     val url: String? = null,
     val email: String? = null,
     override val extensions: List<Extension> = emptyList()
-) : OpenApiConcept()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiContact()
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#licenseObject
@@ -444,7 +448,11 @@ data class OpenApiLicense(
     val name: String,
     val url: String? = null,
     override val extensions: List<Extension> = emptyList()
-) : OpenApiConcept()
+) : OpenApiConcept() {
+    companion object {
+        val empty = OpenApiLicense("name")
+    }
+}
 
 /**
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#infoObject
@@ -456,7 +464,12 @@ data class OpenApiInfo(
     val termsOfService: String? = null,
     val contact: OpenApiContact? = null,
     val license: OpenApiLicense? = null,
-    override val extensions: List<Extension> = emptyList()) : OpenApiConcept()
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
+
+    companion object {
+        val empty = OpenApiInfo("My api", "0.0")
+    }
+}
 
 /**
  * This is the root document object of the OpenAPI document.
@@ -469,7 +482,7 @@ data class OpenApiObject(
     val components: OpenApiComponents = OpenApiComponents.empty,
     override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
     companion object {
-        val empty = OpenApiObject(OpenApiInfo("My api", "0.0"))
+        val empty = OpenApiObject(OpenApiInfo.empty)
     }
 }
 
@@ -484,6 +497,8 @@ data class OpenApiObject(
 data class OpenApiRouteInfo(
     val api: OpenApiObject,
     val route: OpenApiOperationInfo) {
+    constructor(route: OpenApiOperationInfo) : this(OpenApiObject.empty, route)
+    constructor(api: OpenApiObject) : this(api, OpenApiOperationInfo.empty)
 
     companion object {
         val empty = OpenApiRouteInfo(OpenApiObject.empty, OpenApiOperationInfo.empty)

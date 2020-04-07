@@ -113,6 +113,8 @@ object Versions {
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
     const val gradleLatestVersion: String = "6.3"
+
+    const val okeyDoke: String = "1.3.1"
 }
 
 /**
