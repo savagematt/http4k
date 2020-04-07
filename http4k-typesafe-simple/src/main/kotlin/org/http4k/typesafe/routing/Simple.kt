@@ -95,10 +95,10 @@ object Simple : Routing<ForSimpleServerRoute, ForSimpleRoute, ForSimpleLens, For
         other: Kind2<ForSimpleLens, M, B>) =
         Tuple2Lens(this.fix(), other.fix())
 
-    override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.or(other: Kind2<ForSimpleLens, M, B>) =
+    override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.xor(other: Kind2<ForSimpleLens, M, B>) =
         OneOf2Lens(this.fix(), other.fix())
 
-    override fun <M : HttpMessage, T> Kind2<ForSimpleLens, M, T>.alternatively(other: Kind2<ForSimpleLens, M, T>) =
+    override fun <M : HttpMessage, T> Kind2<ForSimpleLens, M, T>.or(other: Kind2<ForSimpleLens, M, T>) =
         OrLens(listOf(this.fix(), other.fix()))
 
     override fun <M : HttpMessage, A, B> Kind2<ForSimpleLens, M, A>.map(

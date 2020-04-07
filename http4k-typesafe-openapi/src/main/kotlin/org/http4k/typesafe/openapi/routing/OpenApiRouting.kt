@@ -54,13 +54,13 @@ object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenA
         other: Kind2<ForOpenApiLens, M, B>) =
         Tuple2Lens(this.fix(), other.fix()) documentation fold(this.fix(), other.fix())
 
-    override fun <M : HttpMessage, A, B> Kind2<ForOpenApiLens, M, A>.or(other: Kind2<ForOpenApiLens, M, B>) =
+    override fun <M : HttpMessage, A, B> Kind2<ForOpenApiLens, M, A>.xor(other: Kind2<ForOpenApiLens, M, B>) =
         OneOf2Lens(this.fix(), other.fix())
             .documentation {
                 fix().document(it) or other.fix().document(it)
             }
 
-    override fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.alternatively(other: Kind2<ForOpenApiLens, M, T>) =
+    override fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.or(other: Kind2<ForOpenApiLens, M, T>) =
         OrLens(listOf(this.fix(), other.fix()))
             .documentation {
                 fix().document(it) or other.fix().document(it)

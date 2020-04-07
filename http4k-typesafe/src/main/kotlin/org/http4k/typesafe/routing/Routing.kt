@@ -42,10 +42,10 @@ interface Routing<TServerRoute, TRoute, TLens, TPath> {
     infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.and(other: Kind2<TLens, M, B>):
         Kind2<TLens, M, Tuple2<A, B>>
 
-    infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.or(other: Kind2<TLens, M, B>):
+    infix fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.xor(other: Kind2<TLens, M, B>):
         Kind2<TLens, M, OneOf2<A, B>>
 
-    infix fun <M : HttpMessage, T> Kind2<TLens, M, T>.alternatively(other: Kind2<TLens, M, T>):
+    infix fun <M : HttpMessage, T> Kind2<TLens, M, T>.or(other: Kind2<TLens, M, T>):
         Kind2<TLens, M, T>
 
     fun <M : HttpMessage, A, B> Kind2<TLens, M, A>.map(

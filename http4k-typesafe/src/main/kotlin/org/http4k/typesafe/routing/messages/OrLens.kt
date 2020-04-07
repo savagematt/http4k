@@ -6,6 +6,13 @@ import org.http4k.core.HttpMessage
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
+/**
+ * This is a logical or- one or more of the lenses might match, and we return the
+ * result of the first one (or the failure message of the _last_ lens, if nothing
+ * matched)
+ *
+ * See [org.http4k.typesafe.routing.messages.oneOf] for the logical xor lenses.
+ */
 class OrLens<M : HttpMessage, T>(
     val lenses: List<MessageLens<M, T>>
 ) : SimpleLens<M, T> {
