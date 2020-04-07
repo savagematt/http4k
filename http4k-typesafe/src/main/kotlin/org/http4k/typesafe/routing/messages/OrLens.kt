@@ -6,7 +6,7 @@ import org.http4k.core.HttpMessage
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
-class FirstLens<M : HttpMessage, T>(
+class OrLens<M : HttpMessage, T>(
     val lenses: List<MessageLens<M, T>>
 ) : SimpleLens<M, T> {
     init {

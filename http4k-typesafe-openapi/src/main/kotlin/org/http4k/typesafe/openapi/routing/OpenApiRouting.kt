@@ -23,7 +23,7 @@ import org.http4k.typesafe.openapi.or
 import org.http4k.typesafe.routing.Routing
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.ButLens
-import org.http4k.typesafe.routing.messages.FirstLens
+import org.http4k.typesafe.routing.messages.OrLens
 import org.http4k.typesafe.routing.messages.MappedLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
 import org.http4k.typesafe.routing.messages.oneOf.OneOf2Lens
@@ -61,7 +61,7 @@ object OpenApiRouting : Routing<ForOpenApiServerRoute, ForOpenApiRoute, ForOpenA
             }
 
     override fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.alternatively(other: Kind2<ForOpenApiLens, M, T>) =
-        FirstLens(listOf(this.fix(), other.fix()))
+        OrLens(listOf(this.fix(), other.fix()))
             .documentation {
                 fix().document(it) or other.fix().document(it)
             }
