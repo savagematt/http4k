@@ -5,7 +5,7 @@ import org.http4k.format.Json
 import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
-import org.http4k.typesafe.routing.messages.HeaderAppendLens
+import org.http4k.typesafe.routing.messages.Headers
 import org.http4k.typesafe.routing.messages.HeaderReplaceLens
 import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
@@ -39,7 +39,7 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
         HeaderReplaceLens<M>(name)
 
     override fun appendHeader(name: String) =
-        HeaderAppendLens<M>(name)
+        Headers<M>(name)
 
     override fun appendHeaders(name: String) =
         HeadersAppendLens<M>(name)

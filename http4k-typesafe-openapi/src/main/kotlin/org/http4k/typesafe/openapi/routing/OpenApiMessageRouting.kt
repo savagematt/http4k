@@ -25,7 +25,7 @@ import org.http4k.openapi.real
 import org.http4k.typesafe.routing.MessageRouting
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.AnyLens
-import org.http4k.typesafe.routing.messages.HeaderAppendLens
+import org.http4k.typesafe.routing.messages.Headers
 import org.http4k.typesafe.routing.messages.HeaderReplaceLens
 import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
@@ -54,7 +54,7 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
         HeaderReplaceLens<M>(name) openapi headerParameter(name)
 
     override fun appendHeader(name: String) =
-        HeaderAppendLens<M>(name) openapi headerParameter(name)
+        Headers<M>(name) openapi headerParameter(name)
 
     override fun appendHeaders(name: String) =
         HeadersAppendLens<M>(name) openapi headerParameter(name)
