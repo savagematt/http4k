@@ -9,7 +9,7 @@ import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.openapi.ParameterLocation
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.openapi.fix
-import org.http4k.typesafe.openapi.fold
+import org.http4k.util.fold
 import org.http4k.openapi.real
 import org.http4k.typesafe.routing.Paths
 import org.http4k.typesafe.routing.joinPaths

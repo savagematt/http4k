@@ -18,6 +18,7 @@ import org.http4k.typesafe.routing.requests.paths.Path6
 import org.http4k.typesafe.routing.requests.paths.Path7
 import org.http4k.typesafe.routing.requests.paths.Path8
 import org.http4k.typesafe.routing.requests.paths.Path9
+import org.http4k.util.fold
 
 data class OpenApiPath2<A, B>(
     val a: OpenApiPath<A>,

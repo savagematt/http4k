@@ -11,6 +11,7 @@ import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
+import org.http4k.util.Documentable
 
 /** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */

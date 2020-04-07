@@ -12,7 +12,7 @@ import org.http4k.typesafe.openapi.OpenApiLens
 import org.http4k.typesafe.openapi.documentation
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.literal
 import org.http4k.typesafe.openapi.fix
-import org.http4k.typesafe.openapi.fold
+import org.http4k.util.fold
 import org.http4k.typesafe.openapi.documentable.basicAuth
 import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.routing.RequestRouting

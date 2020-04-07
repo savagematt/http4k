@@ -1,4 +1,4 @@
-package org.http4k.typesafe.openapi
+package org.http4k.util
 
 /**
  * Something that is capable of describing itself in some sort of

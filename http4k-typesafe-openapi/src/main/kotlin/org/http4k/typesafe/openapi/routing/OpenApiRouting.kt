@@ -18,7 +18,7 @@ import org.http4k.typesafe.openapi.OpenApiRoute
 import org.http4k.typesafe.openapi.OpenApiServerRoute
 import org.http4k.typesafe.openapi.documentation
 import org.http4k.typesafe.openapi.fix
-import org.http4k.typesafe.openapi.fold
+import org.http4k.util.fold
 import org.http4k.typesafe.openapi.or
 import org.http4k.typesafe.routing.Routing
 import org.http4k.typesafe.routing.RoutingError

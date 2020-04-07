@@ -3,6 +3,7 @@ package org.http4k.typesafe.openapi
 import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.util.functional.Kind
 import org.http4k.typesafe.routing.requests.paths.Path
+import org.http4k.util.Documentable
 
 /** @see [org.http4k.util.functional.Kind2]
  *  or https://arrow-kt.io/docs/0.10/patterns/glossary/#higher-kinds */
