@@ -11,12 +11,16 @@ import org.http4k.typesafe.openapi.fix
 /**
  * Returns an [org.http4k.typesafe.openapi.OpenApiLens] with request/response
  * descriptions set as specified in the docs.
+ *
+ * https://medium.com/tompee/idiomatic-kotlin-lambdas-with-receiver-and-dsl-3cd3348e1235
  */
 inline fun <reified M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.description(value: String) =
     this.fix() openapi descriptionOf<M>(value)
 
 /**
  * Sets description on requests or responses
+ *
+ * https://medium.com/tompee/idiomatic-kotlin-lambdas-with-receiver-and-dsl-3cd3348e1235
  */
 inline fun <reified M : HttpMessage> descriptionOf(value: String)
     : OpenApiRouteInfoDsl.() -> Unit = {

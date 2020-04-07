@@ -18,6 +18,8 @@ import org.http4k.util.json.JsonSchema
 /**
  * Returns an extension method that adds either a request or
  * a response to the openapi docs
+ *
+ * https://medium.com/tompee/idiomatic-kotlin-lambdas-with-receiver-and-dsl-3cd3348e1235
  */
 inline fun <reified M : HttpMessage, NODE : Any> bodySchemaOf(
     example: NODE,
