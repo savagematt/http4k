@@ -15,9 +15,9 @@ import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
-import org.http4k.typesafe.routing.Simple.but
-import org.http4k.typesafe.routing.SimpleRequestRouting.bind
-import org.http4k.typesafe.routing.SimpleRequestRouting.json
+import org.http4k.typesafe.routing.but
+import org.http4k.typesafe.routing.bind
+import org.http4k.typesafe.routing.request.json
 import org.junit.jupiter.api.Test
 
 @Suppress("MemberVisibilityCanBePrivate")

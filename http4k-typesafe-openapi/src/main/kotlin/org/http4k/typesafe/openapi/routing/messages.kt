@@ -7,22 +7,18 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.format.Json
-import org.http4k.util.functional.Kind2
-import org.http4k.typesafe.openapi.ForOpenApiLens
-import org.http4k.typesafe.openapi.OpenApiLens
 import org.http4k.openapi.OpenApiMediaType
 import org.http4k.openapi.OpenApiObject
 import org.http4k.openapi.OpenApiOperationInfo
 import org.http4k.openapi.OpenApiParameter
-import org.http4k.typesafe.openapi.OpenApiRoute
 import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.openapi.ParameterLocation.HEADER
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
-import org.http4k.typesafe.openapi.documentation
-import org.http4k.typesafe.openapi.fix
-import org.http4k.typesafe.openapi.openapi
 import org.http4k.openapi.real
-import org.http4k.typesafe.routing.MessageRouting
+import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.OpenApiRoute
+import org.http4k.typesafe.openapi.documentation
+import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.HeaderAppendLens
@@ -35,36 +31,36 @@ import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
 import kotlin.reflect.KClass
 
-open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) : MessageRouting<M, ForOpenApiLens> {
-    override fun any() =
+open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) {
+    fun any() =
         AnyLens<M>().openapi(null ?: {})
 
-    override fun nothing() =
+    fun nothing() =
         NothingLens<M>().openapi(null ?: {})
 
-    override fun text():
-        Kind2<ForOpenApiLens, M, String> =
+    fun text():
+        OpenApiLens<M, String> =
         TextLens<M>() openapi documentBody(clazz, TEXT_PLAIN)
 
-    override fun <NODE : Any> json(json: Json<NODE>):
-        Kind2<ForOpenApiLens, M, NODE> =
+    fun <NODE : Any> json(json: Json<NODE>):
+        OpenApiLens<M, NODE> =
         openApiJson(clazz, json)
 
-    override fun header(name: String) =
+    fun header(name: String) =
         HeaderReplaceLens<M>(name) openapi headerParameter(name)
 
-    override fun appendHeader(name: String) =
+    fun appendHeader(name: String) =
         HeaderAppendLens<M>(name) openapi headerParameter(name)
 
-    override fun appendHeaders(name: String) =
+    fun appendHeaders(name: String) =
         HeadersAppendLens<M>(name) openapi headerParameter(name)
 
-    override fun headers(name: String) =
+    fun headers(name: String) =
         HeadersReplaceLens<M>(name) openapi headerParameter(name)
 
-    override fun <T> Kind2<ForOpenApiLens, M, T?>.required(onFailure: (() -> RoutingError)?)
-        : Kind2<ForOpenApiLens, M, T> =
-        this.fix().let { lens ->
+    fun <T> OpenApiLens<M, T?>.required(onFailure: (() -> RoutingError)? = null)
+        : OpenApiLens<M, T> =
+        this.let { lens ->
             RequiredLens(lens, onFailure)
                 .documentation(lens)
                 .openapi {
@@ -162,8 +158,5 @@ fun api(routes: List<OpenApiRoute<*, *>>): OpenApiObject =
         }
     }
 
-fun <M : HttpMessage> Kind2<ForOpenApiLens, M, *>.document() =
-    this.fix().document(OpenApiRouteInfo.empty)
-
-fun <M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.get(from: M) =
-    this.fix().get(from)
+fun <M : HttpMessage> OpenApiLens<M, *>.document() =
+    this.document(OpenApiRouteInfo.empty)

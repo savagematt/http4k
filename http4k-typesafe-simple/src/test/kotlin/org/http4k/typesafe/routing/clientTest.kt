@@ -8,12 +8,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.Simple.client
-import org.http4k.typesafe.routing.Simple.request
-import org.http4k.typesafe.routing.Simple.response
-import org.http4k.typesafe.routing.Simple.route
-import org.http4k.typesafe.routing.SimpleRequestRouting.method
-import org.http4k.typesafe.routing.SimpleResponseRouting.with
 import org.junit.jupiter.api.Test
 
 @Suppress("MemberVisibilityCanBePrivate")

@@ -5,9 +5,9 @@ import com.natpryce.Success
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
-import org.http4k.typesafe.routing.Simple.response
-import org.http4k.typesafe.routing.Simple.result
-import org.http4k.typesafe.routing.SimpleResponseRouting.with
+import org.http4k.typesafe.routing.response
+import org.http4k.typesafe.routing.result
+import org.http4k.typesafe.routing.with
 import org.http4k.typesafe.routing.messages.body.textPlain
 import org.junit.jupiter.api.Test
 

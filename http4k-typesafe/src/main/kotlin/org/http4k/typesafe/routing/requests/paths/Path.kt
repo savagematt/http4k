@@ -13,13 +13,7 @@ fun <T> matchSuccess(value: T, remaining: String) = Success(Match(value, remaini
 
 typealias PathResult<T> = Result<Match<T>, NoMatch>
 
-interface Path<T> : PolymorphicLens<String, String, T, PathResult<T>> {
-    operator fun div(next: String) = this / Literal(next)
-    operator fun div(next: Literal) = IgnoreSecond(this, next)
-}
-
-val trailing = Regex("/*$")
-val leading = Regex("^/*")
+interface Path<T> : PolymorphicLens<String, String, T, PathResult<T>>
 
 
 fun <A, B> Path<A>.map(getter: (Match<A>) -> PathResult<B>,

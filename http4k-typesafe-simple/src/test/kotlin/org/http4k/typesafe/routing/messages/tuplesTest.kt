@@ -8,8 +8,8 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.RoutingError
-import org.http4k.typesafe.routing.Simple.and
-import org.http4k.typesafe.routing.Simple.request
+import org.http4k.typesafe.routing.and
+import org.http4k.typesafe.routing.request
 import org.junit.jupiter.api.Test
 
 class TuplesTest {

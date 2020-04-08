@@ -5,9 +5,8 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Status
 import org.http4k.format.JsonLibAutoMarshallingJson
 import org.http4k.openapi.SchemaId
-import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.openapi.documentable.bodySchemaOf
-import org.http4k.typesafe.openapi.routing.OpenApiRouting.map
+import org.http4k.typesafe.openapi.routing.map
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.util.json.AutoJsonToJsonSchema
@@ -16,7 +15,7 @@ import org.http4k.util.json.JsonToJsonSchema
 
 inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLibAutoMarshallingJson<NODE>.typed(
     example: T
-): Kind2<ForOpenApiLens, M, T> =
+): OpenApiLens<M, T> =
     this.typed(null, example)
 
 /**
@@ -29,7 +28,7 @@ inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLi
 inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLibAutoMarshallingJson<NODE>.typed(
     schemaId: SchemaId?,
     example: T
-): Kind2<ForOpenApiLens, M, T> {
+): OpenApiLens<M, T> {
 
     val schema = AutoJsonToJsonSchema(this).toSchema(example, schemaId?.value)
 
@@ -55,7 +54,7 @@ inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLi
  */
 inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE>.plain(
     example: NODE,
-    schemaId: SchemaId? = null): Kind2<ForOpenApiLens, M, NODE> {
+    schemaId: SchemaId? = null): OpenApiLens<M, NODE> {
     return jsonSchema(
         example,
         JsonToJsonSchema(this).toSchema(example, schemaId?.value))
@@ -67,8 +66,9 @@ inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE
  */
 inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE>.plain(
     schemaId: SchemaId? = null,
-    exampleBuilder: JsonLibAutoMarshallingJson<NODE>.() -> NODE): Kind2<ForOpenApiLens, M, NODE> {
-    return this.plain(exampleBuilder(this), schemaId)}
+    exampleBuilder: JsonLibAutoMarshallingJson<NODE>.() -> NODE): OpenApiLens<M, NODE> {
+    return this.plain(exampleBuilder(this), schemaId)
+}
 
 inline fun <reified M : HttpMessage, NODE : Any> JsonLibAutoMarshallingJson<NODE>.jsonSchema(
     example: NODE,

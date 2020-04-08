@@ -8,12 +8,11 @@ import org.http4k.core.Method.POST
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
-import org.http4k.util.functional.Kind2
-import org.http4k.typesafe.routing.Simple.request
-import org.http4k.typesafe.routing.Simple.response
-import org.http4k.typesafe.routing.Simple.route
-import org.http4k.typesafe.routing.Simple.server
-import org.http4k.typesafe.routing.SimpleRequestRouting.method
+import org.http4k.typesafe.routing.request
+import org.http4k.typesafe.routing.response
+import org.http4k.typesafe.routing.route
+import org.http4k.typesafe.routing.server
+import org.http4k.typesafe.routing.method
 import org.junit.jupiter.api.Test
 
 class ServerBehaviour() {
@@ -39,13 +38,13 @@ class RouterTest {
 
     val behaviour = ServerBehaviour()
 
-    val getText: Kind2<ForSimpleServerRoute, Unit, String> = Routes.get server behaviour.get
-    val postText: Kind2<ForSimpleServerRoute, String, String> = Routes.post server behaviour.post
+    val getText: SimpleServerRoute< Unit, String> = Routes.get server behaviour.get
+    val postText: SimpleServerRoute< String, String> = Routes.post server behaviour.post
 
     val router = Router(
         listOf(
-            getText.fix(),
-            postText.fix())
+            getText,
+            postText)
     )
 
     @Test

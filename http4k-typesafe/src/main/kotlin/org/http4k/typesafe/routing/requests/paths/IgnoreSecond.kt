@@ -2,7 +2,6 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.flatMap
 import com.natpryce.map
-import org.http4k.typesafe.routing.joinPaths
 
 data class IgnoreSecond<T>(
     val first: Path<T>,

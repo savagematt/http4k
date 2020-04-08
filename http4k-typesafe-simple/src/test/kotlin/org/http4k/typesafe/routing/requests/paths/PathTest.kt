@@ -6,9 +6,8 @@ import org.http4k.util.data.Tuple10
 import org.http4k.util.data.Tuple2
 import org.http4k.util.data.Tuple3
 import org.http4k.util.data.tuple
-import org.http4k.typesafe.routing.SimplePaths.consume
-import org.http4k.typesafe.routing.SimplePaths.div
-import org.http4k.typesafe.routing.SimplePaths.get
+import org.http4k.typesafe.routing.consume
+import org.http4k.typesafe.routing.div
 import org.junit.jupiter.api.Test
 
 class PathTest {

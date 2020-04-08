@@ -7,14 +7,12 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.openapi.OpenApiParameter
-import org.http4k.util.functional.Kind2
-import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.header
-import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.required
 import org.http4k.openapi.ParameterLocation.HEADER
 import org.http4k.openapi.Referenceable
 import org.http4k.openapi.real
 import org.http4k.typesafe.openapi.routing.document
-import org.http4k.typesafe.openapi.routing.get
+import org.http4k.typesafe.openapi.routing.request.header
+import org.http4k.typesafe.openapi.routing.request.required
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 import org.junit.jupiter.api.Test
@@ -51,7 +49,7 @@ class HeaderAppendLensTest {
 
     @Test
     fun `required() routing message is ok`() {
-        val lens: Kind2<ForOpenApiLens, Request, String> = header("X-My-Header").required()
+        val lens: OpenApiLens<Request, String> = header("X-My-Header").required()
 
         assertThat(
             lens.get(Request(GET, "/")),

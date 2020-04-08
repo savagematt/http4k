@@ -3,7 +3,6 @@ package org.http4k.typesafe.routing.requests.paths
 import com.natpryce.flatMap
 import org.http4k.util.data.Tuple9
 import org.http4k.util.data.tuple
-import org.http4k.typesafe.routing.joinPaths
 
 data class Path9<A, B, C, D, E, F, G, H, I>(
     val a: Path<A>,

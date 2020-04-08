@@ -21,19 +21,19 @@ import org.http4k.openapi.Tag
 import org.http4k.openapi.V3Renderer
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
-import org.http4k.typesafe.openapi.routing.OpenApiPaths.boolean
-import org.http4k.typesafe.openapi.routing.OpenApiPaths.consume
-import org.http4k.typesafe.openapi.routing.OpenApiPaths.div
-import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.basicAuthServer
-import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.bind
-import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.header
-import org.http4k.typesafe.openapi.routing.OpenApiRequestRouting.required
-import org.http4k.typesafe.openapi.routing.OpenApiResponseRouting.with
-import org.http4k.typesafe.openapi.routing.OpenApiRouting.and
-import org.http4k.typesafe.openapi.routing.OpenApiRouting.but
-import org.http4k.typesafe.openapi.routing.OpenApiRouting.request
-import org.http4k.typesafe.openapi.routing.OpenApiRouting.response
-import org.http4k.typesafe.openapi.routing.OpenApiRouting.route
+import org.http4k.typesafe.openapi.routing.boolean
+import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.typesafe.openapi.routing.div
+import org.http4k.typesafe.openapi.routing.basicAuthServer
+import org.http4k.typesafe.openapi.routing.bind
+import org.http4k.typesafe.openapi.routing.request.header
+import org.http4k.typesafe.openapi.routing.request.required
+import org.http4k.typesafe.openapi.routing.with
+import org.http4k.typesafe.openapi.routing.and
+import org.http4k.typesafe.openapi.routing.but
+import org.http4k.typesafe.openapi.routing.request
+import org.http4k.typesafe.openapi.routing.response
+import org.http4k.typesafe.openapi.routing.route
 import org.http4k.typesafe.openapi.routing.api
 import org.http4k.typesafe.routing.security.basicAuthValidator
 import org.http4k.util.JsonRenderer
@@ -140,23 +140,17 @@ class V3RendererTest {
                 FORBIDDEN with json
                     .plain<Response, JsonNode> {
                         obj("aString" to string("a message of some kind"))
-                    }.description("no way jose")),
-            route(
-                POST bind "/returning",
-                FORBIDDEN with json
-                    .plain<Response, JsonNode> {
-                        obj("aString" to string("a message of some kind"))
-                    }.description("no way jose")),
-            route(
-                POST bind "/or_auth" but
-                    basicAuthServer(
-                        basicAuthValidator("realm") {
-                            it.password == "password"
-                        }),
-                FORBIDDEN with json
-                    .plain<Response, JsonNode> {
-                        obj("aString" to string("a message of some kind"))
                     }.description("no way jose"))
+//            route(
+//                POST bind "/or_auth" but
+//                    basicAuthServer(
+//                        basicAuthValidator("realm") {
+//                            it.password == "password"
+//                        }),
+//                FORBIDDEN with json
+//                    .plain<Response, JsonNode> {
+//                        obj("aString" to string("a message of some kind"))
+//                    }.description("no way jose"))
         )
 //            routes += "/or_auth" meta {
 //                security = BasicAuthSecurity("foo", credentials, "or1").or(BasicAuthSecurity("foo", credentials, "or2"))

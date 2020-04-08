@@ -2,13 +2,11 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.routing.SimplePaths.bigInteger
-import org.http4k.typesafe.routing.SimplePaths.consume
-import org.http4k.typesafe.routing.SimplePaths.div
-import org.http4k.typesafe.routing.SimplePaths.double
-import org.http4k.typesafe.routing.SimplePaths.get
-import org.http4k.typesafe.routing.SimplePaths.set
-import org.http4k.typesafe.routing.SimplePaths.uuid
+import org.http4k.typesafe.routing.bigInteger
+import org.http4k.typesafe.routing.consume
+import org.http4k.typesafe.routing.div
+import org.http4k.typesafe.routing.double
+import org.http4k.typesafe.routing.uuid
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
 import java.util.*

@@ -5,7 +5,6 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.format.Json
-import org.http4k.util.Renderable
 import org.http4k.openapi.OpenApiBodyExample
 import org.http4k.openapi.OpenApiBodyExampleValue
 import org.http4k.openapi.OpenApiMediaType
@@ -13,6 +12,7 @@ import org.http4k.openapi.OpenApiSchema
 import org.http4k.openapi.SchemaId
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.openapi.real
+import org.http4k.util.Renderable
 import org.http4k.util.json.JsonSchema
 
 /**
@@ -29,11 +29,11 @@ inline fun <reified M : HttpMessage, NODE : Any> bodySchemaOf(
         mapOf("body" to OpenApiBodyExample(
             OpenApiBodyExampleValue.Real(example)
         )),
-        OpenApiSchema.Raw(Hack(schema.node)).real()
+        OpenApiSchema.Raw(schema.node).real()
     )
     val additionalSchemas: Iterable<Pair<SchemaId, OpenApiSchema>> =
         schema.definitions
-            .map { (id, value) -> SchemaId(id) to OpenApiSchema.Raw(Hack(value)) }
+            .map { (id, value) -> SchemaId(id) to OpenApiSchema.Raw(value) }
 
     return {
         api {
@@ -70,25 +70,4 @@ inline fun <reified M : HttpMessage, NODE : Any> bodySchemaOf(
         }
 
     }
-}
-
-
-/**
- * TODO: something has clearly gone wrong here
- *
- * We have to pass Json<NODE_1> into JsonLens, because it needs to have it to hand
- * immediately when we call get(), and
- */
-class Hack(private val node: Any) : Renderable {
-    override fun <NODE> render(json: Json<NODE>): NODE {
-        try {
-            @Suppress("UNCHECKED_CAST")
-            return node as NODE
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                "Sadly this ${node::class} cannot be rendered with ${json::class}. " +
-                    "You need to use the same Json when defining your routes and rendering to openapi.")
-        }
-    }
-
 }

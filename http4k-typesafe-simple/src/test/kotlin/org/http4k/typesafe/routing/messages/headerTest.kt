@@ -10,8 +10,8 @@ import org.http4k.core.Status
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
-import org.http4k.typesafe.routing.Simple.request
-import org.http4k.typesafe.routing.SimpleRequestRouting.required
+import org.http4k.typesafe.routing.request
+import org.http4k.typesafe.routing.request.required
 import org.junit.jupiter.api.Test
 
 class HeaderTest {
@@ -25,7 +25,6 @@ class HeaderTest {
             equalTo<Result<Request, RoutingError>>(
                 Success(Request(GET, "/").header("Content-Type", "text/plain")))
         )
-
     }
 
     @Test
@@ -39,7 +38,6 @@ class HeaderTest {
             equalTo<Result<Request, RoutingError>>(
                 Success(Request(GET, "/")))
         )
-
     }
 
     @Test
@@ -54,7 +52,6 @@ class HeaderTest {
             equalTo<Result<String?, RoutingError>>(
                 Success("text/plain"))
         )
-
     }
 
     @Test
@@ -68,7 +65,6 @@ class HeaderTest {
             equalTo<Result<String?, RoutingError>>(
                 Success(null))
         )
-
     }
 
     @Test
@@ -80,9 +76,7 @@ class HeaderTest {
         assertThat(
             actual,
             equalTo<Result<String?, RoutingError>>(
-                routeFailed(BAD_REQUEST, "Ooops"))
+                routeFailed(BAD_REQUEST, "Header 'Content-Type' is required"))
         )
-
     }
-
 }

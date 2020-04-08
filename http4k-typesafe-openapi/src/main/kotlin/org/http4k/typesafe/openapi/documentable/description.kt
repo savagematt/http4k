@@ -3,10 +3,8 @@ package org.http4k.typesafe.openapi.documentable
 import org.http4k.core.HttpMessage
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.util.functional.Kind2
-import org.http4k.typesafe.openapi.ForOpenApiLens
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
-import org.http4k.typesafe.openapi.fix
+import org.http4k.typesafe.openapi.OpenApiLens
 
 /**
  * Returns an [org.http4k.typesafe.openapi.OpenApiLens] with request/response
@@ -14,8 +12,8 @@ import org.http4k.typesafe.openapi.fix
  *
  * https://medium.com/tompee/idiomatic-kotlin-lambdas-with-receiver-and-dsl-3cd3348e1235
  */
-inline fun <reified M : HttpMessage, T> Kind2<ForOpenApiLens, M, T>.description(value: String) =
-    this.fix() openapi descriptionOf<M>(value)
+inline fun <reified M : HttpMessage, T> OpenApiLens<M, T>.description(value: String) =
+    this openapi descriptionOf<M>(value)
 
 /**
  * Sets description on requests or responses

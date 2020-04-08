@@ -1,6 +1,5 @@
 package org.http4k.typesafe.routing.requests.paths
 
-import org.http4k.typesafe.routing.joinPaths
 import java.net.URLDecoder
 import java.net.URLEncoder
 

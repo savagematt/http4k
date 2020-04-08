@@ -2,7 +2,7 @@ package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.routing.SimplePaths.consume
+import org.http4k.typesafe.routing.consume
 
 import org.junit.jupiter.api.Test
 

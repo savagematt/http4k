@@ -12,7 +12,7 @@ class OpenApiSchemaDsl(original: OpenApiSchema)
 
     init {
         when (original) {
-            is OpenApiSchema.Raw -> {
+            is OpenApiSchema.Raw<*> -> {
                 this.raw = Raw(original)
             }
         }
@@ -23,8 +23,8 @@ class OpenApiSchemaDsl(original: OpenApiSchema)
             ?: throw IllegalStateException("Programmer error in ${this::class.simpleName}" +
                 "exactly one builder should have a value")
 
-    class Raw(original: OpenApiSchema.Raw)
-        : BaseBuilder<OpenApiSchema.Raw, Raw>(OpenApiSchemaDsl::Raw) {
+    class Raw(original: OpenApiSchema.Raw<*>)
+        : BaseBuilder<OpenApiSchema.Raw<*>, Raw>(OpenApiSchemaDsl::Raw) {
         var schema = original.schema
         var extensions = Appendable.of(original.extensions)
 
