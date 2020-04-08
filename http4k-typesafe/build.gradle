@@ -6,12 +6,18 @@ dependencies {
     provided Libs.result4k
     provided Libs.jackson_module_kotlin
     provided Libs.jackson_dataformat_xml
+    provided Libs.jjwtApi
+    provided Libs.jjwtImpl
+    provided Libs.jjwtJackson
 
     provided project(":http4k-core")
     provided project(":http4k-format-jackson")
 
     testCompile Libs.jackson_module_kotlin
     testCompile Libs.jackson_dataformat_xml
+    testCompile Libs.jjwtApi
+    testCompile Libs.jjwtImpl
+    testCompile Libs.jjwtJackson
     testCompile project(":http4k-format-jackson")
     testCompile Config.TestDependencies
 }

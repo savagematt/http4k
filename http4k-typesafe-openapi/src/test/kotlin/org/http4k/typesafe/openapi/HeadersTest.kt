@@ -19,7 +19,7 @@ import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 import org.junit.jupiter.api.Test
 
-class HeadersTest {
+class HeaderAppendLensTest {
     @Test
     fun `docs work`() {
         val lens = header("X-My-Header")

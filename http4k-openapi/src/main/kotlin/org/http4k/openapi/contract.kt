@@ -6,11 +6,11 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Status
 import org.http4k.core.Uri
 import org.http4k.format.Json
+import org.http4k.openapi.ParameterLocation.HEADER
+import org.http4k.openapi.ParameterLocation.PATH
 import org.http4k.util.Extension
 import org.http4k.util.JsonRenderer
 import org.http4k.util.Renderable
-import org.http4k.openapi.ParameterLocation.HEADER
-import org.http4k.openapi.ParameterLocation.PATH
 import org.http4k.util.plus
 
 /**
@@ -60,13 +60,16 @@ fun <T : OpenApiConcept> T.real(extensions: List<Extension> = emptyList()) =
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject
  */
 sealed class OpenApiSchema : OpenApiConcept() {
-    data class Raw(val schema: Renderable,
-                   override val extensions: List<Extension> = emptyList()) : OpenApiSchema()
+    data class Raw<NODE : Any>(
+        val schema: NODE,
+        override val extensions: List<Extension> = emptyList()) : OpenApiSchema()
+
+    object Empty : OpenApiSchema(){
+        override val extensions: List<Extension> = emptyList()
+    }
 
     companion object {
-        val empty = Raw(object : Renderable {
-            override fun <NODE> render(json: Json<NODE>) = json.nullNode()
-        })
+        val empty = Empty
     }
 }
 
@@ -225,8 +228,8 @@ data class OpenApiOperation(
  */
 data class OpenApiSecurityRequirement(
     val values: List<String> = emptyList(),
-    override val extensions: List<Extension> = emptyList()) : OpenApiConcept(){
-    companion object{
+    override val extensions: List<Extension> = emptyList()) : OpenApiConcept() {
+    companion object {
         val empty = OpenApiSecurityRequirement()
     }
 }

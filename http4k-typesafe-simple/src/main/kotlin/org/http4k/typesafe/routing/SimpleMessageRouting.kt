@@ -2,10 +2,9 @@ package org.http4k.typesafe.routing
 
 import org.http4k.core.HttpMessage
 import org.http4k.format.Json
-import org.http4k.util.functional.Kind2
 import org.http4k.typesafe.routing.messages.AnyLens
 import org.http4k.typesafe.routing.messages.ForSimpleLens
-import org.http4k.typesafe.routing.messages.Headers
+import org.http4k.typesafe.routing.messages.HeaderAppendLens
 import org.http4k.typesafe.routing.messages.HeaderReplaceLens
 import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
@@ -14,6 +13,7 @@ import org.http4k.typesafe.routing.messages.RequiredLens
 import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
 import org.http4k.typesafe.routing.messages.fix
+import org.http4k.util.functional.Kind2
 
 /*
 Grammar
@@ -39,7 +39,7 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
         HeaderReplaceLens<M>(name)
 
     override fun appendHeader(name: String) =
-        Headers<M>(name)
+        HeaderAppendLens<M>(name)
 
     override fun appendHeaders(name: String) =
         HeadersAppendLens<M>(name)
@@ -47,6 +47,6 @@ open class SimpleMessageRouting<M : HttpMessage>() : MessageRouting<M, ForSimple
     override fun headers(name: String) =
         HeadersReplaceLens<M>(name)
 
-    override fun <T> Kind2<ForSimpleLens, M, T?>.required(onFailure: () -> RoutingError) =
+    override fun <T> Kind2<ForSimpleLens, M, T?>.required(onFailure: (() -> RoutingError)?) =
         RequiredLens(this.fix(), onFailure)
 }

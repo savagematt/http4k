@@ -19,7 +19,6 @@ import org.http4k.format.customise
 import org.http4k.openapi.SchemaId
 import org.http4k.openapi.Tag
 import org.http4k.openapi.V3Renderer
-import org.http4k.util.JsonRenderer
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
 import org.http4k.typesafe.openapi.routing.OpenApiPaths.boolean
@@ -36,7 +35,8 @@ import org.http4k.typesafe.openapi.routing.OpenApiRouting.request
 import org.http4k.typesafe.openapi.routing.OpenApiRouting.response
 import org.http4k.typesafe.openapi.routing.OpenApiRouting.route
 import org.http4k.typesafe.openapi.routing.api
-import org.http4k.typesafe.routing.basicAuthValidator
+import org.http4k.typesafe.routing.security.basicAuthValidator
+import org.http4k.util.JsonRenderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -85,8 +85,8 @@ class V3RendererTest {
                 POST bind "/body_string",
                 response.text()),
             route(
-                POST bind "/body_json_noschema"
-                    but request.json(json),
+                POST bind "/body_json_noschema" but
+                    request.json(json),
                 response.any()
             ),
             route(
@@ -112,16 +112,15 @@ class V3RendererTest {
                 }
             ),
             route(
-                POST bind "/basic_auth"
-                    but basicAuthServer(
-                    basicAuthValidator("realm") {
-                        it.password == "password"
-                    }),
+                POST bind "/basic_auth" but
+                    basicAuthServer(
+                        basicAuthValidator("realm") {
+                            it.password == "password"
+                        }),
                 response.any()),
             route(
-                POST bind "/body_auto_schema"
-                    but json
-                    .typed(SchemaId("someOtherId"),
+                POST bind "/body_auto_schema" but
+                    json.typed(SchemaId("someOtherId"),
                         ArbObject2(
                             "s",
                             ArbObject1(Foo.bar),
@@ -130,20 +129,38 @@ class V3RendererTest {
                         )),
                 response.any()),
             route(
-                PUT bind "/body_auto_schema"
-                    but json
-                    .typed(ArbObject3(
+                PUT bind "/body_auto_schema" but
+                    json.typed(ArbObject3(
                         Uri.of("http://foowang"),
                         mapOf("foo" to 123))),
-                CREATED with json
-                    .typed(listOf(ArbObject1(Foo.bing)))),
+                CREATED with json.typed(
+                    listOf(ArbObject1(Foo.bing)))),
             route(
                 POST bind "/returning",
                 FORBIDDEN with json
                     .plain<Response, JsonNode> {
                         obj("aString" to string("a message of some kind"))
+                    }.description("no way jose")),
+            route(
+                POST bind "/returning",
+                FORBIDDEN with json
+                    .plain<Response, JsonNode> {
+                        obj("aString" to string("a message of some kind"))
+                    }.description("no way jose")),
+            route(
+                POST bind "/or_auth" but
+                    basicAuthServer(
+                        basicAuthValidator("realm") {
+                            it.password == "password"
+                        }),
+                FORBIDDEN with json
+                    .plain<Response, JsonNode> {
+                        obj("aString" to string("a message of some kind"))
                     }.description("no way jose"))
         )
+//            routes += "/or_auth" meta {
+//                security = BasicAuthSecurity("foo", credentials, "or1").or(BasicAuthSecurity("foo", credentials, "or2"))
+//            } bindContract POST to { Response(OK) }
 
 //            routes += "/produces_and_consumes" meta {
 //                produces += APPLICATION_JSON
@@ -189,9 +206,6 @@ class V3RendererTest {
 //            } bindContract POST to { Response(OK).body("hello") }
 //            routes += "/and_auth" meta {
 //                security = BasicAuthSecurity("foo", credentials, "and1").and(BasicAuthSecurity("foo", credentials, "and2"))
-//            } bindContract POST to { Response(OK) }
-//            routes += "/or_auth" meta {
-//                security = BasicAuthSecurity("foo", credentials, "or1").or(BasicAuthSecurity("foo", credentials, "or2"))
 //            } bindContract POST to { Response(OK) }
 //            routes += "/and_auth" meta {
 //                security = BasicAuthSecurity("foo", credentials, "and1").and(BasicAuthSecurity("foo", credentials, "and2"))

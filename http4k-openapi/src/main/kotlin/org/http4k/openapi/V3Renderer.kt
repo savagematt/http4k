@@ -35,8 +35,11 @@ class V3Renderer<NODE>(
 
             //https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject
             is OpenApiSchema -> when (concept) {
-                is OpenApiSchema.Raw ->
-                    concept.schema.render(this)
+                is OpenApiSchema.Raw<*> ->
+                    // TODO: if NODE is not the correct type, weird stuff will happen
+                    concept.schema as NODE
+                is OpenApiSchema.Empty ->
+                    nullNode()
             }
 
             // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#exampleObject

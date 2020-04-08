@@ -350,4 +350,11 @@ object Libs {
       * https://github.com/dmcg/okey-doke
       */
      const val okeyDoke: String = "com.oneeyedmen:okeydoke:" + Versions.okeyDoke
+
+     /**
+      * https://github.com/jwtk/jjwt
+      */
+     const val jjwtApi: String = "io.jsonwebtoken:jjwt-api:" + Versions.jjwt
+     const val jjwtImpl: String = "io.jsonwebtoken:jjwt-impl:" + Versions.jjwt
+     const val jjwtJackson: String = "io.jsonwebtoken:jjwt-jackson:" + Versions.jjwt
 }

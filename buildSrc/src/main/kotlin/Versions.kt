@@ -115,6 +115,8 @@ object Versions {
     const val gradleLatestVersion: String = "6.3"
 
     const val okeyDoke: String = "1.3.1"
+
+    const val jjwt: String = "0.11.1"
 }
 
 /**
