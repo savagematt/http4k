@@ -27,7 +27,7 @@ data class OpenApiPath2<A, B>(
     Path2(a, b),
     fold(a, b)) {
 
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath3(a, b, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath3(a, b, next)
 
 }
 
@@ -39,7 +39,7 @@ data class OpenApiPath3<A, B, C>(
     Path3(a, b, c),
     fold(a, b, c)) {
 
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath4(a, b, c, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath4(a, b, c, next)
 }
 
 data class OpenApiPath4<A, B, C, D>(
@@ -51,7 +51,7 @@ data class OpenApiPath4<A, B, C, D>(
     Path4(a, b, c, d),
     fold(a, b, c, d)) {
 
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath5(a, b, c, d, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath5(a, b, c, d, next)
 }
 
 data class OpenApiPath5<A, B, C, D, E>(
@@ -64,7 +64,7 @@ data class OpenApiPath5<A, B, C, D, E>(
     Path5(a, b, c, d, e),
     fold(a, b, c, d, e)) {
 
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath6(a, b, c, d, e, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath6(a, b, c, d, e, next)
 }
 
 data class OpenApiPath6<A, B, C, D, E, F>(
@@ -78,7 +78,7 @@ data class OpenApiPath6<A, B, C, D, E, F>(
     Path6(a, b, c, d, e, f),
     fold(a, b, c, d, e, f)) {
 
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath7(a, b, c, d, e, f, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath7(a, b, c, d, e, f, next)
 }
 
 data class OpenApiPath7<A, B, C, D, E, F, G>(
@@ -93,7 +93,7 @@ data class OpenApiPath7<A, B, C, D, E, F, G>(
     Path7(a, b, c, d, e, f, g),
     fold(a, b, c, d, e, f, g)) {
 
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath8(a, b, c, d, e, f, g, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath8(a, b, c, d, e, f, g, next)
 }
 
 data class OpenApiPath8<A, B, C, D, E, F, G, H>(
@@ -108,7 +108,7 @@ data class OpenApiPath8<A, B, C, D, E, F, G, H>(
 ) : OpenApiPath<Tuple8<A, B, C, D, E, F, G, H>>(
     Path8(a, b, c, d, e, f, g, h),
     fold(a, b, c, d, e, f, g, h)) {
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath9(a, b, c, d, e, f, g, h, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath9(a, b, c, d, e, f, g, h, next)
 
 }
 
@@ -125,7 +125,7 @@ data class OpenApiPath9<A, B, C, D, E, F, G, H, I>(
 ) : OpenApiPath<Tuple9<A, B, C, D, E, F, G, H, I>>(
     Path9(a, b, c, d, e, f, g, h, i),
     fold(a, b, c, d, e, f, g, h, i)) {
-    operator fun <T> div(next: OpenApiPath<T>) = OpenApiPath10(a, b, c, d, e, f, g, h, i, next)
+    infix fun <T> and(next: OpenApiPath<T>) = OpenApiPath10(a, b, c, d, e, f, g, h, i, next)
 
 }
 

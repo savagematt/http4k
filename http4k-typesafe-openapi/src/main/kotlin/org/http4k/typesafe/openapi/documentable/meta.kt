@@ -1,8 +1,11 @@
 package org.http4k.typesafe.openapi.documentable
 
 import org.http4k.core.HttpMessage
-import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.OpenApiAdapter
 import org.http4k.openapi.builders.OpenApiOperationDsl
+import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.openapi
+
 /**
  * Modifies [org.http4k.openapi.OpenApiOperation]
  *

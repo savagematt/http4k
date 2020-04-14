@@ -25,10 +25,11 @@ inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLi
  * Parses/writes json from/to the message body, and then uses [JsonLibAutoMarshallingJson]
  * to deserialize/serialise a value of type [T].
  */
-inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any> JsonLibAutoMarshallingJson<NODE>.typed(
+inline fun <reified M : HttpMessage, reified NODE : Any, reified T : Any>
+    JsonLibAutoMarshallingJson<NODE>.typed(
     schemaId: SchemaId?,
-    example: T
-): OpenApiLens<M, T> {
+    example: T)
+    : OpenApiLens<M, T> {
 
     val schema = AutoJsonToJsonSchema(this).toSchema(example, schemaId?.value)
 

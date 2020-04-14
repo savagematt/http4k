@@ -41,5 +41,5 @@ class Tuple5Lens<M : HttpMessage, A, B, C, D, E>(
             }
         }
 
-    override fun toString() = listOf(a, b, c, d, e).joinToString("; ")
+    override fun toString() = listOf(a, b, c, d, e).joinToString(" & ")
 }

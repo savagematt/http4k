@@ -28,9 +28,11 @@ import org.http4k.typesafe.routing.messages.SimpleLens
 import org.junit.jupiter.api.Test
 import java.security.Key
 
+
 private class TestRoutes(
     issueJwt: SimpleLens<Response, Jwt>,
     checkJwt: SimpleLens<Request, Jwt>) {
+
     companion object {
         fun server(public: Key) = TestRoutes(SetJwtLens(), public.lens())
         fun client(public: Key?) = TestRoutes(public?.lens() ?: IgnoreJwsSignature.lens(), SetJwtLens())
@@ -41,7 +43,7 @@ private class TestRoutes(
      * jwts using a private key, and then the route that needs to check the
      * token would use the public key to do so.
      */
-    val issue = route(
+    val issue: SimpleRoute<Unit, Jwt> = route(
         GET bind "/",
         OK with issueJwt
     )

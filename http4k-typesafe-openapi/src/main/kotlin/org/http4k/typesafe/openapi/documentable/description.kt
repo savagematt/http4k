@@ -5,6 +5,7 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.openapi.OpenApiLens
+import org.http4k.typesafe.openapi.openapi
 
 /**
  * Returns an [org.http4k.typesafe.openapi.OpenApiLens] with request/response

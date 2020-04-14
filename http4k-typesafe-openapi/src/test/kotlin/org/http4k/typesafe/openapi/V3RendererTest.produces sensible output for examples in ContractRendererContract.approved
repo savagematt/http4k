@@ -170,7 +170,11 @@
     },
     "/body_auto_schema" : {
       "post" : {
-        "responses" : { },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
         "requestBody" : {
           "description" : "body",
           "content" : {

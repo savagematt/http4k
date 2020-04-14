@@ -36,10 +36,3 @@ data class OpenApiRoute<In, Out>(
     override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
         extraDocs(response.document(request.document(doc)))
 }
-
-/**
- *
- */
-@Suppress("unused")
-fun <In, Out> OpenApiRoute<In, Out>.doc(extraDocs: (OpenApiRouteInfo) -> OpenApiRouteInfo) =
-    OpenApiRoute(this.request, this.response, extraDocs)

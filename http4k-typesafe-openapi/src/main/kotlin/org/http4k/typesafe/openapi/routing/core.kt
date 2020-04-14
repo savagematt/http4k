@@ -9,6 +9,7 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
+import org.http4k.typesafe.openapi.OpenApiTuple2
 import org.http4k.typesafe.openapi.OpenApiLens
 import org.http4k.typesafe.openapi.OpenApiRoute
 import org.http4k.typesafe.openapi.OpenApiServerRoute
@@ -16,10 +17,7 @@ import org.http4k.typesafe.openapi.documentation
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.ButLens
 import org.http4k.typesafe.routing.messages.MappedLens
-import org.http4k.typesafe.routing.messages.OrLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
-import org.http4k.typesafe.routing.messages.oneOf.OneOf2Lens
-import org.http4k.typesafe.routing.messages.tuples.Tuple2Lens
 import org.http4k.util.fold
 
 
@@ -28,11 +26,11 @@ fun <In, Out> route(
     response: OpenApiLens<Response, Out>) =
     OpenApiRoute(request, response)
 
-fun <In, Out> OpenApiRoute<In, Out>.server(
+infix fun <In, Out> OpenApiRoute<In, Out>.server(
     handler: (In) -> Out) =
     OpenApiServerRoute(this, handler)
 
-fun <In, Out> OpenApiRoute<In, Out>.client(
+infix fun <In, Out> OpenApiRoute<In, Out>.client(
     http: HttpHandler): (In) -> Out {
     val route = this@client
     return { param: In ->
@@ -44,8 +42,8 @@ fun <In, Out> OpenApiRoute<In, Out>.client(
 }
 
 infix fun <M : HttpMessage, A, B> OpenApiLens<M, A>.and(
-    other: OpenApiLens<M, B>) =
-    Tuple2Lens(this, other) documentation fold(this, other)
+    other: OpenApiLens<M, B>): OpenApiTuple2<M, A, B> =
+    OpenApiTuple2(this, other)
 
 fun <M : HttpMessage, A, B> OpenApiLens<M, A>.map(getter: (A) -> Result<B, RoutingError>, setter: (B) -> A) =
     MappedLens(this, getter, setter) documentation this
@@ -62,5 +60,6 @@ fun <M : HttpMessage, T, E> result(
 
 @Suppress("ClassName")
 object request : OpenApiMessageRouting<Request>(Request::class)
+
 @Suppress("ClassName")
 object response : OpenApiMessageRouting<Response>(Response::class)

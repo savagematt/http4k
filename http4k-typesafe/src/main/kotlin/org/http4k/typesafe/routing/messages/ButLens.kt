@@ -6,9 +6,6 @@ import org.http4k.core.HttpMessage
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
-/**
- * @see [org.http4k.typesafe.routing.Routing.but]
- */
 class ButLens<M : HttpMessage, B>(
     val unit: MessageLens<M, Unit>,
     val lens: MessageLens<M, B>)
@@ -20,6 +17,6 @@ class ButLens<M : HttpMessage, B>(
     override fun set(into: M, value: B): Result<M, RoutingError> =
         unit.set(into, Unit).flatMap { lens.set(it, value) }
 
-    override fun toString() = listOf(unit, lens).joinToString("; ")
+    override fun toString() = listOf(unit, lens).joinToString(" & ")
 }
 

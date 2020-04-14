@@ -21,20 +21,20 @@ import org.http4k.openapi.Tag
 import org.http4k.openapi.V3Renderer
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
-import org.http4k.typesafe.openapi.routing.boolean
-import org.http4k.typesafe.openapi.routing.consume
-import org.http4k.typesafe.openapi.routing.div
+import org.http4k.typesafe.openapi.routing.and
+import org.http4k.typesafe.openapi.routing.api
 import org.http4k.typesafe.openapi.routing.basicAuthServer
 import org.http4k.typesafe.openapi.routing.bind
+import org.http4k.typesafe.openapi.routing.boolean
+import org.http4k.typesafe.openapi.routing.but
+import org.http4k.typesafe.openapi.routing.with
+import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.typesafe.openapi.routing.div
+import org.http4k.typesafe.openapi.routing.request
 import org.http4k.typesafe.openapi.routing.request.header
 import org.http4k.typesafe.openapi.routing.request.required
-import org.http4k.typesafe.openapi.routing.with
-import org.http4k.typesafe.openapi.routing.and
-import org.http4k.typesafe.openapi.routing.but
-import org.http4k.typesafe.openapi.routing.request
 import org.http4k.typesafe.openapi.routing.response
 import org.http4k.typesafe.openapi.routing.route
-import org.http4k.typesafe.openapi.routing.api
 import org.http4k.typesafe.routing.security.basicAuthValidator
 import org.http4k.util.JsonRenderer
 import org.junit.jupiter.api.Test
@@ -75,7 +75,7 @@ class V3RendererTest {
             route(
                 // TODO: these should be typed
                 POST bind "/headers"
-                    and header("b").required() // boolean, required()
+                    but header("b").required() // boolean, required()
                     and header("s") // string
                     and header("i") // integer
                     and header("j") // json
@@ -127,7 +127,8 @@ class V3RendererTest {
                             listOf(1),
                             true
                         )),
-                response.any()),
+
+                OK with response.any()),
             route(
                 PUT bind "/body_auto_schema" but
                     json.typed(ArbObject3(
@@ -237,4 +238,3 @@ class V3RendererTest {
         return json.pretty(json.asJsonObject(renderer.render(api)))
     }
 }
-

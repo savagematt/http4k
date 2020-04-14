@@ -27,5 +27,5 @@ class Tuple2Lens<M : HttpMessage, A, B>(
             b.set(it, value.b)
         }
 
-    override fun toString() = listOf(a, b).joinToString("; ")
+    override fun toString() = listOf(a, b).joinToString(" & ")
 }

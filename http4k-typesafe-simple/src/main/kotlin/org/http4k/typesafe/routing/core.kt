@@ -61,7 +61,7 @@ infix fun <In, Out> SimpleRoute<In, Out>.client(http: HttpHandler):
 }
 
 infix fun <M : HttpMessage, A, B> MessageLens<M, A>.and(
-    other: MessageLens<M, B>) =
+    other: MessageLens<M, B>): Tuple2Lens<M, A, B> =
     Tuple2Lens(this, other)
 
 fun <M : HttpMessage, A, B> MessageLens<M, A>.xor(other: MessageLens<M, B>) =
@@ -85,6 +85,7 @@ fun <M : HttpMessage, T, E> result(
     ResultMessageLens(success, failure)
 
 @Suppress("ClassName")
-object request: MessageRouting<Request>()
+object request : MessageRouting<Request>()
+
 @Suppress("ClassName")
-object response: MessageRouting<Response>()
+object response : MessageRouting<Response>()
