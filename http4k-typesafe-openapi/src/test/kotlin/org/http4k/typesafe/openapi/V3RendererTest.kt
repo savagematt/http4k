@@ -13,16 +13,13 @@ import org.http4k.core.Status.Companion.FORBIDDEN
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Uri
 import org.http4k.format.ConfigurableJackson
-import org.http4k.format.Json
 import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.openapi.SchemaId
 import org.http4k.openapi.Tag
-import org.http4k.openapi.V3Renderer
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
 import org.http4k.typesafe.openapi.routing.and
-import org.http4k.typesafe.openapi.routing.api
 import org.http4k.typesafe.openapi.routing.basicAuthServer
 import org.http4k.typesafe.openapi.routing.bind
 import org.http4k.typesafe.openapi.routing.boolean
@@ -36,7 +33,7 @@ import org.http4k.typesafe.openapi.routing.request.required
 import org.http4k.typesafe.openapi.routing.response
 import org.http4k.typesafe.openapi.routing.route
 import org.http4k.typesafe.routing.security.basicAuthValidator
-import org.http4k.util.JsonRenderer
+import org.http4k.openapi.render
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -223,18 +220,6 @@ class V3RendererTest {
 //                ).toLens())
 //            } bindContract POST to { Response(OK) }
 
-        approver.assertApproved(document(routes))
-    }
-
-
-    private fun document(routes: List<OpenApiRoute<*, *>>): String {
-        val api = api(routes)
-
-        val renderer = V3Renderer(json, object : JsonRenderer<Any, JsonNode>, Json<JsonNode> by json {
-            override fun render(value: Any): JsonNode =
-                json.asJsonObject(value)
-        })
-
-        return json.pretty(json.asJsonObject(renderer.render(api)))
+        approver.assertApproved(render(routes))
     }
 }

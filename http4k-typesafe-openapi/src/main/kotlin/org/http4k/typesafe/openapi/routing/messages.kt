@@ -29,6 +29,7 @@ import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.RequiredLens
 import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
+import org.http4k.util.Documentable
 import kotlin.reflect.KClass
 
 open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) {
@@ -151,12 +152,6 @@ fun <M : HttpMessage> documentBody(clazz: KClass<M>, contentType: ContentType)
 
 }
 
-fun api(routes: List<OpenApiRoute<*, *>>): OpenApiObject =
-    routes.fold(OpenApiObject.empty) { api, route ->
-        route.document(OpenApiRouteInfo(api, OpenApiOperationInfo.empty)).let { (api, route) ->
-            api.copy(paths = api.paths + route)
-        }
-    }
 
 fun <M : HttpMessage> OpenApiLens<M, *>.document() =
     this.document(OpenApiRouteInfo.empty)

@@ -14,6 +14,7 @@ dependencies {
     testCompile project(":http4k-typesafe")
     testCompile project(":http4k-testing-approval")
     testCompile project(":http4k-format-jackson")
+    testCompile project(path: ":http4k-openapi", configuration: "testArtifacts")
     testCompile project(path: ":http4k-core", configuration: "testArtifacts")
     testCompile Config.TestDependencies
     testCompile Libs.okeyDoke
