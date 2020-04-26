@@ -23,7 +23,7 @@ internal class ResultTest {
         responseContract(
             lens,
             Failure("something went wrong"),
-            Response(BAD_REQUEST).textPlain("something went wrong"))
+            expectedResponse = Response(BAD_REQUEST).textPlain("something went wrong"))
     }
 
     @Test
@@ -31,6 +31,6 @@ internal class ResultTest {
         responseContract(
             lens,
             Success("hello world"),
-            Response(OK).textPlain("hello world"))
+            expectedResponse = Response(OK).textPlain("hello world"))
     }
 }

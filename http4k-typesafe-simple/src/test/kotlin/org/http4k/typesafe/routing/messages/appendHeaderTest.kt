@@ -16,46 +16,33 @@ import org.http4k.typesafe.routing.request.required
 import org.http4k.typesafe.routing.response
 import org.junit.jupiter.api.Test
 
-class HeaderReplaceTest {
+class HeaderAppendTest {
     @Test
     fun `can get and set`() {
         requestContract(
-            request.header("Content-Type"),
+            request.appendHeader("Content-Type"),
             "text/plain",
+            // This Content-Type header should be retained
             Request(GET, "/").header("Content-Type", "application/json"),
-            // This Content-Type header should be replaced
-            Request(GET, "/").header("Content-Type", "text/plain")
-        )
-        responseContract(
-            response.header("Content-Type"),
-            "text/plain",
-            Response(OK).header("Content-Type", "application/json"),
-            // This Content-Type header should be replaced
-            Response(OK).header("Content-Type", "text/plain")
-        )
-    }
 
-    @Test
-    fun `can get and set null`() {
-        requestContract(
-            request.header("Content-Type"),
-            null,
-            Request(GET, "/").header("Content-Type", "application/json"),
-            // This Content-Type header should be replaced
-            Request(GET, "/")
+            Request(GET, "/").headers(listOf("Content-Type" to "application/json", "Content-Type" to "text/plain")),
+            "application/json"
         )
         responseContract(
-            response.header("Content-Type"),
-            null,
-            Response(OK).header("Content-Type", "application/json"),
+            response.appendHeader("Content-Type"),
+            "text/plain",
             // This Content-Type header should be replaced
-            Response(OK)
+            Response(OK).header("Content-Type", "application/json"),
+
+            Response(OK).headers(listOf("Content-Type" to "application/json", "Content-Type" to "text/plain")),
+            "application/json"
+
         )
     }
 
     @Test
     fun `can be set to required`() {
-        val header = request.header("Content-Type").required()
+        val header = request.appendHeader("Content-Type").required()
 
         val actual = header.get(Request(GET, "/"))
         assertThat(

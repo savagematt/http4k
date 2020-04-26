@@ -14,12 +14,12 @@ internal class AnyTest {
         requestContract(
             request.any(),
             Unit,
-            Request(GET, "/"))
+            expectedRequest = Request(GET, "/"))
 
         responseContract(
             response.any(),
             Unit,
-            Response(OK))
+            expectedResponse = Response(OK))
     }
 
 }

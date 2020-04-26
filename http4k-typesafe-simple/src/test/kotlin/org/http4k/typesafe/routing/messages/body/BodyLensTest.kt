@@ -18,14 +18,14 @@ internal class BodyLensTest {
         requestContract(
             request.text(),
             "hello world",
-            Request(GET, "/")
+            expectedRequest = Request(GET, "/")
                 .header("Content-Type", TEXT_PLAIN.toHeaderValue())
                 .body("hello world"))
 
         responseContract(
             response.text(),
             "hello world",
-            Response(OK, "/")
+            expectedResponse = Response(OK, "/")
                 .header("Content-Type", TEXT_PLAIN.toHeaderValue())
                 .body("hello world"))
 

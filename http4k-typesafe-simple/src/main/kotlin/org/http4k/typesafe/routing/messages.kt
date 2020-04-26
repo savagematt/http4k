@@ -34,9 +34,17 @@ open class MessageRouting<M : HttpMessage>() {
     fun appendHeader(name: String) =
         HeaderAppendLens<M>(name)
 
+    /**
+     * Included to support non-conforming protocols outside the user's control,
+     * but see: https://tools.ietf.org/html/rfc7230#section-3.2.2
+     */
     fun appendHeaders(name: String) =
         HeadersAppendLens<M>(name)
 
+    /**
+     * Included to support non-conforming protocols outside the user's control,
+     * but see: https://tools.ietf.org/html/rfc7230#section-3.2.2
+     */
     fun headers(name: String) =
         HeadersReplaceLens<M>(name)
 

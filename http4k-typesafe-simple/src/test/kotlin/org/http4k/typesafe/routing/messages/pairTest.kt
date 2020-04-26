@@ -18,7 +18,7 @@ internal class PairTest {
         requestContract(
             pairLens,
             tuple(POST, "hello world"),
-            Request(POST, "/").textPlain("hello world"))
+            expectedRequest = Request(POST, "/").textPlain("hello world"))
 
     }
 }

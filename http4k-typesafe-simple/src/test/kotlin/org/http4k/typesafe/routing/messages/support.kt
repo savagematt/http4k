@@ -14,32 +14,35 @@ import org.http4k.typesafe.routing.ResponseLens
 
 private fun <M : HttpMessage, T> lensContract(
     lens: MessageLens<M, T>,
+    setValue: T,
     injectIntoMessage: M,
-    expectedValue: T,
-    expectedMessage: M) {
+    expectedMessage: M,
+    expectedGetValue: T) {
 
     val generatedMessage = lens.set(
         injectIntoMessage,
-        expectedValue)
+        setValue)
         .recover { injectIntoMessage }
 
     assertThat(generatedMessage, equalTo(expectedMessage))
 
     assertThat(
-        lens.get(generatedMessage).recover { throw AssertionError("Lens failed") },
-        equalTo(expectedValue))
+        lens.get(generatedMessage).recover { throw AssertionError("Lens failed: ${it.message}") },
+        equalTo(expectedGetValue))
 }
 
 fun <T> requestContract(lens: RequestLens<T>,
-                        expectedValue: T,
+                        setValue: T,
+                        injectIntoMessage: Request = Request(GET, "/"),
                         expectedRequest: Request,
-                        injectIntoMessage: Request = Request(GET, "/")) {
-    lensContract(lens, injectIntoMessage, expectedValue, expectedRequest)
+                        expectedGetValue: T = setValue) {
+    lensContract(lens, setValue, injectIntoMessage, expectedRequest, expectedGetValue)
 }
 
 fun <T> responseContract(lens: ResponseLens<T>,
                          expectedValue: T,
+                         injectIntoMessage: Response = Response(OK),
                          expectedResponse: Response,
-                         injectIntoMessage: Response = Response(OK)) {
-    lensContract(lens, injectIntoMessage, expectedValue, expectedResponse)
+                         expectedGetValue: T = expectedValue) {
+    lensContract(lens, expectedValue, injectIntoMessage, expectedResponse, expectedGetValue)
 }

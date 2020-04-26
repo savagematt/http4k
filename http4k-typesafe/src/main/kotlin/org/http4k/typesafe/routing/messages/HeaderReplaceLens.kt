@@ -3,7 +3,7 @@ package org.http4k.typesafe.routing.messages
 import com.natpryce.Success
 import org.http4k.core.HttpMessage
 
-class HeaderAppendLens<M : HttpMessage>(
+class HeaderReplaceLens<M : HttpMessage>(
     val name: String
 ) : SimpleLens<M, String?> {
 
@@ -12,7 +12,10 @@ class HeaderAppendLens<M : HttpMessage>(
 
     @Suppress("UNCHECKED_CAST")
     override fun set(into: M, value: String?) =
-        Success(into.header(name, value) as M)
+        when (value) {
+            null -> Success(into.removeHeader(name) as M)
+            else -> Success(into.replaceHeader(name, value) as M)
+        }
 
     override fun toString() = "Header '$name'"
 }
