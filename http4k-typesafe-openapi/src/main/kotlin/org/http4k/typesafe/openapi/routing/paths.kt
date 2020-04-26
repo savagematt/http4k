@@ -28,8 +28,8 @@ operator fun <A, B> OpenApiPath<A>.div(
     OpenApiPath2(this, next)
 
 operator fun <T> String.div(
-    next: OpenApiPath<T>) =
-    literal(this) / next
+    next: OpenApiPath<T>):OpenApiPath<T> =
+    literal(this) but next
 
 operator fun <T> OpenApiPath<T>.div(
     next: String) =

@@ -17,6 +17,7 @@ import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.openapi.SchemaId
 import org.http4k.openapi.Tag
+import org.http4k.openapi.render
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
 import org.http4k.typesafe.openapi.routing.and
@@ -24,7 +25,6 @@ import org.http4k.typesafe.openapi.routing.basicAuthServer
 import org.http4k.typesafe.openapi.routing.bind
 import org.http4k.typesafe.openapi.routing.boolean
 import org.http4k.typesafe.openapi.routing.but
-import org.http4k.typesafe.openapi.routing.with
 import org.http4k.typesafe.openapi.routing.consume
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.openapi.routing.request
@@ -32,113 +32,121 @@ import org.http4k.typesafe.openapi.routing.request.header
 import org.http4k.typesafe.openapi.routing.request.required
 import org.http4k.typesafe.openapi.routing.response
 import org.http4k.typesafe.openapi.routing.route
+import org.http4k.typesafe.openapi.routing.with
 import org.http4k.typesafe.routing.security.basicAuthValidator
-import org.http4k.openapi.render
+import org.http4k.util.data.Tuple2
+import org.http4k.util.data.Tuple4
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(KotlinApprovalsExtension::class)
-class V3RendererTest {
-    val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
+val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
 
-    enum class Foo {
-        bar, bing
-    }
+enum class Foo {
+    bar, bing
+}
 
-    data class ArbObject1(val anotherString: Foo)
-    data class ArbObject2(val string: String, val child: ArbObject1?, val numbers: List<Int>, val bool: Boolean)
-    data class ArbObject3(val uri: Uri, val additional: Map<String, *>)
+data class ArbObject1(val anotherString: Foo)
+data class ArbObject2(val string: String, val child: ArbObject1?, val numbers: List<Int>, val bool: Boolean)
+data class ArbObject3(val uri: Uri, val additional: Map<String, *>)
 
-    @Test
-    fun `produces sensible output for examples in ContractRendererContract`(approver: Approver) {
-        val routes: List<OpenApiRoute<*, *>> = listOf(
-            route(
-                GET bind "/nometa",
-                response.any()
-            ),
-            route(
-                GET bind "/descriptions" meta {
-                    summary = "endpoint"
-                    description = "some rambling description of what this thing actually does"
-                    tags += Tag("tag3")
-                    tags += Tag("tag1")
-                    deprecated = true
-                },
-                response.any()
-            ),
-            route(
-                POST bind "/paths" / consume("firstName") / "bertrand" / consume("age").boolean(),
-                response.any()),
-            route(
-                // TODO: these should be typed
-                POST bind "/headers"
-                    but header("b").required() // boolean, required()
-                    and header("s") // string
-                    and header("i") // integer
-                    and header("j") // json
-                ,
-                response.any()),
-            route(
-                POST bind "/body_string",
-                response.text()),
-            route(
-                POST bind "/body_json_noschema" but
-                    request.json(json),
-                response.any()
-            ),
-            route(
-                POST bind "/body_json_response",
-                OK with json.plain {
-                    obj("aNullField" to nullNode(),
-                        "aNumberField" to number(123))
-                }
-            ),
-            route(
-                POST bind "/body_json_schema",
-                OK with json.plain(
-                    SchemaId("someDefinitionId")) {
-                    obj("anAnotherObject" to obj(
-                        "aNullField" to nullNode(),
-                        "aNumberField" to number(123)))
-                }
-            ),
-            route(
-                POST bind "/body_json_list_schema",
-                OK with json.plain {
-                    array(listOf(obj("aNumberField" to number(123))))
-                }
-            ),
-            route(
-                POST bind "/basic_auth" but
-                    basicAuthServer(
-                        basicAuthValidator("realm") {
-                            it.password == "password"
-                        }),
-                response.any()),
-            route(
-                POST bind "/body_auto_schema" but
-                    json.typed(SchemaId("someOtherId"),
-                        ArbObject2(
-                            "s",
-                            ArbObject1(Foo.bar),
-                            listOf(1),
-                            true
-                        )),
+object Routes {
+    val nometa: OpenApiRoute<Unit, Unit> = route(
+        GET bind "/nometa",
+        response.any()
+    )
+    val descriptions: OpenApiRoute<Unit, Unit> = route(
+        GET bind "/descriptions" meta {
+            summary = "endpoint"
+            description = "some rambling description of what this thing actually does"
+            tags += Tag("tag3")
+            tags += Tag("tag1")
+            deprecated = true
+        },
+        response.any()
+    )
 
-                OK with response.any()),
-            route(
-                PUT bind "/body_auto_schema" but
-                    json.typed(ArbObject3(
-                        Uri.of("http://foowang"),
-                        mapOf("foo" to 123))),
-                CREATED with json.typed(
-                    listOf(ArbObject1(Foo.bing)))),
-            route(
-                POST bind "/returning",
-                FORBIDDEN with json
-                    .plain<Response, JsonNode> {
-                        obj("aString" to string("a message of some kind"))
-                    }.description("no way jose"))
+    val paths: OpenApiRoute<Tuple2<String, Boolean>, Unit> = route(
+        POST bind "/paths" / consume("firstName") / "bertrand" / consume("age").boolean(),
+        response.any())
+
+    val headers: OpenApiRoute<Tuple4<String, String?, String?, String?>, Unit> =
+        route(
+            // TODO: these should be typed
+            POST bind "/headers"
+                but header("b").required() // boolean, required()
+                and header("s") // string
+                and header("i") // integer
+                and header("j") // json
+            ,
+            response.any())
+
+    val bodyString: OpenApiRoute<Unit, String> = route(
+        POST bind "/body_string",
+        response.text())
+
+    val jsonNoSchema: OpenApiRoute<JsonNode, Unit> = route(
+        POST bind "/body_json_noschema" but
+            request.json(json),
+        response.any()
+    )
+
+    val jsonResponse: OpenApiRoute<Unit, JsonNode> = route(
+        POST bind "/body_json_response",
+        OK with json.plain {
+            obj("aNullField" to nullNode(),
+                "aNumberField" to number(123))
+        }
+    )
+    val jsonWithSchema: OpenApiRoute<Unit, JsonNode> = route(
+        POST bind "/body_json_schema",
+        OK with json.plain(
+            SchemaId("someDefinitionId")) {
+            obj("anAnotherObject" to obj(
+                "aNullField" to nullNode(),
+                "aNumberField" to number(123)))
+        }
+    )
+    val jsonWithListSchema: OpenApiRoute<Unit, JsonNode> = route(
+        POST bind "/body_json_list_schema",
+        OK with json.plain {
+            array(listOf(obj("aNumberField" to number(123))))
+        }
+    )
+
+    val basicAuth: OpenApiRoute<String, Unit> = route(
+        POST bind "/basic_auth" but
+            basicAuthServer(
+                basicAuthValidator("realm") {
+                    it.password == "password"
+                }),
+        response.any())
+
+    val autoSchemaWithId: OpenApiRoute<ArbObject2, Unit> = route(
+        POST bind "/body_auto_schema" but
+            json.typed(SchemaId("someOtherId"),
+                ArbObject2(
+                    "s",
+                    ArbObject1(Foo.bar),
+                    listOf(1),
+                    true
+                )),
+        OK with response.any())
+
+    val autoSchemaWithList: OpenApiRoute<ArbObject3, List<ArbObject1>> = route(
+        PUT bind "/body_auto_schema" but
+            json.typed(ArbObject3(
+                Uri.of("http://foowang"),
+                mapOf("foo" to 123))),
+        CREATED with json.typed(
+            listOf(ArbObject1(Foo.bing))))
+
+    val responseStatus: OpenApiRoute<Unit, JsonNode> = route(
+        POST bind "/returning",
+        FORBIDDEN with json
+            .plain<Response, JsonNode> {
+                obj("aString" to string("a message of some kind"))
+            }.description("no way jose"))
+
 //            route(
 //                POST bind "/or_auth" but
 //                    basicAuthServer(
@@ -149,12 +157,12 @@ class V3RendererTest {
 //                    .plain<Response, JsonNode> {
 //                        obj("aString" to string("a message of some kind"))
 //                    }.description("no way jose"))
-        )
+
 //            routes += "/or_auth" meta {
 //                security = BasicAuthSecurity("foo", credentials, "or1").or(BasicAuthSecurity("foo", credentials, "or2"))
 //            } bindContract POST to { Response(OK) }
 
-//            routes += "/produces_and_consumes" meta {
+    //            routes += "/produces_and_consumes" meta {
 //                produces += APPLICATION_JSON
 //                produces += APPLICATION_XML
 //                consumes += OCTET_STREAM
@@ -219,6 +227,28 @@ class V3RendererTest {
 //                    json.lens(FormField).required("j", "jsonField")
 //                ).toLens())
 //            } bindContract POST to { Response(OK) }
+}
+
+@ExtendWith(KotlinApprovalsExtension::class)
+class V3RendererTest {
+
+    @Test
+    fun `produces sensible output for examples in ContractRendererContract`(approver: Approver) {
+
+        val routes: List<OpenApiRoute<*, *>> = listOf(
+            Routes.nometa,
+            Routes.descriptions,
+            Routes.paths,
+            Routes.headers,
+            Routes.bodyString,
+            Routes.jsonNoSchema,
+            Routes.jsonResponse,
+            Routes.jsonWithSchema,
+            Routes.jsonWithListSchema,
+            Routes.basicAuth,
+            Routes.autoSchemaWithId,
+            Routes.autoSchemaWithList,
+            Routes.responseStatus)
 
         approver.assertApproved(render(routes))
     }
