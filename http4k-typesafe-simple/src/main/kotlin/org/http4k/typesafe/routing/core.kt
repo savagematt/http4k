@@ -10,7 +10,7 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.typesafe.routing.messages.ButLens
+import org.http4k.typesafe.routing.messages.IgnoreUnitLens
 import org.http4k.typesafe.routing.messages.MappedLens
 import org.http4k.typesafe.routing.messages.OrLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
@@ -75,9 +75,9 @@ fun <M : HttpMessage, A, B> MessageLens<M, A>.map(
     setter: (B) -> A) =
     MappedLens(this, getter, setter)
 
-infix fun <M : HttpMessage, T> MessageLens<M, Unit>.but(
+infix fun <M : HttpMessage, T> MessageLens<M, Unit>.of(
     other: MessageLens<M, T>) =
-    ButLens(this, other)
+    IgnoreUnitLens(this, other)
 
 fun <M : HttpMessage, T, E> result(
     success: MessageLens<M, T>,

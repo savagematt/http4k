@@ -15,7 +15,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.routing.Router
 import org.http4k.typesafe.routing.RoutingErrorException
-import org.http4k.typesafe.routing.but
+import org.http4k.typesafe.routing.of
 import org.http4k.typesafe.routing.client
 import org.http4k.typesafe.routing.response
 import org.http4k.typesafe.routing.route
@@ -48,7 +48,7 @@ private class TestRoutes(
         OK with issueJwt
     )
     val check: SimpleRoute<Jwt, String> = route(
-        POST bind "/" but checkJwt,
+        POST bind "/" of checkJwt,
         OK with response.text()
     )
 }

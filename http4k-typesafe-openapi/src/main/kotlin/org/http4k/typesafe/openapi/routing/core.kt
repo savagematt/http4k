@@ -15,7 +15,7 @@ import org.http4k.typesafe.openapi.OpenApiRoute
 import org.http4k.typesafe.openapi.OpenApiServerRoute
 import org.http4k.typesafe.openapi.documentation
 import org.http4k.typesafe.routing.RoutingError
-import org.http4k.typesafe.routing.messages.ButLens
+import org.http4k.typesafe.routing.messages.IgnoreUnitLens
 import org.http4k.typesafe.routing.messages.MappedLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
 import org.http4k.util.fold
@@ -50,7 +50,7 @@ fun <M : HttpMessage, A, B> OpenApiLens<M, A>.map(getter: (A) -> Result<B, Routi
 
 infix fun <M : HttpMessage, T> OpenApiLens<M, Unit>.but(
     other: OpenApiLens<M, T>) =
-    ButLens(this, other) documentation fold(this, other)
+    IgnoreUnitLens(this, other) documentation fold(this, other)
 
 
 fun <M : HttpMessage, T, E> result(
