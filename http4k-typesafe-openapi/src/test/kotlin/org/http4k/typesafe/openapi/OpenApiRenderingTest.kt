@@ -24,7 +24,7 @@ import org.http4k.typesafe.openapi.routing.and
 import org.http4k.typesafe.openapi.routing.basicAuthServer
 import org.http4k.typesafe.openapi.routing.bind
 import org.http4k.typesafe.openapi.routing.boolean
-import org.http4k.typesafe.openapi.routing.but
+import org.http4k.typesafe.openapi.routing.of
 import org.http4k.typesafe.openapi.routing.consume
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.openapi.routing.request
@@ -73,7 +73,7 @@ object Routes {
         route(
             // TODO: these should be typed
             POST bind "/headers"
-                but header("b").required() // boolean, required()
+                of header("b").required() // boolean, required()
                 and header("s") // string
                 and header("i") // integer
                 and header("j") // json
@@ -85,7 +85,7 @@ object Routes {
         response.text())
 
     val jsonNoSchema: OpenApiRoute<JsonNode, Unit> = route(
-        POST bind "/body_json_noschema" but
+        POST bind "/body_json_noschema" of
             request.json(json),
         response.any()
     )
@@ -114,7 +114,7 @@ object Routes {
     )
 
     val basicAuth: OpenApiRoute<String, Unit> = route(
-        POST bind "/basic_auth" but
+        POST bind "/basic_auth" of
             basicAuthServer(
                 basicAuthValidator("realm") {
                     it.password == "password"
@@ -122,7 +122,7 @@ object Routes {
         response.any())
 
     val autoSchemaWithId: OpenApiRoute<ArbObject2, Unit> = route(
-        POST bind "/body_auto_schema" but
+        POST bind "/body_auto_schema" of
             json.typed(SchemaId("someOtherId"),
                 ArbObject2(
                     "s",
@@ -133,7 +133,7 @@ object Routes {
         OK with response.any())
 
     val autoSchemaWithList: OpenApiRoute<ArbObject3, List<ArbObject1>> = route(
-        PUT bind "/body_auto_schema" but
+        PUT bind "/body_auto_schema" of
             json.typed(ArbObject3(
                 Uri.of("http://foowang"),
                 mapOf("foo" to 123))),
