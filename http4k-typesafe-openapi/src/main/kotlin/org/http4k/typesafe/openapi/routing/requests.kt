@@ -22,13 +22,13 @@ fun <T> path(path: OpenApiPath<T>): OpenApiLens<Request, T> {
     return PathLens(p) documentation p
 }
 
-infix fun <T> Method.bind(
+infix fun <T> Method.at(
     path: OpenApiPath<T>) =
     method(
         this,
         PathLens(path) documentation fold(path))
 
-infix fun Method.bind(
+infix fun Method.at(
     path: String): OpenApiLens<Request, Unit> {
     return method(this, path(literal(path)))
 }

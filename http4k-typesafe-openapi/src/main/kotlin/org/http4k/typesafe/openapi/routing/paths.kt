@@ -29,13 +29,13 @@ operator fun <A, B> OpenApiPath<A>.div(
 
 operator fun <T> String.div(
     next: OpenApiPath<T>):OpenApiPath<T> =
-    literal(this) of next
+    literal(this) and next
 
 operator fun <T> OpenApiPath<T>.div(
     next: String) =
     this ignore literal(next)
 
-infix fun <T> OpenApiPath<Unit>.of(next: OpenApiPath<T>) =
+infix fun <T> OpenApiPath<Unit>.and(next: OpenApiPath<T>) =
     IgnoreFirst(this, next) documentation fold(this, next)
 
 infix fun <T> OpenApiPath<T>.ignore(next: OpenApiPath<Unit>) =

@@ -48,7 +48,7 @@ infix fun <M : HttpMessage, A, B> OpenApiLens<M, A>.and(
 fun <M : HttpMessage, A, B> OpenApiLens<M, A>.map(getter: (A) -> Result<B, RoutingError>, setter: (B) -> A) =
     MappedLens(this, getter, setter) documentation this
 
-infix fun <M : HttpMessage, T> OpenApiLens<M, Unit>.of(
+infix fun <M : HttpMessage, T> OpenApiLens<M, Unit>.and(
     other: OpenApiLens<M, T>) =
     IgnoreUnitLens(this, other) documentation fold(this, other)
 

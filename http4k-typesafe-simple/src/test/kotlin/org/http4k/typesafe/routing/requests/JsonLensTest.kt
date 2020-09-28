@@ -15,8 +15,8 @@ import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
-import org.http4k.typesafe.routing.of
-import org.http4k.typesafe.routing.bind
+import org.http4k.typesafe.routing.and
+import org.http4k.typesafe.routing.at
 import org.http4k.typesafe.routing.request.json
 import org.junit.jupiter.api.Test
 
@@ -25,7 +25,7 @@ class JsonLensTest {
     val json = ConfigurableJackson(KotlinModule().asConfigurable().customise())
     val jsonString = """{"parent":{"child":1234}}"""
 
-    val lens = GET bind "/widget" of json(json)
+    val lens = GET at "/widget" and json(json)
 
     @Test
     fun `can get json`() {

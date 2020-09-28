@@ -18,13 +18,13 @@ import org.http4k.typesafe.routing.requests.paths.Path
 fun <T> path(path: Path<T>) =
     PathLens(path)
 
-infix fun <T> Method.bind(
+infix fun <T> Method.at(
     path: Path<T>) =
     method(this, path(path))
 
-infix fun Method.bind(
+infix fun Method.at(
     path: String) =
-    this.bind(Literal(path))
+    this.at(Literal(path))
 
 fun <T> method(method: Method, rest: MessageLens<Request, T>) =
     CheckMethodLens(method, rest)

@@ -75,7 +75,7 @@ fun <M : HttpMessage, A, B> MessageLens<M, A>.map(
     setter: (B) -> A) =
     MappedLens(this, getter, setter)
 
-infix fun <M : HttpMessage, T> MessageLens<M, Unit>.of(
+infix fun <M : HttpMessage, T> MessageLens<M, Unit>.and(
     other: MessageLens<M, T>) =
     IgnoreUnitLens(this, other)
 

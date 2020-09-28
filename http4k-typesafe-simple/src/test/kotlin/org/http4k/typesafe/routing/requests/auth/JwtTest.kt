@@ -15,12 +15,12 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.typesafe.routing.Router
 import org.http4k.typesafe.routing.RoutingErrorException
-import org.http4k.typesafe.routing.of
+import org.http4k.typesafe.routing.and
 import org.http4k.typesafe.routing.client
 import org.http4k.typesafe.routing.response
 import org.http4k.typesafe.routing.route
 import org.http4k.typesafe.routing.server
-import org.http4k.typesafe.routing.bind
+import org.http4k.typesafe.routing.at
 import org.http4k.typesafe.routing.with
 import org.http4k.typesafe.routing.SimpleRoute
 import org.http4k.typesafe.routing.SimpleServerRoute
@@ -35,6 +35,7 @@ private class TestRoutes(
 
     companion object {
         fun server(public: Key) = TestRoutes(SetJwtLens(), public.lens())
+
         fun client(public: Key?) = TestRoutes(public?.lens() ?: IgnoreJwsSignature.lens(), SetJwtLens())
     }
 
@@ -44,11 +45,11 @@ private class TestRoutes(
      * token would use the public key to do so.
      */
     val issue: SimpleRoute<Unit, Jwt> = route(
-        GET bind "/",
+        GET at "/",
         OK with issueJwt
     )
     val check: SimpleRoute<Jwt, String> = route(
-        POST bind "/" of checkJwt,
+        POST at "/" and checkJwt,
         OK with response.text()
     )
 }
@@ -68,7 +69,6 @@ class JwtTest {
         val jwtIssuedByServer = key.signJwt(claims)
 
         val server = server(key, jwtIssuedByServer)
-
         val client = client(server)
 
         val jwt = client.issue(Unit)
