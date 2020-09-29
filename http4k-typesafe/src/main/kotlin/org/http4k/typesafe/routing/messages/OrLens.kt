@@ -14,7 +14,7 @@ import org.http4k.typesafe.routing.RoutingError
  * See [org.http4k.typesafe.routing.messages.oneOf] for the logical xor lenses.
  */
 class OrLens<M : HttpMessage, T>(
-    val lenses: List<MessageLens<M, T>>
+    val lenses: List<MessageLens<M, T, *>>
 ) : SimpleLens<M, T> {
     init {
         if (lenses.isEmpty())

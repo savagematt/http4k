@@ -23,7 +23,8 @@ data class Path7<A, B, C, D, E, F, G>(
                         e.get(d.remaining).flatMap { e ->
                             f.get(e.remaining).flatMap { f ->
                                 g.get(f.remaining).flatMap { g ->
-                                    matchSuccess(tuple(a.value, b.value, c.value, d.value, e.value, f.value, g.value), g.remaining)                                }
+                                    matchSuccess(tuple(a.value, b.value, c.value, d.value, e.value, f.value, g.value), g.remaining)
+                                }
                             }
                         }
                     }

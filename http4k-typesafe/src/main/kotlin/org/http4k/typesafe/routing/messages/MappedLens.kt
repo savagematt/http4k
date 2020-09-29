@@ -7,7 +7,7 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
 class MappedLens<M : HttpMessage, A, B>(
-    val initial: MessageLens<M, A>,
+    val initial: MessageLens<M, A, *>,
     val getter: (A) -> Result<B, RoutingError>,
     val setter: (B) -> A
 ) : SimpleLens<M, B> {

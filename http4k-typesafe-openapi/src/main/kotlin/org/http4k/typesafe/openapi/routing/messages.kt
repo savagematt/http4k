@@ -8,15 +8,12 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.format.Json
 import org.http4k.openapi.OpenApiMediaType
-import org.http4k.openapi.OpenApiObject
-import org.http4k.openapi.OpenApiOperationInfo
 import org.http4k.openapi.OpenApiParameter
 import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.openapi.ParameterLocation.HEADER
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.openapi.real
 import org.http4k.typesafe.openapi.OpenApiLens
-import org.http4k.typesafe.openapi.OpenApiRoute
 import org.http4k.typesafe.openapi.documentation
 import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.routing.RoutingError
@@ -29,8 +26,10 @@ import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.RequiredLens
 import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
-import org.http4k.util.Documentable
+import org.http4k.typesafe.routing.requests.auth.JwtLens
+import org.http4k.typesafe.routing.requests.auth.JwtVerifier
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) {
     fun any() =
@@ -47,6 +46,12 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
         OpenApiLens<M, NODE> =
         openApiJson(clazz, json)
 
+    fun jwt(verifier: JwtVerifier,
+            headerName: String = "Authorization",
+            prefix: String = "Bearer") =
+        JwtLens<M>(verifier, headerName, prefix) openapi {} // TODO: jwt openapi docs
+
+
     fun header(name: String) =
         HeaderReplaceLens<M>(name) openapi headerParameter(name)
 
@@ -59,11 +64,11 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
     fun headers(name: String) =
         HeadersReplaceLens<M>(name) openapi headerParameter(name)
 
-    fun <T> OpenApiLens<M, T?>.required(onFailure: (() -> RoutingError)? = null)
+    fun <T> required(lens: OpenApiLens<M, T?>, onFailure: (() -> RoutingError)? = null)
         : OpenApiLens<M, T> =
-        this.let { lens ->
-            RequiredLens(lens, onFailure)
-                .documentation(lens)
+        lens.let {
+            RequiredLens(it, onFailure)
+                .documentation(it)
                 .openapi {
                     /**
                      * We don't know what the previous lens is, so here we just make
@@ -93,13 +98,27 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
         }
 }
 
+@Suppress("UNCHECKED_CAST")
+inline fun <T, reified M : HttpMessage> OpenApiLens<M, T?>.required(noinline onFailure: (() -> RoutingError)? = null)
+    : OpenApiLens<M, T> {
+    // TODO: this is obviously a horror show
+    if (M::class.isSubclassOf(Request::class)) {
+        val required = request.required(this as OpenApiLens<Request, T?>, onFailure)
+        return required as OpenApiLens<M, T>
+    } else {
+        val required = response.required(this as OpenApiLens<Response, T?>, onFailure)
+        return required as OpenApiLens<M, T>
+    }
+
+}
+
 /**
  * Returns a simple json lens, with an empty request or response body marked as application/json
  */
 fun <M : HttpMessage, NODE : Any> openApiJson(clazz: KClass<M>, json: Json<NODE>): OpenApiLens<M, NODE> =
     JsonLens<M, NODE>(json) openapi documentBody(clazz, APPLICATION_JSON)
 
-fun headerParameter(name: String): OpenApiRouteInfoDsl.() -> Unit = {
+private fun headerParameter(name: String): OpenApiRouteInfoDsl.() -> Unit = {
     route {
         operation {
             parameters += OpenApiParameter(

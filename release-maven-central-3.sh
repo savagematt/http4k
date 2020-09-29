@@ -18,4 +18,3 @@ maven_publish "http4k-testing-servirtium"
 maven_publish "http4k-testing-webdriver"
 
 maven_publish "http4k-typesafe"
-maven_publish "http4k-typesafe-simple"

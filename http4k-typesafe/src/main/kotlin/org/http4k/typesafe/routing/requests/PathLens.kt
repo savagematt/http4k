@@ -7,9 +7,9 @@ import com.natpryce.recover
 import org.http4k.core.Request
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.wrongRoute
-import org.http4k.typesafe.routing.requests.paths.leading
 import org.http4k.typesafe.routing.messages.SimpleLens
 import org.http4k.typesafe.routing.requests.paths.Path
+import org.http4k.typesafe.routing.requests.paths.leading
 
 class PathLens<T>(val path: Path<T>) : SimpleLens<Request, T> {
     override fun get(from: Request): Result<T, RoutingError> =

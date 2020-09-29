@@ -3,22 +3,22 @@ package org.http4k.typesafe.routing.messages.tuples
 import com.natpryce.flatMap
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.util.data.Tuple10
-import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.messages.SimpleLens
+import org.http4k.util.data.Tuple10
+import org.http4k.util.data.tuple
 
-class Tuple10Lens<M : HttpMessage, A, B, C,D,E,F,G,H,I,J>(
-    val a: MessageLens<M, A>,
-    val b: MessageLens<M, B>,
-    val c: MessageLens<M, C>,
-    val d: MessageLens<M, D>,
-    val e: MessageLens<M, E>,
-    val f: MessageLens<M, F>,
-    val g: MessageLens<M, G>,
-    val h: MessageLens<M, H>,
-    val i: MessageLens<M, I>,
-    val j: MessageLens<M, J>
+class Tuple10Lens<M : HttpMessage, A, B, C, D, E, F, G, H, I, J>(
+    val a: MessageLens<M, A, *>,
+    val b: MessageLens<M, B, *>,
+    val c: MessageLens<M, C, *>,
+    val d: MessageLens<M, D, *>,
+    val e: MessageLens<M, E, *>,
+    val f: MessageLens<M, F, *>,
+    val g: MessageLens<M, G, *>,
+    val h: MessageLens<M, H, *>,
+    val i: MessageLens<M, I, *>,
+    val j: MessageLens<M, J, *>
 ) : SimpleLens<M, Tuple10<A, B, C, D, E, F, G, H, I, J>> {
     override fun get(from: M) =
         a.get(from).flatMap { a ->

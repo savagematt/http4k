@@ -7,7 +7,7 @@ import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.openapi.real
 import org.http4k.typesafe.openapi.OpenApiPath
 import org.http4k.typesafe.openapi.OpenApiPath2
-import org.http4k.typesafe.routing.requests.paths.joinPaths
+import org.http4k.typesafe.routing.fold
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
 import org.http4k.typesafe.routing.requests.paths.IgnoreFirst
 import org.http4k.typesafe.routing.requests.paths.IgnoreSecond
@@ -16,30 +16,27 @@ import org.http4k.typesafe.routing.requests.paths.Literal
 import org.http4k.typesafe.routing.requests.paths.Mapped
 import org.http4k.typesafe.routing.requests.paths.MappedPath
 import org.http4k.typesafe.routing.requests.paths.Path
+import org.http4k.typesafe.routing.requests.paths.joinPaths
 import org.http4k.typesafe.routing.requests.paths.nextSlash
-import org.http4k.util.fold
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.KFunction1
 import kotlin.reflect.KFunction2
 import kotlin.reflect.KFunction3
 
-operator fun <A, B> OpenApiPath<A>.div(
-    next: OpenApiPath<B>) =
-    OpenApiPath2(this, next)
-
 operator fun <T> String.div(
-    next: OpenApiPath<T>):OpenApiPath<T> =
-    literal(this) and next
+    next: OpenApiPath<T>): OpenApiPath<T> {
+    val literal = literal(this)
+    return IgnoreFirst(literal, next) documentation fold(literal, next) }
 
 operator fun <T> OpenApiPath<T>.div(
     next: String) =
     this ignore literal(next)
 
-infix fun <T> OpenApiPath<Unit>.and(next: OpenApiPath<T>) =
-    IgnoreFirst(this, next) documentation fold(this, next)
-
 infix fun <T> OpenApiPath<T>.ignore(next: OpenApiPath<Unit>) =
     IgnoreSecond(this, next) documentation fold(this, next)
+
+infix operator fun <A,B> OpenApiPath<A>.div(next: OpenApiPath<B>) =
+    OpenApiPath2(this, next)
 
 fun consume(
     name: String, index: IndexInString = ::nextSlash) =

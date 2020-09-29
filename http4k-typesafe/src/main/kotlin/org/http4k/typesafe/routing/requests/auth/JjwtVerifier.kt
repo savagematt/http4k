@@ -76,11 +76,11 @@ object IgnoreJwsSignature : JwtVerifier {
 
     fun <M : HttpMessage> lens(headerName: String = "Authorization",
                                prefix: String = "Bearer") =
-        GetJwtLens<M>(this, headerName, prefix)
+        JwtLens<M>(this, headerName, prefix)
 }
 
 fun <M : HttpMessage> SigningKeyResolver.lens(trier: Try = PrintStackTrace) =
-    GetJwtLens<M>(JjwtVerifier(this, trier), prefix = "Bearer ")
+    JwtLens<M>(JjwtVerifier(this, trier), prefix = "Bearer ")
 
 fun <M : HttpMessage> Key.lens(trier: Try = PrintStackTrace) =
-    GetJwtLens<M>(JjwtVerifier(this, trier), prefix = "Bearer ")
+    JwtLens<M>(JjwtVerifier(this, trier), prefix = "Bearer ")

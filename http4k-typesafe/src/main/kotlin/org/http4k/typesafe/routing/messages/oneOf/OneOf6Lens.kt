@@ -4,18 +4,18 @@ import com.natpryce.Result
 import com.natpryce.flatMapFailure
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.util.data.OneOf6
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.SimpleLens
+import org.http4k.util.data.OneOf6
 
 class OneOf6Lens<M : HttpMessage, A, B, C, D, E, F>(
-    val a: MessageLens<M, A>,
-    val b: MessageLens<M, B>,
-    val c: MessageLens<M, C>,
-    val d: MessageLens<M, D>,
-    val e: MessageLens<M, E>,
-    val f: MessageLens<M, F>
+    val a: MessageLens<M, A, *>,
+    val b: MessageLens<M, B, *>,
+    val c: MessageLens<M, C, *>,
+    val d: MessageLens<M, D, *>,
+    val e: MessageLens<M, E, *>,
+    val f: MessageLens<M, F, *>
 ) : SimpleLens<M, OneOf6<A, B, C, D, E, F>> {
     @Suppress("UNCHECKED_CAST")
     override fun get(from: M) =
@@ -52,7 +52,7 @@ class OneOf6Lens<M : HttpMessage, A, B, C, D, E, F>(
             is OneOf6.F -> f.set(into, value.value)
         }
 
-    infix fun <NEXT> or(next: MessageLens<M, NEXT>) = OneOf7Lens(a, b, c, d, e, f, next)
+    infix fun <NEXT> or(next: MessageLens<M, NEXT, *>) = OneOf7Lens(a, b, c, d, e, f, next)
 
     override fun toString() = listOf(a, b, c, d, e, f).joinToString(" | ")
 }

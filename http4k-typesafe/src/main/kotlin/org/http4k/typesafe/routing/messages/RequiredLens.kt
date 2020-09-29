@@ -9,16 +9,13 @@ import org.http4k.core.Status
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
-/**
- * Maps an
- */
 class RequiredLens<M : HttpMessage, T>(
-    val opt: MessageLens<M, T?>,
+    val optional: MessageLens<M, T?, *>,
     onFailure: (() -> RoutingError)? = null
 ) : SimpleLens<M, T> {
-    val onFailure = onFailure ?: { RoutingError.RouteFailed("$opt is required", Response(Status.BAD_REQUEST)) }
+    val onFailure = onFailure ?: { RoutingError.RouteFailed("$optional is required", Response(Status.BAD_REQUEST)) }
     override fun get(from: M) =
-        opt.get(from).let { result ->
+        optional.get(from).let { result ->
             result.flatMap {
                 when (it) {
                     null -> Failure(onFailure())
@@ -28,7 +25,7 @@ class RequiredLens<M : HttpMessage, T>(
         }
 
     override fun set(into: M, value: T) =
-        opt.set(into, value)
+        optional.set(into, value)
 
-    override fun toString() = "required: $opt"
+    override fun toString() = "required: $optional"
 }

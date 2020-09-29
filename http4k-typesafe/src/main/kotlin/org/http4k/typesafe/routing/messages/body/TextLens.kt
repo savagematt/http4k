@@ -22,7 +22,7 @@ class TextLens<M : HttpMessage> : SimpleLens<M, String> {
     override fun toString() = "text/plain body"
 }
 
-fun <M:HttpMessage> M.textPlain(body: String) =
+fun <M : HttpMessage> M.textPlain(body: String) =
     this.replaceHeader("Content-Type", TEXT_PLAIN.toHeaderValue())
         .body(body)
 

@@ -10,10 +10,11 @@ import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
-import org.http4k.util.Documentable
+
+typealias OpenApiRoute<In, Out> = Route<In, Out, OpenApiRouteInfo>
 
 data class OpenApiServerRoute<In, Out>(
-    val route: OpenApiRoute<In, Out>,
+    val route: Route<In, Out, OpenApiRouteInfo>,
     val handler: (In) -> Out
 ) : ServerRoute {
 
@@ -24,15 +25,4 @@ data class OpenApiServerRoute<In, Out>(
             .map(handler)
             // inject the handler result into an empty Response
             .flatMap { route.response.set(Response(Status.OK), it) }
-}
-
-data class OpenApiRoute<In, Out>(
-    override val request: OpenApiLens<Request, In>,
-    override val response: OpenApiLens<Response, Out>,
-    val extraDocs: (OpenApiRouteInfo) -> OpenApiRouteInfo = { it })
-    : Route<In, Out, OpenApiLens<Request, In>, OpenApiLens<Response, Out>>,
-    Documentable<OpenApiRouteInfo> {
-
-    override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
-        extraDocs(response.document(request.document(doc)))
 }

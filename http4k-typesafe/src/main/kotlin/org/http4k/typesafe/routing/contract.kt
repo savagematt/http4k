@@ -1,10 +1,10 @@
 package org.http4k.typesafe.routing
 
 import com.natpryce.Failure
+import com.natpryce.Result
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.util.functional.ResultLens
 
 
 class RoutingErrorException(error: RoutingError) : Exception(error.message)
@@ -37,13 +37,18 @@ sealed class RoutingError {
     }
 }
 
-interface MessageLens<M, T> : ResultLens<M, T, RoutingError>
+interface MessageLens<M, T, D> : Documentable<D> {
+    fun get(from: M): Result<T, RoutingError>
+    fun set(into: M, value: T): Result<M, RoutingError>
 
-typealias RequestLens<T> = MessageLens<Request, T>
-
-typealias ResponseLens<T> = MessageLens<Response, T>
-
-interface Route<In, Out, TReqLens : RequestLens<In>, TResLens : ResponseLens<Out>>  {
-    val request: TReqLens
-    val response: TResLens
+    fun invoke(into: M, value: T) = this.set(into, value)
+    fun invoke(from: M) = this.get(from)
 }
+
+typealias RequestLens<T, D> = MessageLens<Request, T, D>
+
+typealias ResponseLens<T, D> = MessageLens<Response, T, D>
+
+data class Route<In, Out, D>(
+    val request: MessageLens<Request, In, D>,
+    val response: MessageLens<Response, Out, D>)

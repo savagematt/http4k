@@ -3,24 +3,24 @@ package org.http4k.typesafe.routing.messages.tuples
 import com.natpryce.flatMap
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.util.data.Tuple9
-import org.http4k.util.data.tuple
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.messages.SimpleLens
+import org.http4k.util.data.Tuple9
+import org.http4k.util.data.tuple
 
 class Tuple9Lens<M : HttpMessage, A, B, C, D, E, F, G, H, I>(
-    val a: MessageLens<M, A>,
-    val b: MessageLens<M, B>,
-    val c: MessageLens<M, C>,
-    val d: MessageLens<M, D>,
-    val e: MessageLens<M, E>,
-    val f: MessageLens<M, F>,
-    val g: MessageLens<M, G>,
-    val h: MessageLens<M, H>,
-    val i: MessageLens<M, I>
+    val a: MessageLens<M, A, *>,
+    val b: MessageLens<M, B, *>,
+    val c: MessageLens<M, C, *>,
+    val d: MessageLens<M, D, *>,
+    val e: MessageLens<M, E, *>,
+    val f: MessageLens<M, F, *>,
+    val g: MessageLens<M, G, *>,
+    val h: MessageLens<M, H, *>,
+    val i: MessageLens<M, I, *>
 ) : SimpleLens<M, Tuple9<A, B, C, D, E, F, G, H, I>> {
 
-    infix fun <T> and(next: MessageLens<M, T>) =
+    infix fun <T> and(next: MessageLens<M, T, *>) =
         Tuple10Lens(a, b, c, d, e, f, g, h, i, next)
 
     override fun get(from: M) =

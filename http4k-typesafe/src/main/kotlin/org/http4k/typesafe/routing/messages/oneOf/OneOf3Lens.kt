@@ -4,15 +4,15 @@ import com.natpryce.Result
 import com.natpryce.flatMapFailure
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.util.data.OneOf3
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.SimpleLens
+import org.http4k.util.data.OneOf3
 
 class OneOf3Lens<M : HttpMessage, A, B, C>(
-    val a: MessageLens<M, A>,
-    val b: MessageLens<M, B>,
-    val c: MessageLens<M, C>
+    val a: MessageLens<M, A,*>,
+    val b: MessageLens<M, B,*>,
+    val c: MessageLens<M, C,*>
 ) : SimpleLens<M, OneOf3<A, B, C>> {
     @Suppress("UNCHECKED_CAST")
     override fun get(from: M) =
@@ -34,7 +34,7 @@ class OneOf3Lens<M : HttpMessage, A, B, C>(
             is OneOf3.C -> c.set(into, value.value)
         }
 
-    infix fun <NEXT> or(next: MessageLens<M, NEXT>) = OneOf4Lens(a, b, c, next)
+    infix fun <NEXT> or(next: MessageLens<M, NEXT,*>) = OneOf4Lens(a, b, c, next)
 
     override fun toString() = listOf(a, b, c).joinToString(" | ")
 }

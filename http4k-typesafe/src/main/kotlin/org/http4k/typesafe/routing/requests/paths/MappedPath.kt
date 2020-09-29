@@ -40,7 +40,7 @@ fun <A, B> Path<A>.map(mapping: BiDiMapping<A, B>, failureMessage: String) =
         mapper(mapping.asOut, failureMessage),
         mapping.asIn)
 
-object Mapped{
+object Mapped {
 
     fun nonEmptyString(path: Path<String>) =
         path.map(

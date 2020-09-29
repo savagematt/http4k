@@ -1,8 +1,9 @@
 package org.http4k.typesafe.openapi
 
 import org.http4k.openapi.OpenApiRouteInfo
+import org.http4k.typesafe.openapi.routing.literal
+import org.http4k.typesafe.routing.Documentable
 import org.http4k.typesafe.routing.requests.paths.Path
-import org.http4k.util.Documentable
 
 /**
  * Wraps a normal path and adds some openapi documentation

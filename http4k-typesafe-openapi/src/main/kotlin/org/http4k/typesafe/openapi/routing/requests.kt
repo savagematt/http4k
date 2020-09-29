@@ -10,12 +10,12 @@ import org.http4k.typesafe.openapi.documentable.basicAuth
 import org.http4k.typesafe.openapi.documentation
 import org.http4k.typesafe.openapi.openapi
 import org.http4k.typesafe.routing.RoutingError
+import org.http4k.typesafe.routing.fold
 import org.http4k.typesafe.routing.requests.CheckMethodLens
 import org.http4k.typesafe.routing.requests.MethodLens
 import org.http4k.typesafe.routing.requests.PathLens
 import org.http4k.typesafe.routing.requests.auth.BasicAuthClientLens
 import org.http4k.typesafe.routing.requests.auth.BasicAuthServerLens
-import org.http4k.util.fold
 
 fun <T> path(path: OpenApiPath<T>): OpenApiLens<Request, T> {
     val p = path

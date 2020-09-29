@@ -236,7 +236,6 @@ dependencies {
     provided project(":http4k-testing-webdriver")
     provided project(":http4k-typesafe")
     provided project(":http4k-typesafe-openapi")
-    provided project(":http4k-typesafe-simple")
 
     testCompile Config.TestDependencies
     testCompile project(path: ":http4k-testing-servirtium", configuration: 'testArtifacts')

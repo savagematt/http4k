@@ -13,8 +13,8 @@ import org.http4k.typesafe.routing.RoutingError
  * @see [org.http4k.typesafe.routing.Routing.result]
  */
 class ResultMessageLens<M : HttpMessage, T, E>(
-    val success: MessageLens<M, T>,
-    val failure: MessageLens<M, E>) : SimpleLens<M, Result<T, E>> {
+    val success: MessageLens<M, T, *>,
+    val failure: MessageLens<M, E, *>) : SimpleLens<M, Result<T, E>> {
 
     override fun get(from: M): Result<Result<T, E>, RoutingError> =
         success.get(from)

@@ -12,7 +12,7 @@ import org.http4k.openapi.Referenceable
 import org.http4k.openapi.real
 import org.http4k.typesafe.openapi.routing.document
 import org.http4k.typesafe.openapi.routing.request.header
-import org.http4k.typesafe.openapi.routing.request.required
+import org.http4k.typesafe.openapi.routing.required
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 import org.junit.jupiter.api.Test

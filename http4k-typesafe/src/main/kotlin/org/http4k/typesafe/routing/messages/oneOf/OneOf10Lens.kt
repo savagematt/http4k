@@ -4,22 +4,22 @@ import com.natpryce.Result
 import com.natpryce.flatMapFailure
 import com.natpryce.map
 import org.http4k.core.HttpMessage
-import org.http4k.util.data.OneOf10
 import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.SimpleLens
+import org.http4k.util.data.OneOf10
 
 class OneOf10Lens<M : HttpMessage, A, B, C, D, E, F, G, H, I, J>(
-    val a: MessageLens<M, A>,
-    val b: MessageLens<M, B>,
-    val c: MessageLens<M, C>,
-    val d: MessageLens<M, D>,
-    val e: MessageLens<M, E>,
-    val f: MessageLens<M, F>,
-    val g: MessageLens<M, G>,
-    val h: MessageLens<M, H>,
-    val i: MessageLens<M, I>,
-    val j: MessageLens<M, J>
+    val a: MessageLens<M, A, *>,
+    val b: MessageLens<M, B, *>,
+    val c: MessageLens<M, C, *>,
+    val d: MessageLens<M, D, *>,
+    val e: MessageLens<M, E, *>,
+    val f: MessageLens<M, F, *>,
+    val g: MessageLens<M, G, *>,
+    val h: MessageLens<M, H, *>,
+    val i: MessageLens<M, I, *>,
+    val j: MessageLens<M, J, *>
 ) : SimpleLens<M, OneOf10<A, B, C, D, E, F, G, H, I, J>> {
     @Suppress("UNCHECKED_CAST")
     override fun get(from: M) =

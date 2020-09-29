@@ -17,7 +17,6 @@ import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.openapi.SchemaId
 import org.http4k.openapi.Tag
-import org.http4k.openapi.render
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
 import org.http4k.typesafe.openapi.routing.and
@@ -28,17 +27,17 @@ import org.http4k.typesafe.openapi.routing.consume
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.openapi.routing.request
 import org.http4k.typesafe.openapi.routing.request.header
-import org.http4k.typesafe.openapi.routing.request.required
+import org.http4k.typesafe.openapi.routing.required
 import org.http4k.typesafe.openapi.routing.response
-import org.http4k.typesafe.openapi.routing.route
 import org.http4k.typesafe.openapi.routing.with
+import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.security.basicAuthValidator
 import org.http4k.util.data.Tuple2
 import org.http4k.util.data.Tuple4
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
+private val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
 
 enum class Foo {
     bar, bing
@@ -48,56 +47,47 @@ data class ArbObject1(val anotherString: Foo)
 data class ArbObject2(val string: String, val child: ArbObject1?, val numbers: List<Int>, val bool: Boolean)
 data class ArbObject3(val uri: Uri, val additional: Map<String, *>)
 
-object Routes {
-    val nometa: OpenApiRoute<Unit, Unit> = route(
-        GET at "/nometa",
+private object Routes {
+    val nometa: OpenApiRoute<Unit, Unit> = Route(GET at "/nometa",
         response.any()
     )
-    val descriptions: OpenApiRoute<Unit, Unit> = route(
-        GET at "/descriptions" meta {
-            summary = "endpoint"
-            description = "some rambling description of what this thing actually does"
-            tags += Tag("tag3")
-            tags += Tag("tag1")
-            deprecated = true
-        },
+    val descriptions: OpenApiRoute<Unit, Unit> = Route(GET at "/descriptions" meta {
+        summary = "endpoint"
+        description = "some rambling description of what this thing actually does"
+        tags += Tag("tag3")
+        tags += Tag("tag1")
+        deprecated = true
+    },
         response.any()
     )
 
-    val paths: OpenApiRoute<Tuple2<String, Boolean>, Unit> = route(
-        POST at "/paths" / consume("firstName") / "bertrand" / consume("age").boolean(),
+    val paths: OpenApiRoute<Tuple2<String, Boolean>, Unit> = Route(POST at "/paths" / consume("firstName") / "bertrand" / consume("age").boolean(),
         response.any())
 
     val headers: OpenApiRoute<Tuple4<String, String?, String?, String?>, Unit> =
-        route(
-            // TODO: these should be typed
+        Route(// TODO: these should be typed
             POST at "/headers"
                 and header("b").required() // boolean, required()
                 and header("s") // string
                 and header("i") // integer
-                and header("j") // json
-            ,
+                and header("j"), // json
             response.any())
 
-    val bodyString: OpenApiRoute<Unit, String> = route(
-        POST at "/body_string",
+    val bodyString: OpenApiRoute<Unit, String> = Route(POST at "/body_string",
         response.text())
 
-    val jsonNoSchema: OpenApiRoute<JsonNode, Unit> = route(
-        POST at "/body_json_noschema"
-            and request.json(json),
+    val jsonNoSchema: OpenApiRoute<JsonNode, Unit> = Route(POST at "/body_json_noschema"
+        and request.json(json),
         response.any()
     )
 
-    val jsonResponse: OpenApiRoute<Unit, JsonNode> = route(
-        POST at "/body_json_response",
+    val jsonResponse: OpenApiRoute<Unit, JsonNode> = Route(POST at "/body_json_response",
         OK with json.plain {
             obj("aNullField" to nullNode(),
                 "aNumberField" to number(123))
         }
     )
-    val jsonWithSchema: OpenApiRoute<Unit, JsonNode> = route(
-        POST at "/body_json_schema",
+    val jsonWithSchema: OpenApiRoute<Unit, JsonNode> = Route(POST at "/body_json_schema",
         OK with json.plain(
             SchemaId("someDefinitionId")) {
             obj("anAnotherObject" to obj(
@@ -105,42 +95,37 @@ object Routes {
                 "aNumberField" to number(123)))
         }
     )
-    val jsonWithListSchema: OpenApiRoute<Unit, JsonNode> = route(
-        POST at "/body_json_list_schema",
+    val jsonWithListSchema: OpenApiRoute<Unit, JsonNode> = Route(POST at "/body_json_list_schema",
         OK with json.plain {
             array(listOf(obj("aNumberField" to number(123))))
         }
     )
 
-    val basicAuth: OpenApiRoute<String, Unit> = route(
-        POST at "/basic_auth" and
-            basicAuthServer(
-                basicAuthValidator("realm") {
-                    it.password == "password"
-                }),
+    val basicAuth: OpenApiRoute<String, Unit> = Route(POST at "/basic_auth" and
+        basicAuthServer(
+            basicAuthValidator("realm") {
+                it.password == "password"
+            }),
         response.any())
 
-    val autoSchemaWithId: OpenApiRoute<ArbObject2, Unit> = route(
-        POST at "/body_auto_schema" and
-            json.typed(SchemaId("someOtherId"),
-                ArbObject2(
-                    "s",
-                    ArbObject1(Foo.bar),
-                    listOf(1),
-                    true
-                )),
+    val autoSchemaWithId: OpenApiRoute<ArbObject2, Unit> = Route(POST at "/body_auto_schema" and
+        json.typed(SchemaId("someOtherId"),
+            ArbObject2(
+                "s",
+                ArbObject1(Foo.bar),
+                listOf(1),
+                true
+            )),
         OK with response.any())
 
-    val autoSchemaWithList: OpenApiRoute<ArbObject3, List<ArbObject1>> = route(
-        PUT at "/body_auto_schema" and
-            json.typed(ArbObject3(
-                Uri.of("http://foowang"),
-                mapOf("foo" to 123))),
+    val autoSchemaWithList: OpenApiRoute<ArbObject3, List<ArbObject1>> = Route(PUT at "/body_auto_schema" and
+        json.typed(ArbObject3(
+            Uri.of("http://foowang"),
+            mapOf("foo" to 123))),
         CREATED with json.typed(
             listOf(ArbObject1(Foo.bing))))
 
-    val responseStatus: OpenApiRoute<Unit, JsonNode> = route(
-        POST at "/returning",
+    val responseStatus: OpenApiRoute<Unit, JsonNode> = Route(POST at "/returning",
         FORBIDDEN with json
             .plain<Response, JsonNode> {
                 obj("aString" to string("a message of some kind"))
@@ -230,7 +215,7 @@ object Routes {
 }
 
 @ExtendWith(KotlinApprovalsExtension::class)
-class V3RendererTest {
+class OpenApiRenderingTest {
 
     @Test
     fun `produces sensible output for examples in ContractRendererContract`(approver: Approver) {

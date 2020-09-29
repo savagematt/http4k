@@ -7,8 +7,8 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 
 class IgnoreUnitLens<M : HttpMessage, B>(
-    val unit: MessageLens<M, Unit>,
-    val lens: MessageLens<M, B>)
+    val unit: MessageLens<M, Unit, *>,
+    val lens: MessageLens<M, B, *>)
     : SimpleLens<M, B> {
 
     override fun get(from: M): Result<B, RoutingError> =

@@ -9,12 +9,9 @@ import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.wrongRoute
 import org.http4k.typesafe.routing.messages.SimpleLens
 
-/**
- * @see [org.http4k.typesafe.routing.ResponseRouting.status]
- */
 class CheckStatusLens<T>(
     val status: Status,
-    val rest: MessageLens<Response, T>) : SimpleLens<Response, T> {
+    val rest: MessageLens<Response, T, *>) : SimpleLens<Response, T> {
 
     override fun get(from: Response): Result<T, RoutingError> =
         when (from.status) {

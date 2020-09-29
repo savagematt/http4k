@@ -8,11 +8,8 @@ import org.http4k.typesafe.routing.MessageLens
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.SimpleLens
 
-/**
- * @see [org.http4k.typesafe.routing.RequestRouting.method]
- */
 class CheckMethodLens<T>(val method: Method,
-                         val rest: MessageLens<Request, T>) : SimpleLens<Request, T> {
+                         val rest: MessageLens<Request, T, *>) : SimpleLens<Request, T> {
 
     override fun get(from: Request): Result<T, RoutingError> =
         when (from.method) {

@@ -3,7 +3,6 @@ package org.http4k.typesafe.routing.requests.paths
 import com.natpryce.Failure
 import com.natpryce.Result
 import com.natpryce.Success
-import org.http4k.util.functional.PolymorphicLens
 
 data class Match<T>(val value: T, val remaining: String)
 data class NoMatch(val reason: String)
@@ -13,8 +12,13 @@ fun <T> matchSuccess(value: T, remaining: String) = Success(Match(value, remaini
 
 typealias PathResult<T> = Result<Match<T>, NoMatch>
 
-interface Path<T> : PolymorphicLens<String, String, T, PathResult<T>>
+interface Path<T> {
+    fun get(from: String): PathResult<T>
+    fun set(into: String, value: T): String
 
+    fun invoke(into: String, value: T) = this.set(into, value)
+    fun invoke(from: String) = this.get(from)
+}
 
 fun <A, B> Path<A>.map(getter: (Match<A>) -> PathResult<B>,
                        setter: (B) -> A) =

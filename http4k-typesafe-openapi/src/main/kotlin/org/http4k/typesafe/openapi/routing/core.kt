@@ -9,28 +9,24 @@ import org.http4k.core.HttpMessage
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
+import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.typesafe.openapi.OpenApiTuple2
 import org.http4k.typesafe.openapi.OpenApiLens
-import org.http4k.typesafe.openapi.OpenApiRoute
 import org.http4k.typesafe.openapi.OpenApiServerRoute
 import org.http4k.typesafe.openapi.documentation
+import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.messages.IgnoreUnitLens
 import org.http4k.typesafe.routing.messages.MappedLens
 import org.http4k.typesafe.routing.messages.ResultMessageLens
-import org.http4k.util.fold
+import org.http4k.typesafe.routing.fold
 
 
-fun <In, Out> route(
-    request: OpenApiLens<Request, In>,
-    response: OpenApiLens<Response, Out>) =
-    OpenApiRoute(request, response)
-
-infix fun <In, Out> OpenApiRoute<In, Out>.server(
+infix fun <In, Out> Route<In, Out, OpenApiRouteInfo>.server(
     handler: (In) -> Out) =
     OpenApiServerRoute(this, handler)
 
-infix fun <In, Out> OpenApiRoute<In, Out>.client(
+infix fun <In, Out> Route<In, Out, OpenApiRouteInfo>.client(
     http: HttpHandler): (In) -> Out {
     val route = this@client
     return { param: In ->
