@@ -25,7 +25,7 @@ import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.Router
 import org.http4k.typesafe.routing.RoutingErrorException
 import org.http4k.typesafe.routing.Try
-import org.http4k.typesafe.routing.requests.auth.IgnoreJwsSignature
+import org.http4k.typesafe.routing.requests.auth.NoVerification
 import org.http4k.typesafe.routing.requests.auth.JjwtVerifier
 import org.http4k.typesafe.routing.requests.auth.Jwt
 import org.http4k.typesafe.routing.requests.auth.JwtVerifier
@@ -36,9 +36,9 @@ import java.security.Key
 private class TestRoutes(verifier: JwtVerifier) {
 
     companion object {
-        fun server(public: Key, trier: Try = PrintStackTrace) = TestRoutes(JjwtVerifier(public, trier))
+        fun server(verifyWith: Key, trier: Try = PrintStackTrace) = TestRoutes(JjwtVerifier(verifyWith, trier))
 
-        fun client() = TestRoutes(IgnoreJwsSignature)
+        fun client() = TestRoutes(NoVerification)
     }
 
     /**

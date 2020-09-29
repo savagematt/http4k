@@ -63,7 +63,7 @@ class JjwtVerifier(resolver: SigningKeyResolver, val trier: Try) : JwtVerifier {
  * The Jwt will retain the raw jws string, so it can be used
  * later to authenticate with the server.
  */
-object IgnoreJwsSignature : JwtVerifier {
+object NoVerification : JwtVerifier {
     private val parser = Jwts.parserBuilder().build()
     override fun verify(value: String): Result<Jwt, RoutingError> =
         try {
