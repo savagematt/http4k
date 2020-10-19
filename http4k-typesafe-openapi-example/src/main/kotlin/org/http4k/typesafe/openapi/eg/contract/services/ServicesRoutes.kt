@@ -33,6 +33,8 @@ import org.http4k.typesafe.openapi.routing.result
 import org.http4k.typesafe.openapi.routing.uuid
 import org.http4k.typesafe.openapi.routing.with
 import org.http4k.typesafe.routing.Route
+import org.http4k.util.data.Tuple2
+import org.http4k.util.data.tuple
 
 object ServicesPaths {
     val serviceId: OpenApiPath<ServiceId> = pathVar("serviceId").uuid().map({ ServiceId(it) }, { it.value })
@@ -64,10 +66,9 @@ class ServicesRoutes() {
         )
     )
 
-    val update: OpenApiRoute<Service, Result<Service, ErrorMessage>> = Route(
+    val update: OpenApiRoute<Tuple2<ServiceId, Service>, Result<Service, ErrorMessage>> = Route(
         PUT at "/services" / serviceId
-            with json.request(Service(ServiceId.example, "Service Repository"))
-            with correctId<ServiceId, Service>(),
+            with json.request(Service(ServiceId.example, "Service Repository")),
 
         result(
             OK with json.response(Service(ServiceId.example, "Service Repository")),
@@ -88,6 +89,6 @@ fun servicesClient(http: HttpHandler): ServicesApi {
             routes.create.call(http, value)
 
         override fun update(value: Service): Result<Service, ErrorMessage> =
-            routes.update.call(http, value)
+            routes.update.call(http, tuple(value.id,value))
     }
 }

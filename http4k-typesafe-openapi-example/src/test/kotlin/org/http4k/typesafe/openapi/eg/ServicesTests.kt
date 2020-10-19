@@ -13,6 +13,7 @@ import org.http4k.typesafe.openapi.eg.server.servicesServer
 import org.http4k.typesafe.openapi.eg.util.random
 import org.http4k.typesafe.openapi.routing.DebugRouteHandler
 import org.junit.jupiter.api.Test
+import java.util.stream.IntStream.range
 
 class ServicesTests {
     private val services = servicesClient(servicesServer(DebugRouteHandler()))

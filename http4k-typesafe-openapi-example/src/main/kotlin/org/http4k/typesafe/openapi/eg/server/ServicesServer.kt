@@ -16,7 +16,7 @@ import org.http4k.typesafe.openapi.routing.server
 import org.http4k.typesafe.routing.RouteHandler
 import org.http4k.typesafe.routing.Router
 import org.http4k.typesafe.routing.uri
-import kotlin.collections.HashMap
+import org.http4k.util.data.Tuple2
 import kotlin.collections.set
 
 class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service>) : ServicesApi {
@@ -56,6 +56,11 @@ fun servicesServer(handler: RouteHandler<OpenApiRouteDocs>): HttpHandler {
         handler,
         routes.get server behaviour::get,
         routes.create server behaviour::create,
-        routes.update server behaviour::update
+        routes.update server { args: Tuple2<ServiceId, Service> ->
+            when (args.a) {
+                args.b.id -> behaviour.update(args.b)
+                else -> throw IllegalArgumentException("Service id in url did not match payload")
+            }
+        }
     )
 }
