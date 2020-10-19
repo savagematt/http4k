@@ -77,7 +77,6 @@ class ServicesRoutes() {
     )
 }
 
-
 fun servicesClient(http: HttpHandler): ServicesApi {
     val routes = ServicesRoutes()
 

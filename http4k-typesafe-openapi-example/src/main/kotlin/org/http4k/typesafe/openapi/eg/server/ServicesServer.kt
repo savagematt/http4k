@@ -31,8 +31,10 @@ class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service
             }
             else -> {
                 when (val uri = routes.get.request.uri(value.id)) {
-                    is Failure -> throw ThisShouldNeverHappen("Get service uri could not be created")
-                    is Success -> uri
+                    is Failure ->
+                        throw ThisShouldNeverHappen("Get service uri could not be created")
+                    is Success ->
+                        uri
                 }.also {
                     state[value.id] = value
                 }
@@ -41,12 +43,10 @@ class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service
 
     override fun update(value: Service): Result<Service, ErrorMessage> =
         when {
-            state.containsKey(value.id) -> {
+            state.containsKey(value.id) ->
                 Success(value.also { state.put(value.id, value) })
-            }
-            else -> {
+            else ->
                 Failure(ErrorMessage("Service ${value.id} does not exist"))
-            }
         }
 
 }
