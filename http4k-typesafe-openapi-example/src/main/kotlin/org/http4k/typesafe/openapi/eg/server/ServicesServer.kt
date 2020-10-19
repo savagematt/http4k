@@ -41,11 +41,11 @@ class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service
 
     override fun update(value: Service): Result<Service, ErrorMessage> =
         when {
-            !state.containsKey(value.id) -> {
-                Failure(ErrorMessage("Service ${value.id} does not exist"))
+            state.containsKey(value.id) -> {
+                Success(value.also { state.put(value.id, value) })
             }
             else -> {
-                Success(value.also { state.put(value.id, value) })
+                Failure(ErrorMessage("Service ${value.id} does not exist"))
             }
         }
 
