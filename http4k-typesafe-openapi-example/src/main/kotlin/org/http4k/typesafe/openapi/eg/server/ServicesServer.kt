@@ -3,10 +3,6 @@ package org.http4k.typesafe.openapi.eg.server
 import com.natpryce.Failure
 import com.natpryce.Result
 import com.natpryce.Success
-import com.natpryce.get
-import com.natpryce.mapFailure
-import com.natpryce.recover
-import com.natpryce.valueOrNull
 import org.http4k.core.HttpHandler
 import org.http4k.core.Uri
 import org.http4k.openapi.OpenApiRouteDocs
@@ -20,12 +16,8 @@ import org.http4k.typesafe.openapi.routing.server
 import org.http4k.typesafe.routing.RouteHandler
 import org.http4k.typesafe.routing.Router
 import org.http4k.typesafe.routing.uri
-import org.http4k.util.data.Tuple2
-import org.http4k.util.data.Tuple3
-import org.http4k.util.data.tuple
-
-operator fun <A, B, T> ((Tuple2<A, B>) -> T).invoke(a: A, b: B) = this(tuple(a, b))
-operator fun <A, B, C, T> ((Tuple3<A, B, C>) -> T).invoke(a: A, b: B, c: C) = this(tuple(a, b, c))
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service>) : ServicesApi {
 
