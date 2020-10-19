@@ -30,12 +30,12 @@ class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service
                 Failure(ErrorMessage("Service ${value.id} already exists"))
             }
             else -> {
-                val result = when (val uri = routes.get.request.uri(value.id)) {
+                when (val uri = routes.get.request.uri(value.id)) {
                     is Failure -> throw ThisShouldNeverHappen("Get service uri could not be created")
                     is Success -> uri
+                }.also {
+                    state[value.id] = value
                 }
-                state[value.id] = value
-                result
             }
         }
 
