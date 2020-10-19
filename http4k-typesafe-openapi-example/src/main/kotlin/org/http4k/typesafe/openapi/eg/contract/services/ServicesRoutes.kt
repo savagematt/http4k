@@ -83,12 +83,12 @@ fun servicesClient(http: HttpHandler): ServicesApi {
 
     return object : ServicesApi {
         override fun get(id: ServiceId): Service? =
-            routes.get.call(http, id)
+            routes.get(http, id)
 
         override fun create(value: Service): Result<Uri, ErrorMessage> =
-            routes.create.call(http, value)
+            routes.create(http, value)
 
         override fun update(value: Service): Result<Service, ErrorMessage> =
-            routes.update.call(http, tuple(value.id,value))
+            routes.update(http, tuple(value.id, value))
     }
 }

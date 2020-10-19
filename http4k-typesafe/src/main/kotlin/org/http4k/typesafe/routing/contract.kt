@@ -2,8 +2,11 @@ package org.http4k.typesafe.routing
 
 import com.natpryce.Failure
 import com.natpryce.Result
+import com.natpryce.flatMap
 import com.natpryce.flatMapFailure
 import com.natpryce.map
+import com.natpryce.recover
+import org.http4k.core.HttpHandler
 import org.http4k.core.HttpMessage
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
@@ -11,7 +14,6 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Uri
-
 
 class RoutingErrorException(error: RoutingError) : Exception(error.message)
 
@@ -75,4 +77,17 @@ data class Route<In, Out, D>(
     val response: MessageLens<Response, Out, D>) : Documentable<D> {
     override fun document(doc: D): D = fold(doc, request, response)
 
+    operator fun invoke(http: HttpHandler, arg: In): Out =
+        (this client http)(arg)
+}
+
+infix fun <In, Out, D> Route<In, Out, D>.client(
+    http: HttpHandler): (In) -> Out {
+    val route = this@client
+    return { param: In ->
+        route.request.set(Request(GET, "/"), param)
+            .map(http)
+            .flatMap { response -> route.response.get(response) }
+            .recover { throw it.exception() }
+    }
 }
