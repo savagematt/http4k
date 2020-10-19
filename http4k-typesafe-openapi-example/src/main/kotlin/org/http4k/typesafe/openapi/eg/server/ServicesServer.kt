@@ -60,8 +60,8 @@ fun servicesServer(handler: RouteHandler<OpenApiRouteDocs>): HttpHandler {
         routes.get server behaviour::get,
         routes.create server behaviour::create,
         routes.update server { args: Tuple2<ServiceId, Service> ->
-            when (args.a) {
-                args.b.id -> behaviour.update(args.b)
+            when {
+                args.a == args.b.id -> behaviour.update(args.b)
                 else -> throw IllegalArgumentException("Service id in url did not match payload")
             }
         }
