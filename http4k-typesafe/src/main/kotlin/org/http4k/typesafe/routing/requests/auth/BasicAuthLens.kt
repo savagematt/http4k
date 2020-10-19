@@ -14,7 +14,7 @@ import org.http4k.typesafe.routing.messages.SimpleLens
 class BasicAuthServerLens(val validator: (Credentials) -> Result<String, RoutingError>) : SimpleLens<Request, String> {
     override fun get(from: Request) =
         from.basicAuthenticationCredentials()?.let(validator)
-            ?: routeFailed(UNAUTHORIZED, "Valid Authorization header required")
+            ?: routeFailed("Valid Authorization header required", UNAUTHORIZED)
 
     override fun set(into: Request, value: String) =
         throw UnsupportedOperationException("${this::class} should only be used server side")

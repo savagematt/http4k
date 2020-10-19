@@ -23,7 +23,7 @@ class HeaderAppendLensTest {
         val lens = header("X-My-Header")
 
         assertThat(
-            lens.document().route.operation.parameters,
+            lens.document().operation.operation.parameters,
             equalTo<List<Referenceable<OpenApiParameter>>>(
                 listOf(OpenApiParameter(
                     HEADER,
@@ -37,7 +37,7 @@ class HeaderAppendLensTest {
         val lens = header("X-My-Header").required()
 
         assertThat(
-            lens.document().route.operation.parameters,
+            lens.document().operation.operation.parameters,
             equalTo<List<Referenceable<OpenApiParameter>>>(
                 listOf(OpenApiParameter(
                     HEADER,
@@ -54,7 +54,7 @@ class HeaderAppendLensTest {
         assertThat(
             lens.get(Request(GET, "/")),
             equalTo<Result<String, RoutingError>>(
-                routeFailed(BAD_REQUEST, "Header 'X-My-Header' is required"))
+                routeFailed("Header 'X-My-Header' is required", BAD_REQUEST))
         )
     }
 }

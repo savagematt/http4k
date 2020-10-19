@@ -1,7 +1,7 @@
 package org.http4k.typesafe.openapi
 
 import org.http4k.core.HttpMessage
-import org.http4k.openapi.OpenApiRouteInfo
+import org.http4k.openapi.OpenApiRouteDocs
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.typesafe.routing.Documentable
 import org.http4k.typesafe.routing.MessageLens
@@ -16,10 +16,10 @@ import org.http4k.typesafe.routing.MessageLens
  */
 open class OpenApiAdapter<M : HttpMessage, T>(
     private val original: MessageLens<M, T, *>,
-    private val documenter: ((OpenApiRouteInfo) -> OpenApiRouteInfo)? = null) :
+    private val documenter: ((OpenApiRouteDocs) -> OpenApiRouteDocs)? = null) :
     OpenApiLens<M, T> {
 
-    override fun document(doc: OpenApiRouteInfo): OpenApiRouteInfo =
+    override fun document(doc: OpenApiRouteDocs): OpenApiRouteDocs =
         when (documenter) {
             null -> doc
             else -> documenter.invoke(doc)
@@ -45,9 +45,9 @@ infix fun <M : HttpMessage, T> MessageLens<M, T, *>.openapi(
     this documentation { OpenApiRouteInfoDsl(it).also(docs).build() }
 
 infix fun <M : HttpMessage, T> MessageLens<M, T, *>.documentation(
-    docs: (OpenApiRouteInfo) -> OpenApiRouteInfo): OpenApiLens<M, T> =
+    docs: (OpenApiRouteDocs) -> OpenApiRouteDocs): OpenApiLens<M, T> =
     OpenApiAdapter(this, docs)
 
 infix fun <M : HttpMessage, T> MessageLens<M, T, *>.documentation(
-    docs: Documentable<OpenApiRouteInfo>): OpenApiLens<M, T> =
+    docs: Documentable<OpenApiRouteDocs>): OpenApiLens<M, T> =
     OpenApiAdapter(this) { docs.document(it) }

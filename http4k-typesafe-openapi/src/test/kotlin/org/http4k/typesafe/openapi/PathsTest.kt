@@ -2,8 +2,8 @@ package org.http4k.typesafe.openapi
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.openapi.OpenApiRouteInfo
-import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.openapi.OpenApiRouteDocs
+import org.http4k.typesafe.openapi.routing.pathVar
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.openapi.routing.literal
 import org.junit.jupiter.api.Test
@@ -12,8 +12,8 @@ class PathsTest {
     @Test
     fun `literal docs`() {
         val route = literal("/widgets")
-            .document(OpenApiRouteInfo.empty)
-            .route
+            .document(OpenApiRouteDocs.empty)
+            .operation
 
         assertThat(
             route.path,
@@ -23,9 +23,9 @@ class PathsTest {
 
     @Test
     fun `consume docs`() {
-        val route = consume("var")
-            .document(OpenApiRouteInfo.empty)
-            .route
+        val route = pathVar("var")
+            .document(OpenApiRouteDocs.empty)
+            .operation
 
         assertThat(
             route.path,
@@ -35,10 +35,10 @@ class PathsTest {
 
     @Test
     fun `joined paths render docs`() {
-        val path = "widgets" / consume("widgetId") / "components" / consume("componentId")
+        val path = "widgets" / pathVar("widgetId") / "components" / pathVar("componentId")
         val route = path
-            .document(OpenApiRouteInfo.empty)
-            .route
+            .document(OpenApiRouteDocs.empty)
+            .operation
 
         assertThat(
             route.path,

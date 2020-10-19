@@ -43,7 +43,7 @@ class HeadersReplaceLensTest {
         assertThat(
             header.get(Response(OK)),
             equalTo<Result<List<String?>?, RoutingError>>(
-                routeFailed(BAD_REQUEST, "Header 'Set-Cookie' is required"))
+                routeFailed("Header 'Set-Cookie' is required", BAD_REQUEST))
         )
 
         assertThat(

@@ -28,7 +28,7 @@ class OpenApiTuple2<M : HttpMessage, A, B>(
         Tuple2Lens<M, A, B>(a, b),
         { fold(it, a, b) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple3(a, b, next)
 
     override fun toString() = "$a & $b"
@@ -43,7 +43,7 @@ class OpenApiTuple3<M : HttpMessage, A, B, C>(
         Tuple3Lens<M, A, B, C>(a, b, c),
         { fold(it, a, b, c) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple4(a, b, c, next)
 
     override fun toString() = listOf(a, b, c).joinToString(" & ")
@@ -59,7 +59,7 @@ class OpenApiTuple4<M : HttpMessage, A, B, C, D>(
         Tuple4Lens<M, A, B, C, D>(a, b, c, d),
         { fold(it, a, b, c, d) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple5(a, b, c, d, next)
 
     override fun toString() = listOf(a, b, c, d).joinToString(" & ")
@@ -76,7 +76,7 @@ class OpenApiTuple5<M : HttpMessage, A, B, C, D, E>(
         Tuple5Lens<M, A, B, C, D, E>(a, b, c, d, e),
         { fold(it, a, b, c, d, e) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple6(a, b, c, d, e, next)
 
     override fun toString() = listOf(a, b, c, d, e).joinToString(" & ")
@@ -94,7 +94,7 @@ class OpenApiTuple6<M : HttpMessage, A, B, C, D, E, F>(
         Tuple6Lens<M, A, B, C, D, E, F>(a, b, c, d, e, f),
         { fold(it, a, b, c, d, e, f) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple7(a, b, c, d, e, f, next)
 
     override fun toString() = listOf(a, b, c, d, e, f).joinToString(" & ")
@@ -113,7 +113,7 @@ class OpenApiTuple7<M : HttpMessage, A, B, C, D, E, F, G>(
         Tuple7Lens<M, A, B, C, D, E, F, G>(a, b, c, d, e, f, g),
         { fold(it, a, b, c, d, e, f, g) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple8(a, b, c, d, e, f, g, next)
 
     override fun toString() = listOf(a, b, c, d, e, f, g).joinToString(" & ")
@@ -133,7 +133,7 @@ class OpenApiTuple8<M : HttpMessage, A, B, C, D, E, F, G, H>(
         Tuple8Lens<M, A, B, C, D, E, F, G, H>(a, b, c, d, e, f, g, h),
         { fold(it, a, b, c, d, e, f, g, h) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple9(a, b, c, d, e, f, g, h, next)
 
     override fun toString() = listOf(a, b, c, d, e, f, g, h).joinToString(" & ")
@@ -154,7 +154,7 @@ class OpenApiTuple9<M : HttpMessage, A, B, C, D, E, F, G, H, I>(
         Tuple9Lens<M, A, B, C, D, E, F, G, H, I>(a, b, c, d, e, f, g, h, i),
         { fold(it, a, b, c, d, e, f, g, h, i) }) {
 
-    infix fun <T> and(next: OpenApiLens<M, T>) =
+    infix fun <T> with(next: OpenApiLens<M, T>) =
         OpenApiTuple10(a, b, c, d, e, f, g, h, i, next)
 
 

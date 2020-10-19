@@ -6,17 +6,17 @@ import com.natpryce.map
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.openapi.OpenApiRouteInfo
+import org.http4k.openapi.OpenApiRouteDocs
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.ServerRoute
 
-typealias OpenApiRoute<In, Out> = Route<In, Out, OpenApiRouteInfo>
+typealias OpenApiRoute<In, Out> = Route<In, Out, OpenApiRouteDocs>
 
 data class OpenApiServerRoute<In, Out>(
-    val route: Route<In, Out, OpenApiRouteInfo>,
-    val handler: (In) -> Out
-) : ServerRoute {
+    override val route: Route<In, Out, OpenApiRouteDocs>,
+    override val handler: (In) -> Out
+) : ServerRoute<In, Out, OpenApiRouteDocs> {
 
     override fun handle(request: Request): Result<Response, RoutingError> =
         // try to extract handler parameter from request

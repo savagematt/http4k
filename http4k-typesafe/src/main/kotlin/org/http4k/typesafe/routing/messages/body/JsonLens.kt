@@ -3,6 +3,7 @@ package org.http4k.typesafe.routing.messages.body
 import com.natpryce.Success
 import org.http4k.core.ContentType.Companion.APPLICATION_JSON
 import org.http4k.core.HttpMessage
+import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.format.Json
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
@@ -12,7 +13,7 @@ class JsonLens<M : HttpMessage, NODE : Any>(val json: Json<NODE>) : SimpleLens<M
     override fun get(from: M) = try {
         Success(json.parse(from.bodyString()))
     } catch (e: Exception) {
-        routeFailed(BAD_REQUEST, "Invalid json. ${e.message}")
+        routeFailed("Invalid json. ${e.message}", e, Response(BAD_REQUEST))
     }
 
     @Suppress("UNCHECKED_CAST")

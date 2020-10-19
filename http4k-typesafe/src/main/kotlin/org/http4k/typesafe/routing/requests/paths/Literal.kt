@@ -22,8 +22,6 @@ class Literal(expected: String) : SimplePath<Unit> {
     override fun set(into: String, value: Unit): String =
         joinPaths(into, expected)
 
-    operator fun <T> div(next: Path<T>): IgnoreFirst<T> = IgnoreFirst(this, next)
-
     override fun toString(): String {
         return expected
     }

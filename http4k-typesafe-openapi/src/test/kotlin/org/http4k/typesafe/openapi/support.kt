@@ -7,9 +7,7 @@ import org.http4k.format.Json
 import org.http4k.format.asConfigurable
 import org.http4k.format.customise
 import org.http4k.openapi.OpenApiConcept
-import org.http4k.openapi.OpenApiRouteInfo
 import org.http4k.openapi.V3Renderer
-import org.http4k.typesafe.routing.Documentable
 import org.http4k.util.JsonRenderer
 
 private val json: ConfigurableJackson = ConfigurableJackson(KotlinModule().asConfigurable().customise())
@@ -32,3 +30,5 @@ fun render(routes: List<OpenApiRoute<*,*>>): String =
 
 fun render(concept: OpenApiConcept): String =
     json.pretty(renderer.render(concept))
+
+fun String.containsString(value:CharSequence) = this.contains(value)

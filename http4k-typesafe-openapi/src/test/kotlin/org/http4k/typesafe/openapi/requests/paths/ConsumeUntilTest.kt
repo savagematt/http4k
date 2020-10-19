@@ -2,7 +2,7 @@ package org.http4k.typesafe.openapi.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.typesafe.openapi.routing.pathVar
 import org.http4k.typesafe.routing.requests.paths.ConsumeUntil
 import org.http4k.typesafe.routing.requests.paths.PathResult
 import org.http4k.typesafe.routing.requests.paths.matchFailure
@@ -44,7 +44,7 @@ class ConsumeUntilTest {
     @Test
     fun `strips leading slashes`() {
         assertThat(
-            consume("name").get("////abc/def"),
+            pathVar("name").get("////abc/def"),
             equalTo<PathResult<String>>(matchSuccess(
                 "abc", "/def"))
         )

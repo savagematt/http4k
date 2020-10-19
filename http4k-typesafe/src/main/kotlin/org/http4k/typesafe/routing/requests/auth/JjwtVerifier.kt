@@ -6,27 +6,19 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwsHeader
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SigningKeyResolver
-import io.jsonwebtoken.SigningKeyResolverAdapter
-import org.http4k.core.HttpMessage
+import org.http4k.core.Response
 import org.http4k.core.Status.Companion.UNAUTHORIZED
-import org.http4k.typesafe.routing.PrintStackTrace
 import org.http4k.typesafe.routing.RoutingError
 import org.http4k.typesafe.routing.RoutingError.Companion.routeFailed
 import org.http4k.typesafe.routing.Try
 import java.security.Key
 
-internal class SingleKeyResolver(val key: Key) : SigningKeyResolverAdapter() {
+internal class SingleKeyResolver(val key: Key) : SigningKeyResolver {
     override fun resolveSigningKey(header: JwsHeader<out JwsHeader<*>>?, claims: Claims?): Key =
         key
 
     override fun resolveSigningKey(header: JwsHeader<out JwsHeader<*>>?, plaintext: String?): Key =
         key
-
-    override fun resolveSigningKeyBytes(header: JwsHeader<out JwsHeader<*>>?, claims: Claims?): ByteArray =
-        key.encoded
-
-    override fun resolveSigningKeyBytes(header: JwsHeader<out JwsHeader<*>>?, payload: String?): ByteArray =
-        key.encoded
 }
 
 class JjwtVerifier(resolver: SigningKeyResolver, val trier: Try) : JwtVerifier {
@@ -39,7 +31,7 @@ class JjwtVerifier(resolver: SigningKeyResolver, val trier: Try) : JwtVerifier {
                 val claims = parser.parseClaimsJws(value).body
                 Success(Jwt(value, claims))
             },
-            { routeFailed(UNAUTHORIZED, "Invalid jwt") })
+            { routeFailed("Invalid jwt", it, Response(UNAUTHORIZED)) })
 }
 
 /**
@@ -48,9 +40,8 @@ class JjwtVerifier(resolver: SigningKeyResolver, val trier: Try) : JwtVerifier {
  * This MUST NOT be used as a verifier server-side, because it
  * does no verification.
  *
- * This takes a jws (which is a signed jwt), strips the
- * signature and then parses the payload without verifying
- * the signature was correct.
+ * This takes a jws (which is a signed jwt), then parses the
+ * payload without verifying the signature was correct.
  *
  * This is useful client-side to parse a jws that has been
  * issued by a server using a symmetric signing key.
@@ -71,16 +62,14 @@ object NoVerification : JwtVerifier {
             val claims = parser.parseClaimsJwt(stripSignature).body
             Success(Jwt(value, claims))
         } catch (e: Exception) {
-            routeFailed(UNAUTHORIZED, "Invalid jwt")
+            routeFailed("Invalid jwt", e, Response(UNAUTHORIZED))
         }
-
-    fun <M : HttpMessage> lens(headerName: String = "Authorization",
-                               prefix: String = "Bearer") =
-        JwtLens<M>(this, headerName, prefix)
 }
 
-fun <M : HttpMessage> SigningKeyResolver.lens(trier: Try = PrintStackTrace) =
-    JwtLens<M>(JjwtVerifier(this, trier), prefix = "Bearer ")
-
-fun <M : HttpMessage> Key.lens(trier: Try = PrintStackTrace) =
-    JwtLens<M>(JjwtVerifier(this, trier), prefix = "Bearer ")
+fun Key.signJwt(claims: Map<String, Any>): Jwt =
+    Jwt(Jwts.builder()
+        .setClaims(claims)
+        .signWith(this)
+        .compact(),
+        claims
+    )

@@ -12,6 +12,7 @@ import org.http4k.typesafe.openapi.routing.method
 import org.http4k.typesafe.openapi.routing.request
 import org.http4k.typesafe.openapi.routing.response
 import org.http4k.typesafe.openapi.routing.server
+import org.http4k.typesafe.routing.ProductionRouteHandler
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.Router
 import org.junit.jupiter.api.Test
@@ -41,6 +42,7 @@ class RouterTest {
     val postText: OpenApiServerRoute<String, String> = RouterTestRoutes.post server behaviour.post
 
     val router = Router(
+        ProductionRouteHandler(),
         listOf(
             getText,
             postText)

@@ -19,17 +19,16 @@ import org.http4k.openapi.SchemaId
 import org.http4k.openapi.Tag
 import org.http4k.typesafe.openapi.documentable.description
 import org.http4k.typesafe.openapi.documentable.meta
-import org.http4k.typesafe.openapi.routing.and
+import org.http4k.typesafe.openapi.routing.with
 import org.http4k.typesafe.openapi.routing.basicAuthServer
 import org.http4k.typesafe.openapi.routing.at
 import org.http4k.typesafe.openapi.routing.boolean
-import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.typesafe.openapi.routing.pathVar
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.openapi.routing.request
 import org.http4k.typesafe.openapi.routing.request.header
 import org.http4k.typesafe.openapi.routing.required
 import org.http4k.typesafe.openapi.routing.response
-import org.http4k.typesafe.openapi.routing.with
 import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.security.basicAuthValidator
 import org.http4k.util.data.Tuple2
@@ -61,23 +60,23 @@ private object Routes {
         response.any()
     )
 
-    val paths: OpenApiRoute<Tuple2<String, Boolean>, Unit> = Route(POST at "/paths" / consume("firstName") / "bertrand" / consume("age").boolean(),
+    val paths: OpenApiRoute<Tuple2<String, Boolean>, Unit> = Route(POST at "/paths" / pathVar("firstName") / "bertrand" / pathVar("age").boolean(),
         response.any())
 
     val headers: OpenApiRoute<Tuple4<String, String?, String?, String?>, Unit> =
         Route(// TODO: these should be typed
             POST at "/headers"
-                and header("b").required() // boolean, required()
-                and header("s") // string
-                and header("i") // integer
-                and header("j"), // json
+                with header("b").required() // boolean, required()
+                with header("s") // string
+                with header("i") // integer
+                with header("j"), // json
             response.any())
 
     val bodyString: OpenApiRoute<Unit, String> = Route(POST at "/body_string",
         response.text())
 
     val jsonNoSchema: OpenApiRoute<JsonNode, Unit> = Route(POST at "/body_json_noschema"
-        and request.json(json),
+        with request.json(json),
         response.any()
     )
 
@@ -101,14 +100,14 @@ private object Routes {
         }
     )
 
-    val basicAuth: OpenApiRoute<String, Unit> = Route(POST at "/basic_auth" and
+    val basicAuth: OpenApiRoute<String, Unit> = Route(POST at "/basic_auth" with
         basicAuthServer(
             basicAuthValidator("realm") {
                 it.password == "password"
             }),
         response.any())
 
-    val autoSchemaWithId: OpenApiRoute<ArbObject2, Unit> = Route(POST at "/body_auto_schema" and
+    val autoSchemaWithId: OpenApiRoute<ArbObject2, Unit> = Route(POST at "/body_auto_schema" with
         json.typed(SchemaId("someOtherId"),
             ArbObject2(
                 "s",
@@ -118,7 +117,7 @@ private object Routes {
             )),
         OK with response.any())
 
-    val autoSchemaWithList: OpenApiRoute<ArbObject3, List<ArbObject1>> = Route(PUT at "/body_auto_schema" and
+    val autoSchemaWithList: OpenApiRoute<ArbObject3, List<ArbObject1>> = Route(PUT at "/body_auto_schema" with
         json.typed(ArbObject3(
             Uri.of("http://foowang"),
             mapOf("foo" to 123))),

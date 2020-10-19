@@ -11,7 +11,7 @@ import org.http4k.typesafe.routing.messages.SimpleLens
 import org.http4k.typesafe.routing.requests.paths.Path
 import org.http4k.typesafe.routing.requests.paths.leading
 
-class PathLens<T>(val path: Path<T>) : SimpleLens<Request, T> {
+class PathLens<T>(val path: Path<T,*>) : SimpleLens<Request, T> {
     override fun get(from: Request): Result<T, RoutingError> =
         path.get(from.uri.path)
             .map {

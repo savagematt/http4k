@@ -3,9 +3,6 @@ package org.http4k.typesafe.routing.messages
 import com.natpryce.Success
 import org.http4k.core.HttpMessage
 
-/**
- * @see [org.http4k.typesafe.routing.MessageRouting.any]
- */
 class AnyLens<M : HttpMessage> : SimpleLens<M, Unit> {
     override fun get(from: M) = Success(Unit)
 

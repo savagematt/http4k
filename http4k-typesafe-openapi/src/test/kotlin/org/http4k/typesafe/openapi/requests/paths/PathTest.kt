@@ -2,7 +2,7 @@ package org.http4k.typesafe.openapi.requests.paths
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.typesafe.openapi.routing.pathVar
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.routing.requests.paths.PathResult
 import org.http4k.typesafe.routing.requests.paths.matchSuccess
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class PathTest {
     @Test
     fun `can add path to string`() {
-        val a = consume("a")
+        val a = pathVar("a")
 
         val path = "widgets" / a
 
@@ -29,7 +29,7 @@ class PathTest {
 
     @Test
     fun `can add string to path`() {
-        val a = consume("a")
+        val a = pathVar("a")
 
         val path = a / "widgets"
 
@@ -43,8 +43,8 @@ class PathTest {
 
     @Test
     fun `can add path to path`() {
-        val a = consume("a")
-        val b = consume("a")
+        val a = pathVar("a")
+        val b = pathVar("a")
 
         val path = a / b
 
@@ -58,9 +58,9 @@ class PathTest {
 
     @Test
     fun `can combine a mix of strings and paths`() {
-        val a = consume("a")
-        val b = consume("a")
-        val c = consume("c")
+        val a = pathVar("a")
+        val b = pathVar("a")
+        val c = pathVar("c")
 
         val path = "widgets" / a / "components" / b / c
 
@@ -75,16 +75,16 @@ class PathTest {
 
     @Test
     fun `can combine paths up to 10 segments`() {
-        val a = consume("a")
-        val b = consume("b")
-        val c = consume("c")
-        val d = consume("d")
-        val e = consume("e")
-        val f = consume("f")
-        val g = consume("g")
-        val h = consume("h")
-        val i = consume("i")
-        val j = consume("j")
+        val a = pathVar("a")
+        val b = pathVar("b")
+        val c = pathVar("c")
+        val d = pathVar("d")
+        val e = pathVar("e")
+        val f = pathVar("f")
+        val g = pathVar("g")
+        val h = pathVar("h")
+        val i = pathVar("i")
+        val j = pathVar("j")
 
         val path =
             a / b / c / d / e / f / g / h / i / j

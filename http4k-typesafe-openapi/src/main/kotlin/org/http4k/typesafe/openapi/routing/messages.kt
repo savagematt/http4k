@@ -9,7 +9,7 @@ import org.http4k.core.Response
 import org.http4k.format.Json
 import org.http4k.openapi.OpenApiMediaType
 import org.http4k.openapi.OpenApiParameter
-import org.http4k.openapi.OpenApiRouteInfo
+import org.http4k.openapi.OpenApiRouteDocs
 import org.http4k.openapi.ParameterLocation.HEADER
 import org.http4k.openapi.builders.OpenApiRouteInfoDsl
 import org.http4k.openapi.real
@@ -24,19 +24,21 @@ import org.http4k.typesafe.routing.messages.HeadersAppendLens
 import org.http4k.typesafe.routing.messages.HeadersReplaceLens
 import org.http4k.typesafe.routing.messages.NothingLens
 import org.http4k.typesafe.routing.messages.RequiredLens
+import org.http4k.typesafe.routing.messages.UnitLens
 import org.http4k.typesafe.routing.messages.body.JsonLens
 import org.http4k.typesafe.routing.messages.body.TextLens
-import org.http4k.typesafe.routing.requests.auth.JwtLens
-import org.http4k.typesafe.routing.requests.auth.JwtVerifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) {
     fun any() =
-        AnyLens<M>().openapi(null ?: {})
+        AnyLens<M>().openapi({})
 
     fun nothing() =
-        NothingLens<M>().openapi(null ?: {})
+        NothingLens<M>().openapi({})
+
+    fun unit() =
+        UnitLens<M>().openapi({})
 
     fun text():
         OpenApiLens<M, String> =
@@ -45,12 +47,6 @@ open class OpenApiMessageRouting<M : HttpMessage>(private val clazz: KClass<M>) 
     fun <NODE : Any> json(json: Json<NODE>):
         OpenApiLens<M, NODE> =
         openApiJson(clazz, json)
-
-    fun jwt(verifier: JwtVerifier,
-            headerName: String = "Authorization",
-            prefix: String = "Bearer") =
-        JwtLens<M>(verifier, headerName, prefix) openapi {} // TODO: jwt openapi docs
-
 
     fun header(name: String) =
         HeaderReplaceLens<M>(name) openapi headerParameter(name)
@@ -173,4 +169,4 @@ fun <M : HttpMessage> documentBody(clazz: KClass<M>, contentType: ContentType)
 
 
 fun <M : HttpMessage> OpenApiLens<M, *>.document() =
-    this.document(OpenApiRouteInfo.empty)
+    this.document(OpenApiRouteDocs.empty)

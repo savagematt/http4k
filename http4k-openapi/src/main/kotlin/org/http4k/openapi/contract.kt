@@ -37,6 +37,9 @@ data class Tag(
 sealed class Referenceable<T : OpenApiConcept> : OpenApiConcept() {
 }
 
+/**
+ * As opposed to [Real]
+ */
 data class Ref<T : OpenApiConcept>(
     val value: String) : Referenceable<T>() {
 
@@ -47,6 +50,9 @@ data class Ref<T : OpenApiConcept>(
     }
 }
 
+/**
+ * As opposed to [Ref]
+ */
 data class Real<T : OpenApiConcept>(
     val value: T,
     override val extensions: List<Extension> = emptyList()) : Referenceable<T>()

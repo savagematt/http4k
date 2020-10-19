@@ -13,7 +13,7 @@ class RequiredLens<M : HttpMessage, T>(
     val optional: MessageLens<M, T?, *>,
     onFailure: (() -> RoutingError)? = null
 ) : SimpleLens<M, T> {
-    val onFailure = onFailure ?: { RoutingError.RouteFailed("$optional is required", Response(Status.BAD_REQUEST)) }
+    val onFailure = onFailure ?: { RoutingError.RouteFailed("$optional is required", null, Response(Status.BAD_REQUEST)) }
     override fun get(from: M) =
         optional.get(from).let { result ->
             result.flatMap {

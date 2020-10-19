@@ -48,7 +48,7 @@ class HeaderAppendTest {
         assertThat(
             actual,
             equalTo<Result<String?, RoutingError>>(
-                routeFailed(BAD_REQUEST, "Header 'Content-Type' is required"))
+                routeFailed("Header 'Content-Type' is required", BAD_REQUEST))
         )
 
         assertThat(

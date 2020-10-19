@@ -1,18 +1,19 @@
 package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.flatMap
+import org.http4k.typesafe.routing.fold
 import org.http4k.util.data.Tuple6
 import org.http4k.util.data.tuple
 
-data class Path6<A, B, C, D, E, F>(
-    val a: Path<A>,
-    val b: Path<B>,
-    val c: Path<C>,
-    val d: Path<D>,
-    val e: Path<E>,
-    val f: Path<F>
-) : SimplePath<Tuple6<A, B, C, D, E, F>> {
-    operator fun <T> div(next: Path<T>) = Path7(a, b, c, d, e, f, next)
+data class Path6<A, B, C, D, E, F, Docs>(
+    val a: Path<A, Docs>,
+    val b: Path<B, Docs>,
+    val c: Path<C, Docs>,
+    val d: Path<D, Docs>,
+    val e: Path<E, Docs>,
+    val f: Path<F, Docs>
+) : Path<Tuple6<A, B, C, D, E, F>, Docs> {
+    operator fun <T> div(next: Path<T, Docs>) = Path7(a, b, c, d, e, f, next)
 
     override fun get(from: String): PathResult<Tuple6<A, B, C, D, E, F>> =
         a.get(from).flatMap { a ->
@@ -34,4 +35,6 @@ data class Path6<A, B, C, D, E, F>(
         f.set(e.set(d.set(c.set(b.set(a.set(into, value.a), value.b), value.c), value.d), value.e), value.f)
 
     override fun toString() = joinPaths(a, b, c, d, e, f)
+
+    override fun document(doc: Docs) = fold(doc, a, b, c, d, e, f)
 }

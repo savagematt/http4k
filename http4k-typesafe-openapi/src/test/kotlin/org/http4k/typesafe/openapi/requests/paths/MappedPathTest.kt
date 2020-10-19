@@ -3,7 +3,7 @@ package org.http4k.typesafe.openapi.requests.paths
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import org.http4k.typesafe.openapi.routing.bigInteger
-import org.http4k.typesafe.openapi.routing.consume
+import org.http4k.typesafe.openapi.routing.pathVar
 import org.http4k.typesafe.openapi.routing.div
 import org.http4k.typesafe.openapi.routing.double
 import org.http4k.typesafe.openapi.routing.uuid
@@ -17,7 +17,7 @@ import java.util.*
 class MappedPathTest {
     @Test
     fun `can set path`() {
-        val widgetId = consume("id")
+        val widgetId = pathVar("id")
             .uuid()
 
         val path = "widgets" / widgetId
@@ -30,7 +30,7 @@ class MappedPathTest {
 
     @Test
     fun `can get path`() {
-        val widgetId = consume("id")
+        val widgetId = pathVar("id")
             .bigInteger()
 
         val path = "widgets" / widgetId
@@ -45,7 +45,7 @@ class MappedPathTest {
 
     @Test
     fun `reports failure instead of throwing exception`() {
-        val widgetId = consume("id")
+        val widgetId = pathVar("id")
             .double()
 
         val path = "widgets" / widgetId

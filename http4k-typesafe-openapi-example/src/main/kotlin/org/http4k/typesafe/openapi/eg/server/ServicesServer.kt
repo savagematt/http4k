@@ -1,0 +1,66 @@
+package org.http4k.typesafe.openapi.eg.server
+
+import com.natpryce.Failure
+import com.natpryce.Result
+import com.natpryce.Success
+import com.natpryce.get
+import com.natpryce.mapFailure
+import com.natpryce.recover
+import com.natpryce.valueOrNull
+import org.http4k.core.HttpHandler
+import org.http4k.core.Uri
+import org.http4k.openapi.OpenApiRouteDocs
+import org.http4k.typesafe.openapi.eg.contract.ErrorMessage
+import org.http4k.typesafe.openapi.eg.contract.services.Service
+import org.http4k.typesafe.openapi.eg.contract.services.ServiceId
+import org.http4k.typesafe.openapi.eg.contract.services.ServicesApi
+import org.http4k.typesafe.openapi.eg.contract.services.ServicesRoutes
+import org.http4k.typesafe.openapi.eg.util.ThisShouldNeverHappen
+import org.http4k.typesafe.openapi.routing.server
+import org.http4k.typesafe.routing.RouteHandler
+import org.http4k.typesafe.routing.Router
+import org.http4k.typesafe.routing.uri
+import org.http4k.util.data.Tuple2
+import org.http4k.util.data.Tuple3
+import org.http4k.util.data.tuple
+
+operator fun <A, B, T> ((Tuple2<A, B>) -> T).invoke(a: A, b: B) = this(tuple(a, b))
+operator fun <A, B, C, T> ((Tuple3<A, B, C>) -> T).invoke(a: A, b: B, c: C) = this(tuple(a, b, c))
+
+class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service>) : ServicesApi {
+
+    override fun get(id: ServiceId): Service? =
+        state[id]
+
+    override fun create(value: Service): Result<Uri, ErrorMessage> =
+        if (state.containsKey(value.id)) {
+            Failure(ErrorMessage("Service ${value.id} already exists"))
+        } else {
+            val result = when (val uri = routes.get.request.uri(value.id)) {
+                is Failure -> throw ThisShouldNeverHappen("Get service uri could not be created")
+                is Success -> uri
+            }
+            state[value.id] = value
+            result
+        }
+
+    override fun update(value: Service): Result<Service, ErrorMessage> =
+        if (!state.containsKey(value.id)) {
+            Failure(ErrorMessage("Service ${value.id} does not exist"))
+        } else {
+            Success(value.also { state.put(value.id, value) })
+        }
+
+}
+
+fun servicesServer(handler: RouteHandler<OpenApiRouteDocs>): HttpHandler {
+    val routes = ServicesRoutes()
+    val behaviour = Services(routes, HashMap())
+
+    return Router(
+        handler,
+        routes.get server behaviour::get,
+        routes.create server behaviour::create,
+        routes.update server behaviour::update
+    )
+}

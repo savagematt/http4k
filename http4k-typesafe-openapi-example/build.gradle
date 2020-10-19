@@ -1,0 +1,16 @@
+description = 'Fully typesafe bi-directional http routing, including auto-gen of openapi docs'
+
+dependencies {
+    provided Libs.kotlin_stdlib_jdk8
+
+    provided Libs.result4k
+
+    implementation project(":http4k-core")
+    implementation project(":http4k-format-jackson")
+    implementation project(":http4k-typesafe-openapi")
+
+    testCompile project(":http4k-testing-approval")
+    testCompile project(":http4k-format-jackson")
+    testCompile Config.TestDependencies
+    testCompile Libs.okeyDoke
+}

@@ -14,7 +14,7 @@ fun basicAuth(securityId: SecurityId = SecurityId("BasicAuth")): OpenApiRouteInf
  * Returns an extension method that will add security in to `securitySchemes` in
  * [org.http4k.openapi.OpenApiObject.components], as well as associating it with
  * [org.http4k.openapi.OpenApiOperation.security] for
- * [org.http4k.openapi.OpenApiRouteInfo.route]
+ * [org.http4k.openapi.OpenApiRouteDocs.operation]
  */
 fun securityOf(id: SecurityId,
                security: OpenApiSecurityScheme,

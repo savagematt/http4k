@@ -3,6 +3,7 @@ package org.http4k.typesafe.routing.requests.paths
 import com.natpryce.Failure
 import com.natpryce.Result
 import com.natpryce.Success
+import org.http4k.typesafe.routing.Documentable
 
 data class Match<T>(val value: T, val remaining: String)
 data class NoMatch(val reason: String)
@@ -12,7 +13,7 @@ fun <T> matchSuccess(value: T, remaining: String) = Success(Match(value, remaini
 
 typealias PathResult<T> = Result<Match<T>, NoMatch>
 
-interface Path<T> {
+interface Path<T, D> : Documentable<D> {
     fun get(from: String): PathResult<T>
     fun set(into: String, value: T): String
 
@@ -20,16 +21,6 @@ interface Path<T> {
     fun invoke(from: String) = this.get(from)
 }
 
-fun <A, B> Path<A>.map(getter: (Match<A>) -> PathResult<B>,
-                       setter: (B) -> A) =
-    MappedPath(this, getter, setter)
-
-fun <A, B> Path<A>.map(getterSetter: Pair<(A) -> B, (B) -> A>) =
-    this.map(
-        { match ->
-            matchSuccess(
-                getterSetter.first(match.value),
-                match.remaining)
-        },
-        getterSetter.second)
-
+interface SimplePath<T> : Path<T,Any>{
+    override fun document(doc: Any) = doc
+}

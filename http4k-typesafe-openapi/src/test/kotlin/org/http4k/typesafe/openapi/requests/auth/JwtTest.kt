@@ -3,7 +3,6 @@ package org.http4k.typesafe.openapi.requests.auth
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.throws
-import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm.HS256
 import io.jsonwebtoken.SignatureAlgorithm.RS256
 import io.jsonwebtoken.security.Keys
@@ -11,12 +10,13 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Status.Companion.OK
+import org.http4k.openapi.OpenApiRouteDocs
 import org.http4k.typesafe.openapi.OpenApiRoute
-import org.http4k.typesafe.openapi.OpenApiServerRoute
-import org.http4k.typesafe.openapi.routing.and
+import org.http4k.typesafe.openapi.routing.DebugRouteHandler
 import org.http4k.typesafe.openapi.routing.at
 import org.http4k.typesafe.openapi.routing.client
-import org.http4k.typesafe.openapi.routing.request
+import org.http4k.typesafe.openapi.routing.jwt
+import org.http4k.typesafe.openapi.routing.jwtAsBody
 import org.http4k.typesafe.openapi.routing.response
 import org.http4k.typesafe.openapi.routing.server
 import org.http4k.typesafe.openapi.routing.with
@@ -25,10 +25,11 @@ import org.http4k.typesafe.routing.Route
 import org.http4k.typesafe.routing.Router
 import org.http4k.typesafe.routing.RoutingErrorException
 import org.http4k.typesafe.routing.Try
-import org.http4k.typesafe.routing.requests.auth.NoVerification
 import org.http4k.typesafe.routing.requests.auth.JjwtVerifier
 import org.http4k.typesafe.routing.requests.auth.Jwt
 import org.http4k.typesafe.routing.requests.auth.JwtVerifier
+import org.http4k.typesafe.routing.requests.auth.NoVerification
+import org.http4k.typesafe.routing.requests.auth.signJwt
 import org.junit.jupiter.api.Test
 import java.security.Key
 
@@ -48,10 +49,11 @@ private class TestRoutes(verifier: JwtVerifier) {
      */
     val issue: OpenApiRoute<Unit, Jwt> = Route(
         GET at "/",
-        OK with response.jwt(verifier)
+        OK with jwtAsBody()
     )
+
     val check: OpenApiRoute<Jwt, String> = Route(
-        POST at "/" and request.jwt(verifier),
+        POST at "/" with jwt(verifier),
         OK with response.text()
     )
 }
@@ -111,13 +113,14 @@ class JwtTest {
 
     val claims = mapOf("some-claim" to "value from claim")
 
-    private fun server(checkJwtUsing: Key, jwtToIssue: Jwt): Router<OpenApiServerRoute<out Any, out Any>> {
+    private fun server(checkJwtUsing: Key, jwtToIssue: Jwt): Router<OpenApiRouteDocs> {
         val routes = TestRoutes.server(checkJwtUsing)
 
-        return Router(listOf(
+        return Router(
+            DebugRouteHandler(),
             routes.issue server { jwtToIssue },
             routes.check server { it["some-claim"] as String }
-        ))
+        )
     }
 
     private fun client(server: HttpHandler): Api {
@@ -129,11 +132,4 @@ class JwtTest {
     }
 }
 
-fun Key.signJwt(claims: Map<String, Any>): Jwt =
-    Jwt(Jwts.builder()
-        .setClaims(claims)
-        .signWith(this)
-        .compact(),
-        claims
-    )
 

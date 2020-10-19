@@ -15,11 +15,16 @@ class NullableMapBuilder<K, V, Dsl : Builder<V, Dsl>>(
     }
 
     operator fun plusAssign(pair: Pair<K, V>) {
-        ensureValue() += pair.first to toBuilder(pair.second)
+        this.ensureValue() += pair.first to toBuilder(pair.second)
     }
 
     operator fun plusAssign(t: Iterable<Pair<K, V>>) {
         ensureValue().putAll(t.map { (k, v) -> k to toBuilder(v) })
+    }
+
+    fun add(vararg values: Pair<K, V>): NullableMapBuilder<K, V, Dsl> {
+        values.forEach { this += it }
+        return this
     }
 
     fun map(f: Dsl.() -> Unit) = all?.mapValues { f(it.value) }

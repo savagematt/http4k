@@ -1,20 +1,21 @@
 package org.http4k.typesafe.routing.requests.paths
 
 import com.natpryce.flatMap
+import org.http4k.typesafe.routing.fold
 import org.http4k.util.data.Tuple8
 import org.http4k.util.data.tuple
 
-data class Path8<A, B, C, D, E, F, G, H>(
-    val a: Path<A>,
-    val b: Path<B>,
-    val c: Path<C>,
-    val d: Path<D>,
-    val e: Path<E>,
-    val f: Path<F>,
-    val g: Path<G>,
-    val h: Path<H>
-) : SimplePath<Tuple8<A, B, C, D, E, F, G, H>> {
-    operator fun <T> div(next: Path<T>) = Path9(a, b, c, d, e, f, g, h, next)
+data class Path8<A, B, C, D, E, F, G, H, Docs>(
+    val a: Path<A, Docs>,
+    val b: Path<B, Docs>,
+    val c: Path<C, Docs>,
+    val d: Path<D, Docs>,
+    val e: Path<E, Docs>,
+    val f: Path<F, Docs>,
+    val g: Path<G, Docs>,
+    val h: Path<H, Docs>
+) : Path<Tuple8<A, B, C, D, E, F, G, H>, Docs> {
+    operator fun <T> div(next: Path<T, Docs>) = Path9(a, b, c, d, e, f, g, h, next)
 
     override fun get(from: String): PathResult<Tuple8<A, B, C, D, E, F, G, H>> =
         a.get(from).flatMap { a ->
@@ -39,4 +40,6 @@ data class Path8<A, B, C, D, E, F, G, H>(
         h.set(g.set(f.set(e.set(d.set(c.set(b.set(a.set(into, value.a), value.b), value.c), value.d), value.e), value.f), value.g), value.h)
 
     override fun toString() = joinPaths(a, b, c, d, e, f, g, h)
+
+    override fun document(doc: Docs) = fold(doc, a, b, c, d, e, f, g, h)
 }
