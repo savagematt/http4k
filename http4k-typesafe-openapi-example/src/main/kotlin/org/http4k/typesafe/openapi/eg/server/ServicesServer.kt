@@ -25,15 +25,18 @@ class Services(val routes: ServicesRoutes, val state: HashMap<ServiceId, Service
         state[id]
 
     override fun create(value: Service): Result<Uri, ErrorMessage> =
-        if (state.containsKey(value.id)) {
-            Failure(ErrorMessage("Service ${value.id} already exists"))
-        } else {
-            val result = when (val uri = routes.get.request.uri(value.id)) {
-                is Failure -> throw ThisShouldNeverHappen("Get service uri could not be created")
-                is Success -> uri
+        when {
+            state.containsKey(value.id) -> {
+                Failure(ErrorMessage("Service ${value.id} already exists"))
             }
-            state[value.id] = value
-            result
+            else -> {
+                val result = when (val uri = routes.get.request.uri(value.id)) {
+                    is Failure -> throw ThisShouldNeverHappen("Get service uri could not be created")
+                    is Success -> uri
+                }
+                state[value.id] = value
+                result
+            }
         }
 
     override fun update(value: Service): Result<Service, ErrorMessage> =

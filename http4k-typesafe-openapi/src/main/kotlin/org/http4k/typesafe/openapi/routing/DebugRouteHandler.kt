@@ -90,7 +90,7 @@ class DebugRouteHandler : StatefulRouteHandler() {
             val routeName = routeName(operation(matched))
             if (error != null) {
                 val trace = (stackTrace?.let { "\n$it" }?: "")
-                colour(RED, "FAILED $routeName\n${error.message}\n$trace")
+                colour(RED, "FAILED $routeName\n$RED${error.message}\n$RED$trace")
             } else {
                 colour(CYAN, "MATCH $routeName")
             }
